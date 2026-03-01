@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TRUST-AI – Tool-Inventar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #4F6EF7;
+    --accent-hover: #3B57E8;
+    --accent-subtle: rgba(79,110,247,0.10);
+    --accent-border: rgba(79,110,247,0.30);
+    --success: #22C55E;
+    --success-subtle: rgba(34,197,94,0.10);
+    --success-border: rgba(34,197,94,0.30);
+    --warning: #F59E0B;
+    --warning-subtle: rgba(245,158,11,0.10);
+    --warning-border: rgba(245,158,11,0.30);
+    --danger: #EF4444;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --transition: 180ms cubic-bezier(0.4,0,0.2,1);
+    --shadow-card: 0 2px 16px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-focus: 0 0 0 3px rgba(79,110,247,0.25);
+  }
+
+  :root, [data-theme="light"] {
+    --bg: #F4F5F8;
+    --surface: #FFFFFF;
+    --surface-2: #F8F9FC;
+    --surface-3: #EEF0F6;
+    --border: #E2E5EF;
+    --border-hover: #C8CCDC;
+    --text-primary: #0F1523;
+    --text-secondary: #5A6075;
+    --text-tertiary: #9299B0;
+    --nav-bg: rgba(244,245,248,0.85);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0D0F17;
+      --surface: #151823;
+      --surface-2: #1C2030;
+      --surface-3: #222638;
+      --border: #262B3E;
+      --border-hover: #333A54;
+      --text-primary: #EDF0FF;
+      --text-secondary: #8B92B0;
+      --text-tertiary: #555D7A;
+      --nav-bg: rgba(13,15,23,0.85);
+      --shadow-card: 0 2px 16px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+    }
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100dvh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo-mark {
+    width: 32px; height: 32px; background: var(--accent);
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-mark svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-logo-text { font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
+  .nav-logo-text span { color: var(--accent); }
+  .nav-step-indicator { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-tertiary); letter-spacing: 0.05em; }
+
+  /* ── Layout ── */
+  .page { max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  /* ── Page Header ── */
+  .page-header { margin-bottom: 36px; animation: fadeUp 0.4s ease both; }
+  .page-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-subtle); border: 1px solid var(--accent-border);
+    border-radius: 100px; padding: 4px 12px; margin-bottom: 16px;
+  }
+  .page-eyebrow svg { width: 12px; height: 12px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; }
+  .page-title { font-size: clamp(24px, 5vw, 32px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 10px; }
+  .page-subtitle { font-size: 15px; color: var(--text-secondary); line-height: 1.6; font-weight: 300; }
+
+  /* ── Progress ── */
+  .progress-bar-wrap { margin-bottom: 32px; animation: fadeUp 0.4s 0.05s ease both; }
+  .progress-steps { display: flex; gap: 6px; margin-bottom: 10px; }
+  .progress-step { flex: 1; height: 3px; border-radius: 100px; background: var(--border); transition: background var(--transition); }
+  .progress-step.active { background: var(--accent); }
+  .progress-step.done { background: var(--accent); opacity: 0.4; }
+  .progress-label { font-size: 12px; color: var(--text-tertiary); }
+  .progress-label strong { color: var(--text-secondary); font-weight: 500; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 28px;
+    box-shadow: var(--shadow-card); margin-bottom: 16px;
+  }
+  .card-title { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 20px; }
+
+  /* ── Option Toggle ── */
+  .option-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
+  .option-btn {
+    border: 1.5px solid var(--border); border-radius: var(--radius-md);
+    padding: 16px; cursor: pointer; transition: all var(--transition);
+    background: var(--surface-2); text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    user-select: none;
+  }
+  .option-btn:hover { border-color: var(--accent-border); }
+  .option-btn.selected { background: var(--accent-subtle); border-color: var(--accent); }
+  .option-btn svg { width: 24px; height: 24px; stroke: var(--text-tertiary); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--transition); }
+  .option-btn.selected svg { stroke: var(--accent); }
+  .option-btn-label { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .option-btn-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.4; }
+
+  /* ── CSV Section ── */
+  .csv-section { display: none; margin-top: 24px; }
+  .csv-section.visible { display: block; animation: fadeUp 0.3s ease both; }
+
+  .csv-format-hint {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 16px;
+  }
+  .csv-format-hint-title {
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+  }
+  .csv-code {
+    font-family: 'DM Mono', monospace; font-size: 11.5px;
+    color: var(--text-secondary); line-height: 1.7;
+    white-space: pre; overflow-x: auto;
+  }
+  .csv-code .col-header { color: var(--accent); }
+
+  label { display: block; font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 7px; }
+  label .hint { font-weight: 400; color: var(--text-tertiary); font-size: 13px; margin-left: 4px; }
+
+  textarea {
+    width: 100%; background: var(--surface-2); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    font-family: 'DM Mono', monospace; font-size: 12.5px; color: var(--text-primary);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    outline: none; resize: vertical; min-height: 130px; line-height: 1.6;
+  }
+  textarea::placeholder { color: var(--text-tertiary); font-family: 'DM Sans', sans-serif; font-size: 13px; }
+  textarea:focus { border-color: var(--accent); box-shadow: var(--shadow-focus); background: var(--surface); }
+
+  /* ── Parse Button ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px; border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all var(--transition); border: none; outline: none;
+  }
+  .btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(79,110,247,0.30); }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(79,110,247,0.40); }
+  .btn-primary:disabled { background: var(--surface-3); color: var(--text-tertiary); box-shadow: none; cursor: not-allowed; transform: none; }
+  .btn-ghost { background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text-primary); }
+  .btn-outline-accent { background: transparent; color: var(--accent); border: 1.5px solid var(--accent-border); }
+  .btn-outline-accent:hover { background: var(--accent-subtle); }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+  .btn-sm svg { width: 14px; height: 14px; }
+
+  .parse-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+
+  /* ── Tool Table / List ── */
+  .tool-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+
+  .tool-item {
+    background: var(--surface-2); border: 1.5px solid var(--border);
+    border-radius: var(--radius-md); padding: 14px 16px;
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 10px; align-items: start;
+    animation: fadeUp 0.3s ease both;
+    transition: border-color var(--transition);
+  }
+  .tool-item:hover { border-color: var(--border-hover); }
+
+  .tool-item-main { min-width: 0; }
+  .tool-item-name { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 3px; }
+  .tool-item-vendor { font-size: 13px; color: var(--text-tertiary); margin-bottom: 8px; }
+
+  .tool-item-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 500; padding: 3px 9px;
+    border-radius: 100px; white-space: nowrap;
+  }
+  .tag svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .tag-uc { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent-border); }
+  .tag-avv-yes { background: var(--success-subtle); color: var(--success); border: 1px solid var(--success-border); }
+  .tag-avv-no { background: var(--warning-subtle); color: var(--warning); border: 1px solid var(--warning-border); }
+  .tag-restriction { background: var(--surface-3); color: var(--text-secondary); border: 1px solid var(--border); }
+
+  .tool-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .icon-btn {
+    width: 32px; height: 32px; border-radius: var(--radius-sm);
+    background: transparent; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all var(--transition); color: var(--text-tertiary);
+  }
+  .icon-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .icon-btn:hover { background: var(--surface-3); color: var(--text-primary); border-color: var(--border-hover); }
+  .icon-btn.danger:hover { background: rgba(239,68,68,0.1); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+
+  /* ── Empty State ── */
+  .empty-state {
+    text-align: center; padding: 32px 20px;
+    color: var(--text-tertiary);
+  }
+  .empty-state svg { width: 40px; height: 40px; stroke: var(--border); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── Parse Status ── */
+  .parse-status {
+    display: none; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text-secondary);
+    background: var(--success-subtle); border: 1px solid var(--success-border);
+    border-radius: var(--radius-sm); padding: 8px 14px;
+    margin-top: 12px;
+  }
+  .parse-status.visible { display: flex; animation: fadeUp 0.3s ease both; }
+  .parse-status svg { width: 16px; height: 16px; stroke: var(--success); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  .parse-error {
+    display: none; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--danger);
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+    border-radius: var(--radius-sm); padding: 8px 14px;
+    margin-top: 12px;
+  }
+  .parse-error.visible { display: flex; animation: fadeUp 0.3s ease both; }
+  .parse-error svg { width: 16px; height: 16px; stroke: var(--danger); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Skip Note ── */
+  .skip-section { display: none; }
+  .skip-section.visible { display: block; animation: fadeUp 0.3s ease both; }
+  .skip-note {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 16px 20px; margin-top: 20px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .skip-note svg { width: 20px; height: 20px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; margin-top: 1px; }
+  .skip-note-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  .skip-note-text strong { color: var(--text-primary); }
+
+  /* ── Footer ── */
+  .form-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; margin-top: 8px; animation: fadeUp 0.4s 0.2s ease both;
+  }
+  .btn-lg { padding: 13px 24px; font-size: 15px; }
+  .btn-lg svg { width: 17px; height: 17px; }
+
+  /* ── Post-MVP Badge ── */
+  .post-mvp-note {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500; color: var(--warning);
+    background: var(--warning-subtle); border: 1px solid var(--warning-border);
+    border-radius: 100px; padding: 3px 10px; margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Example data loader ── */
+  .example-link {
+    font-size: 13px; color: var(--accent); cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+    background: none; border: none; font-family: inherit;
+  }
+  .example-link:hover { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/></svg>
+    </div>
+    <span class="nav-logo-text">TRUST<span>-AI</span></span>
+  </a>
+  <span class="nav-step-indicator">SCHRITT 2 / 7</span>
+</nav>
+
+<main class="page">
+
+  <div class="page-header">
+    <div class="page-eyebrow">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Tool-Inventar
+    </div>
+    <h1 class="page-title">Welche KI-Tools sind bei euch freigegeben?</h1>
+    <p class="page-subtitle">Wenn dein Unternehmen ein Tool-Inventar führt, kannst du es hier einfügen. Das hilft dabei, Use Cases nur mit zugelassenen Tools zu verknüpfen.</p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar-wrap">
+    <div class="progress-steps">
+      <div class="progress-step done"></div>
+      <div class="progress-step active"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+    <div class="progress-label">Projekt anlegen → <strong>Tool-Inventar</strong> → Use Cases → Priorisierung → Bewertung → Manifest → Abschluss</div>
+  </div>
+
+  <!-- Option Card -->
+  <div class="card" style="animation: fadeUp 0.4s 0.1s ease both;">
+    <div class="card-title">Habt ihr ein Tool-Inventar?</div>
+    <div class="option-toggle">
+      <div class="option-btn" id="opt-yes" onclick="selectOption('yes')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+        <div class="option-btn-label">Ja, CSV einfügen</div>
+        <div class="option-btn-desc">Ich füge unsere freigegebenen Tools als CSV ein</div>
+      </div>
+      <div class="option-btn" id="opt-no" onclick="selectOption('no')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <div class="option-btn-label">Kein Inventar vorhanden</div>
+        <div class="option-btn-desc">Wir überspringen diesen Schritt</div>
+      </div>
+    </div>
+
+    <!-- CSV Section -->
+    <div class="csv-section" id="csv-section">
+      <div class="divider"></div>
+
+      <div class="csv-format-hint">
+        <div class="csv-format-hint-title">Erwartetes Format</div>
+        <div class="csv-code"><span class="col-header">Tool-Name, Anbieter, Freigegebene Use Cases, Einschränkungen, AVV vorhanden, Notizen</span>
+Microsoft Copilot, Microsoft, "UC-01; UC-02; UC-03", Nur interne Daten, Ja, Freigabe IT 01.01.2025
+ChatGPT (OpenAI), OpenAI, "UC-05; UC-10", Keine personenbez. Daten, Nein, ""</div>
+      </div>
+
+      <div class="form-group">
+        <label for="csv-input">
+          CSV einfügen
+          <span class="hint">– Kopiere den Inhalt direkt aus Excel oder einem Texteditor</span>
+        </label>
+        <textarea id="csv-input" placeholder="Tool-Name, Anbieter, Freigegebene Use Cases, Einschränkungen, AVV vorhanden, Notizen&#10;Microsoft Copilot, Microsoft, ..." oninput="onCsvInput()"></textarea>
+      </div>
+
+      <div class="parse-row">
+        <button class="btn btn-primary" id="parse-btn" onclick="parseCsv()" disabled>
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Analysieren
+        </button>
+        <button class="example-link" onclick="loadExample()">Beispieldaten laden</button>
+        <span class="post-mvp-note">
+          ✦ Post-MVP: KI-Normalisierung
+        </span>
+      </div>
+
+      <div class="parse-status" id="parse-status">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="parse-status-text">3 Tools erkannt und importiert.</span>
+      </div>
+      <div class="parse-error" id="parse-error">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="parse-error-text">Fehler beim Einlesen. Bitte prüfe das Format.</span>
+      </div>
+
+      <!-- Tool List -->
+      <div class="tool-list" id="tool-list"></div>
+    </div>
+
+    <!-- Skip Section -->
+    <div class="skip-section" id="skip-section">
+      <div class="skip-note">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <div class="skip-note-text">
+          <strong>Kein Problem.</strong> Du kannst Use Cases trotzdem bewerten – das Tool-Inventar ist optional. Im Manifest wird dann kein spezifisches Tool zugeordnet. Du kannst die Tools auch später manuell ergänzen.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="form-footer">
+    <button class="btn btn-ghost btn-lg" onclick="goBack()">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Zurück
+    </button>
+    <button class="btn btn-primary btn-lg" id="next-btn" onclick="handleNext()" disabled>
+      Weiter
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+</main>
+
+<script>
+  // ── State ──
+  let currentOption = null;
+  let parsedTools = [];
+
+  // ── Option Select ──
+  function selectOption(opt) {
+    currentOption = opt;
+    document.getElementById('opt-yes').classList.toggle('selected', opt === 'yes');
+    document.getElementById('opt-no').classList.toggle('selected', opt === 'no');
+    document.getElementById('csv-section').classList.toggle('visible', opt === 'yes');
+    document.getElementById('skip-section').classList.toggle('visible', opt === 'no');
+
+    if (opt === 'no') {
+      document.getElementById('next-btn').disabled = false;
+    } else {
+      // Enable next only if tools were parsed
+      document.getElementById('next-btn').disabled = parsedTools.length === 0;
+    }
+  }
+
+  // ── CSV Input ──
+  function onCsvInput() {
+    const val = document.getElementById('csv-input').value.trim();
+    document.getElementById('parse-btn').disabled = val.length === 0;
+    // Reset status
+    document.getElementById('parse-status').classList.remove('visible');
+    document.getElementById('parse-error').classList.remove('visible');
+  }
+
+  // ── Load Example ──
+  function loadExample() {
+    document.getElementById('csv-input').value =
+`Microsoft Copilot, Microsoft, "UC-01; UC-02; UC-03; UC-05", Nur interne Daten, Ja, Freigabe durch IT am 01.01.2025
+ChatGPT (OpenAI), OpenAI, "UC-05; UC-10; UC-16", Keine personenbezogenen Daten, Nein, Pilotfreigabe bis 30.06.2026
+Otter.ai, Otter.ai Inc., "UC-02; UC-06", Nur für interne Meetings, Ja, DSGVO-konform lt. IT
+Power BI mit KI, Microsoft, "UC-17; UC-26", Zugriff nur für PMs, Ja, ""`;
+    document.getElementById('parse-btn').disabled = false;
+    document.getElementById('parse-status').classList.remove('visible');
+    document.getElementById('parse-error').classList.remove('visible');
+  }
+
+  // ── Parse CSV ──
+  function parseCsv() {
+    const raw = document.getElementById('csv-input').value.trim();
+    if (!raw) return;
+
+    try {
+      const lines = raw.split('\n').filter(l => l.trim());
+      // Skip header line if it matches expected format
+      const startIdx = lines[0].toLowerCase().includes('tool-name') ? 1 : 0;
+      const dataLines = lines.slice(startIdx);
+
+      if (dataLines.length === 0) throw new Error('Keine Datenzeilen gefunden.');
+
+      parsedTools = dataLines.map((line, idx) => {
+        // Simple CSV parse (handles quoted fields)
+        const cols = parseCSVLine(line);
+        const name = (cols[0] || '').trim();
+        const vendor = (cols[1] || '').trim();
+        const ucs = (cols[2] || '').trim().split(/[;,]/).map(s => s.trim()).filter(Boolean);
+        const restriction = (cols[3] || '').trim();
+        const avv = (cols[4] || '').trim().toLowerCase();
+        const notes = (cols[5] || '').trim();
+
+        if (!name) throw new Error(`Zeile ${idx + 1}: Kein Tool-Name gefunden.`);
+
+        return {
+          id: crypto.randomUUID(),
+          name, vendor,
+          approved_use_cases: ucs,
+          restrictions: restriction,
+          avv_exists: avv === 'ja' || avv === 'yes' || avv === 'true',
+          notes
+        };
+      });
+
+      renderToolList();
+
+      document.getElementById('parse-status-text').textContent =
+        `${parsedTools.length} Tool${parsedTools.length !== 1 ? 's' : ''} erkannt und importiert.`;
+      document.getElementById('parse-status').classList.add('visible');
+      document.getElementById('parse-error').classList.remove('visible');
+      document.getElementById('next-btn').disabled = false;
+
+    } catch (e) {
+      document.getElementById('parse-error-text').textContent = e.message;
+      document.getElementById('parse-error').classList.add('visible');
+      document.getElementById('parse-status').classList.remove('visible');
+    }
+  }
+
+  function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQuotes = !inQuotes; continue; }
+      if (ch === ',' && !inQuotes) { result.push(current); current = ''; continue; }
+      current += ch;
+    }
+    result.push(current);
+    return result;
+  }
+
+  // ── Render Tool List ──
+  function renderToolList() {
+    const list = document.getElementById('tool-list');
+    if (parsedTools.length === 0) {
+      list.innerHTML = `<div class="empty-state">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        <p>Noch keine Tools importiert.</p>
+      </div>`;
+      return;
+    }
+
+    list.innerHTML = parsedTools.map((tool, idx) => `
+      <div class="tool-item" id="tool-${tool.id}" style="animation-delay:${idx * 0.05}s">
+        <div class="tool-item-main">
+          <div class="tool-item-name">${escHtml(tool.name)}</div>
+          <div class="tool-item-vendor">${escHtml(tool.vendor) || '–'}</div>
+          <div class="tool-item-tags">
+            ${tool.approved_use_cases.slice(0,4).map(uc =>
+              `<span class="tag tag-uc"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>${escHtml(uc)}</span>`
+            ).join('')}
+            ${tool.approved_use_cases.length > 4 ?
+              `<span class="tag tag-uc">+${tool.approved_use_cases.length - 4}</span>` : ''}
+            <span class="tag ${tool.avv_exists ? 'tag-avv-yes' : 'tag-avv-no'}">
+              <svg viewBox="0 0 24 24">${tool.avv_exists
+                ? '<polyline points="20 6 9 17 4 12"/>'
+                : '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'}</svg>
+              AVV ${tool.avv_exists ? 'vorhanden' : 'fehlt'}
+            </span>
+            ${tool.restrictions ? `<span class="tag tag-restriction">${escHtml(tool.restrictions)}</span>` : ''}
+          </div>
+        </div>
+        <div class="tool-item-actions">
+          <button class="icon-btn danger" onclick="deleteTool('${tool.id}')" title="Entfernen">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function deleteTool(id) {
+    parsedTools = parsedTools.filter(t => t.id !== id);
+    renderToolList();
+    if (parsedTools.length === 0) {
+      document.getElementById('next-btn').disabled = true;
+      document.getElementById('parse-status').classList.remove('visible');
+    } else {
+      document.getElementById('parse-status-text').textContent =
+        `${parsedTools.length} Tool${parsedTools.length !== 1 ? 's' : ''} im Inventar.`;
+    }
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Navigation ──
+  function goBack() {
+    window.location.href = 'trust-ai-screen1.html';
+  }
+
+  function handleNext() {
+    // Save to localStorage
+    try {
+      const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+      proj.tool_inventory = parsedTools;
+      proj.status = 'discovery';
+      localStorage.setItem('trust_ai_project', JSON.stringify(proj));
+    } catch(e){}
+    window.location.href = 'trust-ai-screen3.html';
+  }
+</script>
+</body>
+</html>

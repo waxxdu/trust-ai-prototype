@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TRUST-AI – Projekt anlegen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #4F6EF7;
+    --accent-hover: #3B57E8;
+    --accent-subtle: rgba(79,110,247,0.10);
+    --accent-border: rgba(79,110,247,0.30);
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+
+    --transition: 180ms cubic-bezier(0.4,0,0.2,1);
+    --shadow-card: 0 2px 16px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-focus: 0 0 0 3px rgba(79,110,247,0.25);
+  }
+
+  /* ── Light Theme ── */
+  :root, [data-theme="light"] {
+    --bg: #F4F5F8;
+    --surface: #FFFFFF;
+    --surface-2: #F8F9FC;
+    --surface-3: #EEF0F6;
+    --border: #E2E5EF;
+    --border-hover: #C8CCDC;
+    --text-primary: #0F1523;
+    --text-secondary: #5A6075;
+    --text-tertiary: #9299B0;
+    --tag-bg: #EEF0F6;
+    --tag-text: #5A6075;
+    --nav-bg: rgba(244,245,248,0.85);
+  }
+
+  /* ── Dark Theme ── */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0D0F17;
+      --surface: #151823;
+      --surface-2: #1C2030;
+      --surface-3: #222638;
+      --border: #262B3E;
+      --border-hover: #333A54;
+      --text-primary: #EDF0FF;
+      --text-secondary: #8B92B0;
+      --text-tertiary: #555D7A;
+      --tag-bg: #1C2030;
+      --tag-text: #8B92B0;
+      --nav-bg: rgba(13,15,23,0.85);
+      --shadow-card: 0 2px 16px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+    }
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100dvh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .nav-logo-mark svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .nav-logo-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .nav-logo-text span {
+    color: var(--accent);
+  }
+
+  .nav-step-indicator {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Layout ── */
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* ── Page Header ── */
+  .page-header {
+    margin-bottom: 36px;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .page-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-border);
+    border-radius: 100px;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+  }
+
+  .page-eyebrow svg {
+    width: 12px;
+    height: 12px;
+    stroke: var(--accent);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .page-title {
+    font-size: clamp(24px, 5vw, 32px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .page-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── Progress Bar ── */
+  .progress-bar-wrap {
+    margin-bottom: 32px;
+    animation: fadeUp 0.4s 0.05s ease both;
+  }
+
+  .progress-steps {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .progress-step {
+    flex: 1;
+    height: 3px;
+    border-radius: 100px;
+    background: var(--border);
+    transition: background var(--transition);
+  }
+
+  .progress-step.active {
+    background: var(--accent);
+  }
+
+  .progress-step.done {
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .progress-label strong {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-card);
+    animation: fadeUp 0.4s 0.1s ease both;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 20px;
+  }
+
+  /* ── Form Elements ── */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 7px;
+  }
+
+  label .required {
+    color: var(--accent);
+    margin-left: 2px;
+  }
+
+  label .hint {
+    font-weight: 400;
+    color: var(--text-tertiary);
+    font-size: 13px;
+    margin-left: 4px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text-primary);
+    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  textarea::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  input[type="text"]:hover,
+  input[type="email"]:hover,
+  textarea:hover,
+  select:hover {
+    border-color: var(--border-hover);
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-focus);
+    background: var(--surface);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.6;
+  }
+
+  .char-count {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 5px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── Select Custom Arrow ── */
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--text-tertiary);
+    pointer-events: none;
+  }
+
+  select option {
+    background: var(--surface);
+    color: var(--text-primary);
+  }
+
+  /* ── Tag Chips (Multi-Select) ── */
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-2);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .chip:hover {
+    border-color: var(--accent-border);
+    color: var(--text-primary);
+  }
+
+  .chip.selected {
+    background: var(--accent-subtle);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .chip svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    display: none;
+  }
+
+  .chip.selected svg {
+    display: block;
+  }
+
+  /* ── Project Type Cards ── */
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    .type-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .type-card {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    cursor: pointer;
+    transition: all var(--transition);
+    background: var(--surface-2);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .type-card:hover {
+    border-color: var(--accent-border);
+  }
+
+  .type-card.selected {
+    background: var(--accent-subtle);
+    border-color: var(--accent);
+  }
+
+  .type-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background var(--transition);
+  }
+
+  .type-card.selected .type-card-icon {
+    background: var(--accent);
+  }
+
+  .type-card-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--text-tertiary);
+    fill: none;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke var(--transition);
+  }
+
+  .type-card.selected .type-card-icon svg {
+    stroke: #fff;
+  }
+
+  .type-card-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+
+  .type-card-desc {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* ── Info Box ── */
+  .info-box {
+    display: flex;
+    gap: 12px;
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.4s 0.15s ease both;
+  }
+
+  .info-box svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--accent);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .info-box-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ── Footer Actions ── */
+  .form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    animation: fadeUp 0.4s 0.2s ease both;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: none;
+    outline: none;
+    text-decoration: none;
+  }
+
+  .btn svg {
+    width: 17px;
+    height: 17px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(79,110,247,0.30);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 4px 16px rgba(79,110,247,0.40);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary:disabled {
+    background: var(--surface-3);
+    color: var(--text-tertiary);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+
+  .required-note {
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  .required-note span {
+    color: var(--accent);
+  }
+
+  /* ── Validation ── */
+  .field-error {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 5px;
+    display: none;
+  }
+
+  .form-group.has-error input,
+  .form-group.has-error textarea,
+  .form-group.has-error select {
+    border-color: var(--danger);
+  }
+
+  .form-group.has-error .field-error {
+    display: block;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: var(--text-primary);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--success);
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="trust-ai-screen7.html">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">TRUST<span>-AI</span></span>
+  </a>
+  <span class="nav-step-indicator">SCHRITT 1 / 7</span>
+</nav>
+
+<!-- Page -->
+<main class="page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-eyebrow">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/></svg>
+      Neues Projekt
+    </div>
+    <h1 class="page-title">Projekt anlegen</h1>
+    <p class="page-subtitle">Beschreibe dein Projekt – die Angaben helfen dabei, die richtigen KI-Use Cases vorzuschlagen und das Manifest passend zu erstellen.</p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar-wrap">
+    <div class="progress-steps">
+      <div class="progress-step active"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+    <div class="progress-label"><strong>Projekt anlegen</strong> · Tool-Inventar → Use Cases → Priorisierung → Bewertung → Manifest → Abschluss</div>
+  </div>
+
+  <!-- Card 1: Basics -->
+  <div class="card">
+    <div class="card-title">Grundinfos</div>
+
+    <div class="form-group" id="group-name">
+      <label for="project-name">Projektname <span class="required">*</span></label>
+      <input type="text" id="project-name" placeholder="z.B. ERP-Rollout Q3 2026" maxlength="80" oninput="updateChar('project-name','name-count',80); validate('group-name','project-name')"/>
+      <div class="char-count"><span id="name-count">0</span> / 80</div>
+      <div class="field-error" id="err-name">Bitte gib einen Projektnamen ein.</div>
+    </div>
+
+    <div class="form-group" id="group-desc">
+      <label for="project-desc">Kurzbeschreibung <span class="required">*</span> <span class="hint">– Was ist das Ziel des Projekts?</span></label>
+      <textarea id="project-desc" placeholder="z.B. Migration des bestehenden ERP-Systems auf SAP S/4HANA inklusive Change Management und Schulungen für 400 Mitarbeitende." maxlength="400" oninput="updateChar('project-desc','desc-count',400); validate('group-desc','project-desc')"></textarea>
+      <div class="char-count"><span id="desc-count">0</span> / 400</div>
+      <div class="field-error" id="err-desc">Bitte beschreibe das Projekt kurz.</div>
+    </div>
+
+    <div class="form-group" id="group-email">
+      <label for="pm-email">E-Mail des Projektleiters <span class="required">*</span></label>
+      <input type="email" id="pm-email" placeholder="name@unternehmen.de" oninput="validateEmail()"/>
+      <div class="field-error" id="err-email">Bitte gib eine gültige E-Mail-Adresse ein.</div>
+    </div>
+  </div>
+
+  <!-- Card 2: Project Type -->
+  <div class="card">
+    <div class="card-title">Projektart <span style="color:var(--accent);font-size:11px;">*</span></div>
+    <div class="type-grid" id="type-grid">
+
+      <div class="type-card" data-type="it" onclick="selectType(this)">
+        <div class="type-card-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div>
+          <div class="type-card-label">IT-Projekt</div>
+          <div class="type-card-desc">Software, Infrastruktur, digitale Transformation</div>
+        </div>
+      </div>
+
+      <div class="type-card" data-type="org" onclick="selectType(this)">
+        <div class="type-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <div class="type-card-label">Org-Projekt</div>
+          <div class="type-card-desc">Change Management, Restrukturierung, Prozesse</div>
+        </div>
+      </div>
+
+      <div class="type-card" data-type="product" onclick="selectType(this)">
+        <div class="type-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div>
+          <div class="type-card-label">Produktentwicklung</div>
+          <div class="type-card-desc">Neue Produkte, Features, Hardware/Software</div>
+        </div>
+      </div>
+
+      <div class="type-card" data-type="other" onclick="selectType(this)">
+        <div class="type-card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        </div>
+        <div>
+          <div class="type-card-label">Sonstiges</div>
+          <div class="type-card-desc">Beratung, Strategie, Forschung & Analyse</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="field-error" id="err-type" style="margin-top:10px;">Bitte wähle eine Projektart.</div>
+  </div>
+
+  <!-- Card 3: Industry -->
+  <div class="card">
+    <div class="card-title">Industrie & Regulierung <span style="color:var(--text-tertiary);font-size:11px;font-weight:400;text-transform:none;">(optional, Mehrfachauswahl)</span></div>
+    <div class="chip-group" id="industry-chips">
+      <div class="chip" data-value="pharma" onclick="toggleChip(this)">
+        <svg viewBox="0 0 24 24"><path d="M8 3H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/><rect x="8" y="1" width="8" height="4" rx="1"/></svg>
+        Pharma / Life Sciences
+      </div>
+      <div class="chip" data-value="finance" onclick="toggleChip(this)">
+        <svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Finanzdienstleistungen
+      </div>
+      <div class="chip" data-value="energy" onclick="toggleChip(this)">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Energie / KRITIS
+      </div>
+      <div class="chip" data-value="medical" onclick="toggleChip(this)">
+        <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Medizinprodukte
+      </div>
+      <div class="chip" data-value="automotive" onclick="toggleChip(this)">
+        <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+        Automotive
+      </div>
+      <div class="chip" data-value="defense" onclick="toggleChip(this)">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/></svg>
+        Verteidigung / Dual Use
+      </div>
+      <div class="chip" data-value="public" onclick="toggleChip(this)">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Öffentlicher Sektor
+      </div>
+      <div class="chip" data-value="none" onclick="toggleChipExclusive(this)">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Keine spezifische Regulierung
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Box -->
+  <div class="info-box">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <div class="info-box-text">
+      <strong>Deine Daten bleiben lokal.</strong> Im MVP werden alle Projektdaten ausschließlich in deinem Browser gespeichert. Nichts wird übertragen oder geteilt.
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="form-footer">
+    <span class="required-note"><span>*</span> Pflichtfelder</span>
+    <button class="btn btn-primary" id="submit-btn" onclick="handleSubmit()">
+      Weiter
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  Projekt wurde gespeichert!
+</div>
+
+<script>
+  // ── Char Counter ──
+  function updateChar(inputId, countId, max) {
+    const val = document.getElementById(inputId).value.length;
+    document.getElementById(countId).textContent = val;
+  }
+
+  // ── Validation ──
+  function validate(groupId, inputId) {
+    const group = document.getElementById(groupId);
+    const val = document.getElementById(inputId).value.trim();
+    if (val.length > 0) {
+      group.classList.remove('has-error');
+    }
+  }
+
+  function validateEmail() {
+    const group = document.getElementById('group-email');
+    const val = document.getElementById('pm-email').value.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    if (valid || val === '') {
+      group.classList.remove('has-error');
+    }
+  }
+
+  // ── Project Type ──
+  function selectType(el) {
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('err-type').style.display = 'none';
+  }
+
+  // ── Industry Chips ──
+  function toggleChip(el) {
+    // Deselect "Keine Regulierung" if selecting something else
+    const noneChip = document.querySelector('[data-value="none"]');
+    if (noneChip && noneChip.classList.contains('selected')) {
+      noneChip.classList.remove('selected');
+    }
+    el.classList.toggle('selected');
+  }
+
+  function toggleChipExclusive(el) {
+    // Selecting "Keine" deselects everything else
+    const wasSelected = el.classList.contains('selected');
+    document.querySelectorAll('#industry-chips .chip').forEach(c => c.classList.remove('selected'));
+    if (!wasSelected) el.classList.add('selected');
+  }
+
+  // ── Submit ──
+  function handleSubmit() {
+    let valid = true;
+
+    // Name
+    const name = document.getElementById('project-name').value.trim();
+    if (!name) {
+      document.getElementById('group-name').classList.add('has-error');
+      valid = false;
+    }
+
+    // Description
+    const desc = document.getElementById('project-desc').value.trim();
+    if (!desc) {
+      document.getElementById('group-desc').classList.add('has-error');
+      valid = false;
+    }
+
+    // Email
+    const email = document.getElementById('pm-email').value.trim();
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!emailValid) {
+      document.getElementById('group-email').classList.add('has-error');
+      valid = false;
+    }
+
+    // Type
+    const type = document.querySelector('.type-card.selected');
+    if (!type) {
+      document.getElementById('err-type').style.display = 'block';
+      valid = false;
+    }
+
+    if (!valid) {
+      // Scroll to first error
+      const firstError = document.querySelector('.has-error, [style*="display: block"]');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Collect industries
+    const industries = [];
+    document.querySelectorAll('#industry-chips .chip.selected').forEach(c => {
+      industries.push(c.dataset.value);
+    });
+
+    // Build project object
+    const project = {
+      id: crypto.randomUUID(),
+      name,
+      description: desc,
+      pm_email: email,
+      project_type: type.dataset.type,
+      industry: industries,
+      created_at: new Date().toISOString(),
+      status: 'setup'
+    };
+
+    // Save to localStorage
+    localStorage.setItem('trust_ai_project', JSON.stringify(project));
+    // Also keep in projects list for dashboard
+    const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
+    projects.push(project);
+    localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
+
+    // Show toast
+    showToast();
+
+    setTimeout(() => {
+      window.location.href = 'trust-ai-screen2.html';
+    }, 1200);
+  }
+
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

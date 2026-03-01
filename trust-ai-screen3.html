@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>TRUST-AI – Use Case Discovery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent: #4F6EF7;
+  --accent-hover: #3B57E8;
+  --accent-subtle: rgba(79,110,247,0.10);
+  --accent-border: rgba(79,110,247,0.30);
+  --green: #22C55E;
+  --green-subtle: rgba(34,197,94,0.12);
+  --green-border: rgba(34,197,94,0.35);
+  --red: #EF4444;
+  --red-subtle: rgba(239,68,68,0.10);
+  --red-border: rgba(239,68,68,0.30);
+  --yellow: #F59E0B;
+  --yellow-subtle: rgba(245,158,11,0.10);
+  --yellow-border: rgba(245,158,11,0.30);
+  --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px;
+  --transition: 200ms cubic-bezier(0.4,0,0.2,1);
+}
+
+:root {
+  --bg: #F4F5F8;
+  --surface: #FFFFFF;
+  --surface-2: #F8F9FC;
+  --surface-3: #EEF0F6;
+  --border: #E2E5EF;
+  --border-hover: #C8CCDC;
+  --text-primary: #0F1523;
+  --text-secondary: #5A6075;
+  --text-tertiary: #9299B0;
+  --nav-bg: rgba(244,245,248,0.9);
+  --shadow-card: 0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0D0F17;
+    --surface: #151823;
+    --surface-2: #1C2030;
+    --surface-3: #222638;
+    --border: #262B3E;
+    --border-hover: #333A54;
+    --text-primary: #EDF0FF;
+    --text-secondary: #8B92B0;
+    --text-tertiary: #555D7A;
+    --nav-bg: rgba(13,15,23,0.90);
+    --shadow-card: 0 4px 32px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+  }
+}
+
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  touch-action: none;
+}
+
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+.nav-logo-mark {
+  width: 30px; height: 30px; background: var(--accent); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-mark svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-logo-text { font-size: 14px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
+.nav-logo-text span { color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-step { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-tertiary); letter-spacing: 0.05em; }
+.progress-dots { display: flex; gap: 5px; align-items: center; }
+.progress-dot { width: 6px; height: 6px; border-radius: 100px; background: var(--border); transition: all var(--transition); }
+.progress-dot.done { background: var(--accent); opacity: 0.4; width: 18px; }
+.progress-dot.active { background: var(--accent); width: 24px; }
+
+/* ── Layout ── */
+.layout {
+  position: fixed; inset: 56px 0 0 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding: 16px 20px 0;
+  overflow: hidden;
+}
+
+.header-strip {
+  width: 100%; max-width: 440px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; flex-shrink: 0;
+}
+.progress-label-main { font-size: 12px; color: var(--text-tertiary); font-family: 'DM Mono', monospace; }
+.progress-label-main strong { color: var(--text-secondary); font-weight: 500; }
+.undo-btn {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--text-tertiary); background: none; border: none;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 4px 0;
+  transition: color var(--transition);
+}
+.undo-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.undo-btn:not(:disabled):hover { color: var(--text-primary); }
+.undo-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+/* ── Card Stack ── */
+.card-stack {
+  position: relative;
+  width: 100%; max-width: 440px;
+  flex: 1; min-height: 0;
+  margin-bottom: 0;
+}
+
+/* ── Swipe Card ── */
+.swipe-card {
+  position: absolute; inset: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 20px 22px 16px;
+  display: flex; flex-direction: column;
+  cursor: grab; overflow: hidden;
+  will-change: transform;
+  bottom: 100px;
+}
+.swipe-card:active { cursor: grabbing; }
+
+.swipe-card.behind-1 {
+  transform: scale(0.96) translateY(10px);
+  opacity: 0.7; pointer-events: none; z-index: 1;
+}
+.swipe-card.behind-2 {
+  transform: scale(0.92) translateY(20px);
+  opacity: 0.4; pointer-events: none; z-index: 0;
+}
+.swipe-card.active { z-index: 10; }
+
+.swipe-overlay {
+  position: absolute; inset: 0; border-radius: var(--radius-xl);
+  opacity: 0; pointer-events: none;
+  display: flex; align-items: center; justify-content: center; z-index: 20;
+}
+.overlay-right { background: linear-gradient(135deg, var(--green-subtle), transparent); }
+.overlay-left  { background: linear-gradient(225deg, var(--red-subtle), transparent); }
+.overlay-up    { background: linear-gradient(180deg, var(--yellow-subtle), transparent); }
+
+.swipe-badge {
+  padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase; border: 2px solid;
+}
+.badge-right { color: var(--green); border-color: var(--green); transform: rotate(-12deg); }
+.badge-left  { color: var(--red);   border-color: var(--red);   transform: rotate(12deg); }
+.badge-up    { color: var(--yellow);border-color: var(--yellow); }
+
+/* ── Card Content ── */
+.card-category {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-subtle); border: 1px solid var(--accent-border);
+  border-radius: 100px; padding: 3px 10px; margin-bottom: 12px; align-self: flex-start;
+}
+.card-id { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-tertiary); margin-bottom: 5px; }
+.card-title { font-size: 19px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 10px; }
+.card-description { font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; font-weight: 300; flex: 1; overflow-y: auto; }
+
+.card-divider { height: 1px; background: var(--border); margin: 14px 0; flex-shrink: 0; }
+
+.card-tools { display: flex; flex-wrap: wrap; gap: 5px; flex-shrink: 0; margin-bottom: 10px; }
+.tool-chip {
+  font-size: 11px; color: var(--text-tertiary); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 100px; padding: 2px 9px;
+}
+
+.ethics-flag {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--yellow-subtle); border: 1px solid var(--yellow-border);
+  border-radius: var(--radius-sm); padding: 8px 12px;
+  font-size: 12px; color: var(--yellow); flex-shrink: 0; margin-bottom: 8px;
+}
+.ethics-flag svg { width: 14px; height: 14px; stroke: var(--yellow); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+.rejection-hint {
+  display: flex; align-items: flex-start; gap: 7px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px 12px;
+  font-size: 12px; color: var(--text-secondary); flex-shrink: 0;
+}
+.rejection-hint svg { width: 13px; height: 13px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; margin-top: 1px; }
+.classification-significant { color: var(--red); font-weight: 500; }
+.classification-valuable { color: var(--yellow); font-weight: 500; }
+.classification-nice_to_have { color: var(--green); font-weight: 500; }
+
+/* ── Action Bar ── */
+.action-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding: 12px 20px 28px;
+  background: linear-gradient(to top, var(--bg) 65%, transparent);
+  display: flex; justify-content: center; align-items: flex-end; gap: 14px;
+  z-index: 100;
+  transition: opacity 0.4s ease;
+}
+
+.action-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  cursor: pointer; border: none; background: none;
+  transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.action-btn-inner {
+  width: 54px; height: 54px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid; transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.action-btn svg { width: 22px; height: 22px; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.action-btn-label { font-size: 11px; font-weight: 500; font-family: 'DM Sans', sans-serif; color: var(--text-tertiary); }
+
+.action-btn:active .action-btn-inner { transform: scale(0.88); }
+.action-btn:hover .action-btn-inner { transform: scale(1.1); }
+
+.btn-skip .action-btn-inner { border-color: var(--red-border); background: var(--red-subtle); }
+.btn-skip svg { stroke: var(--red); }
+.btn-skip .action-btn-label { color: var(--red); }
+.btn-skip:hover .action-btn-inner { background: rgba(239,68,68,0.18); border-color: var(--red); box-shadow: 0 4px 20px rgba(239,68,68,0.25); }
+
+.btn-shortlist .action-btn-inner { border-color: var(--green-border); background: var(--green-subtle); }
+.btn-shortlist svg { stroke: var(--green); }
+.btn-shortlist .action-btn-label { color: var(--green); }
+.btn-shortlist:hover .action-btn-inner { background: rgba(34,197,94,0.20); border-color: var(--green); box-shadow: 0 4px 20px rgba(34,197,94,0.25); }
+
+.btn-now .action-btn-inner {
+  width: 64px; height: 64px;
+  border-color: var(--yellow-border); background: var(--yellow-subtle);
+}
+.btn-now svg { stroke: var(--yellow); width: 24px; height: 24px; }
+.btn-now .action-btn-label { color: var(--yellow); }
+.btn-now:hover .action-btn-inner { background: rgba(245,158,11,0.20); border-color: var(--yellow); box-shadow: 0 4px 20px rgba(245,158,11,0.30); }
+
+/* ── Skip Modal ── */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 500; opacity: 0; pointer-events: none;
+  transition: opacity 200ms ease;
+  backdrop-filter: blur(4px);
+}
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 20px 20px 36px; width: 100%; max-width: 480px;
+  transform: translateY(100%); transition: transform 300ms cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+.modal-backdrop.open .modal { transform: translateY(0); }
+.modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 100px; margin: 0 auto 18px; }
+.modal-title { font-size: 17px; font-weight: 600; margin-bottom: 14px; letter-spacing: -0.02em; }
+.modal-options { display: flex; flex-direction: column; gap: 8px; }
+.modal-option {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: var(--radius-md);
+  border: 1.5px solid var(--border); background: var(--surface-2);
+  cursor: pointer; font-size: 14px; color: var(--text-primary);
+  transition: all var(--transition); font-family: 'DM Sans', sans-serif;
+}
+.modal-option:hover { border-color: var(--accent-border); background: var(--accent-subtle); }
+.modal-option .emoji { font-size: 18px; flex-shrink: 0; }
+
+/* ── Done Screen ── */
+.done-screen {
+  position: fixed; inset: 56px 0 0 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+}
+.done-screen.visible { opacity: 1; pointer-events: all; animation: fadeUp 0.5s ease both; }
+.done-icon {
+  width: 72px; height: 72px; border-radius: 50%; background: var(--green-subtle);
+  border: 2px solid var(--green-border); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+}
+.done-icon svg { width: 30px; height: 30px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.done-title { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; text-align: center; }
+.done-sub { font-size: 14px; color: var(--text-secondary); text-align: center; margin-bottom: 28px; line-height: 1.6; font-weight: 300; }
+.done-stats { display: flex; gap: 12px; margin-bottom: 28px; width: 100%; max-width: 360px; }
+.done-stat {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 16px 12px; text-align: center;
+}
+.done-stat-num { font-size: 28px; font-weight: 700; letter-spacing: -0.04em; }
+.done-stat-label { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+.stat-shortlist .done-stat-num { color: var(--green); }
+.stat-now .done-stat-num { color: var(--yellow); }
+.stat-skip .done-stat-num { color: var(--text-secondary); }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 26px; border-radius: var(--radius-md);
+  background: var(--accent); color: #fff; font-size: 15px; font-weight: 500;
+  cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 4px 16px rgba(79,110,247,0.35);
+  transition: all var(--transition);
+}
+.btn-primary svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; }
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="trust-ai-screen7.html">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/></svg>
+    </div>
+    <span class="nav-logo-text">TRUST<span>-AI</span></span>
+  </a>
+  <div class="nav-right">
+    <button onclick="window.location.href='trust-ai-screen2.html'" style="background:transparent;border:1px solid var(--border);color:var(--text-secondary);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">← Zurück</button>
+    <div class="progress-dots">
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot active"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
+    <span class="nav-step">3 / 7</span>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="header-strip">
+    <div class="progress-label-main">Karte <strong id="card-counter">1</strong> von <strong id="card-total">26</strong></div>
+    <button class="undo-btn" id="undo-btn" onclick="undoLast()" disabled>
+      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Rückgängig
+    </button>
+  </div>
+  <div class="card-stack" id="card-stack"></div>
+</div>
+
+<!-- Action Bar -->
+<div class="action-bar" id="action-bar">
+  <button class="action-btn btn-skip" onclick="swipeCard('left')">
+    <div class="action-btn-inner">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <span class="action-btn-label">Überspringen</span>
+  </button>
+  <button class="action-btn btn-now" onclick="swipeCard('up')">
+    <div class="action-btn-inner">
+      <svg viewBox="0 0 24 24"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
+    </div>
+    <span class="action-btn-label">Sofort</span>
+  </button>
+  <button class="action-btn btn-shortlist" onclick="swipeCard('right')">
+    <div class="action-btn-inner">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <span class="action-btn-label">Shortlist</span>
+  </button>
+</div>
+
+<!-- Skip Reason Modal -->
+<div class="modal-backdrop" id="skip-modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Warum nicht?</div>
+    <div class="modal-options">
+      <div class="modal-option" onclick="confirmSkip('not_relevant')"><span class="emoji">🚫</span> Für unser Projekt nicht relevant</div>
+      <div class="modal-option" onclick="confirmSkip('too_much_effort')"><span class="emoji">⚙️</span> Zu aufwändig einzurichten</div>
+      <div class="modal-option" onclick="confirmSkip('no_tool')"><span class="emoji">🔧</span> Kein passendes Tool vorhanden</div>
+      <div class="modal-option" onclick="confirmSkip('already_manual')"><span class="emoji">✅</span> Bereits manuell gelöst, funktioniert gut</div>
+      <div class="modal-option" onclick="confirmSkip('data_privacy')"><span class="emoji">🔒</span> Datenschutz- oder Compliance-Bedenken</div>
+      <div class="modal-option" onclick="confirmSkip('no_reason')"><span class="emoji">💬</span> Kein spezifischer Grund</div>
+    </div>
+  </div>
+</div>
+
+<!-- Done Screen -->
+<div class="done-screen" id="done-screen">
+  <div class="done-icon">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div class="done-title">Discovery abgeschlossen!</div>
+  <div class="done-sub">Du hast alle Use Cases gesichtet.<br/>Hier ist deine Zusammenfassung:</div>
+  <div class="done-stats">
+    <div class="done-stat stat-now">
+      <div class="done-stat-num" id="stat-now">0</div>
+      <div class="done-stat-label">⚡ Sofort</div>
+    </div>
+    <div class="done-stat stat-shortlist">
+      <div class="done-stat-num" id="stat-shortlist">0</div>
+      <div class="done-stat-label">✓ Shortlist</div>
+    </div>
+    <div class="done-stat stat-skip">
+      <div class="done-stat-num" id="stat-skip">0</div>
+      <div class="done-stat-label">– Übersprungen</div>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="goToShortlist()">
+    Zur Priorisierung
+    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>
+</div>
+
+<script>
+const USE_CASES = [
+  { id:"UC-01", title:"Erstellung von Projektstatusberichten", category:"Kommunikation & Reporting", card_description:"KI aggregiert Projektdaten und erstellt automatisch strukturierte Statusberichte – formatiert und versandfertig.", typical_tools:["ChatGPT","Copilot","Notion AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"2–4 Stunden pro Woche manuell.", classification:"significant" } },
+  { id:"UC-02", title:"Zusammenfassung von Meetings", category:"Dokumentation & Wissen", card_description:"KI transkribiert und fasst Meetinginhalte, Entscheidungen und Action Items automatisch zusammen.", typical_tools:["MS Teams Premium","Otter.ai","Fireflies"], ethical_flag:true, ethical_note:"Aufzeichnung von Personen – Einwilligung erforderlich.", rejection_consequence:{ effort_impact:"30–60 Min. Protokollaufwand pro Meeting.", classification:"significant" } },
+  { id:"UC-03", title:"Erstellung von Präsentationen", category:"Kommunikation & Reporting", card_description:"KI erstellt Gliederung, Texte und Vorschläge für Folien auf Basis von Briefings oder Dokumenten.", typical_tools:["ChatGPT","Copilot","Gamma.app"], ethical_flag:false, rejection_consequence:{ effort_impact:"3–6 Stunden pro Präsentation.", classification:"nice_to_have" } },
+  { id:"UC-04", title:"Erstellung von Projektdokumentation", category:"Dokumentation & Wissen", card_description:"KI erstellt, strukturiert und pflegt Projektdokumente wie Konzepte, Spezifikationen und Handbücher.", typical_tools:["ChatGPT","Copilot","Confluence AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"Dokumentation ist einer der zeitintensivsten PM-Bereiche.", classification:"significant" } },
+  { id:"UC-05", title:"Formulierung von Stakeholder-Kommunikation", category:"Kommunikation & Reporting", card_description:"KI formuliert E-Mails, Updates und Nachrichten an Stakeholder – zielgruppengerecht und situationsangemessen.", typical_tools:["ChatGPT","Copilot","Grammarly"], ethical_flag:false, rejection_consequence:{ effort_impact:"Gering – eher Komfort als Kernprozess.", classification:"nice_to_have" } },
+  { id:"UC-06", title:"Live-Zusammenfassung während Meetings", category:"Meeting-Unterstützung", card_description:"KI fasst laufende Diskussionen in Echtzeit zusammen und zeigt den aktuellen Stand für alle sichtbar an.", typical_tools:["MS Teams Premium","Otter.ai Live"], ethical_flag:true, ethical_note:"Echtzeit-Aufzeichnung aller Personen – erhöhte Anforderungen.", rejection_consequence:{ effort_impact:"Kein wesentlicher Mehraufwand bei Ablehnung.", classification:"nice_to_have" } },
+  { id:"UC-07", title:"Vorschläge für nächste Fragen im Meeting", category:"Meeting-Unterstützung", card_description:"KI analysiert die laufende Diskussion und schlägt dem Moderator relevante Folgefragen vor.", typical_tools:["GPT-basierte Meeting-Tools"], ethical_flag:false, rejection_consequence:{ effort_impact:"Keine – rein additiver Nutzen.", classification:"nice_to_have" } },
+  { id:"UC-08", title:"Hinweise auf offene Punkte oder Unklarheiten", category:"Meeting-Unterstützung", card_description:"KI erkennt während des Meetings ungelöste Fragen und Widersprüche und gibt dem Moderator diskret einen Hinweis.", typical_tools:["GPT-basierte Meeting-Tools"], ethical_flag:false, rejection_consequence:{ effort_impact:"Offene Punkte werden erst in der Nachbereitung aufgedeckt.", classification:"valuable" } },
+  { id:"UC-09", title:"Coaching des Moderators während Meetings", category:"Meeting-Unterstützung", card_description:"KI gibt dem Moderator diskrete Echtzeit-Hinweise zu Meetingführung, Zeit, Beteiligung und Dynamik.", typical_tools:["Speziallösungen"], ethical_flag:true, ethical_note:"Analyse von Redeverhalten – potenziell sensibel für Leistungsbewertung.", rejection_consequence:{ effort_impact:"Keine.", classification:"nice_to_have" } },
+  { id:"UC-10", title:"Erstellung von Projektplänen", category:"Planung & Steuerung", card_description:"KI erstellt auf Basis der Projektbeschreibung einen strukturierten Entwurf mit Phasen, Meilensteinen und Aufgaben.", typical_tools:["ChatGPT","Copilot","Asana AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"KI beschleunigt den ersten Planungsentwurf erheblich.", classification:"valuable" } },
+  { id:"UC-11", title:"Schätzung von Aufwänden", category:"Planung & Steuerung", card_description:"KI unterstützt bei der Aufwandsschätzung durch Analyse ähnlicher Projekte, Erfahrungswerte und Komplexitätsbewertung.", typical_tools:["ChatGPT","Speziallösungen"], ethical_flag:false, rejection_consequence:{ effort_impact:"Fehlschätzungen sind ein häufiger Projektrisikofaktor.", classification:"valuable" } },
+  { id:"UC-12", title:"Optimierung von Zeitplänen", category:"Planung & Steuerung", card_description:"KI analysiert Abhängigkeiten, Ressourcen und Constraints und schlägt optimierte Zeitpläne vor.", typical_tools:["Microsoft Project","Monday.ai"], ethical_flag:false, rejection_consequence:{ effort_impact:"Manuelle Neuplanung ist zeitaufwändig.", classification:"valuable" } },
+  { id:"UC-13", title:"Simulation von Projektszenarien", category:"Planung & Steuerung", card_description:"KI simuliert 'Was wäre wenn'-Szenarien und zeigt Auswirkungen auf Zeit, Kosten und Qualität.", typical_tools:["ChatGPT mit Projektdaten"], ethical_flag:false, rejection_consequence:{ effort_impact:"Ohne Simulation werden Risiken oft zu spät erkannt.", classification:"significant" } },
+  { id:"UC-14", title:"Unterstützung bei Stage-Gate-Bewertungen", category:"Planung & Steuerung", card_description:"KI bereitet Stage-Gate-Entscheidungen vor, fasst den Projektstatus zusammen und bewertet Kriterien.", typical_tools:["ChatGPT","Copilot"], ethical_flag:true, ethical_note:"Direkte Folgen für Teams – Verantwortungsdiffusion durch KI ist ein ethisches Risiko.", rejection_consequence:{ effort_impact:"Gate-Review-Vorbereitung ist zeitaufwändig.", classification:"valuable" } },
+  { id:"UC-15", title:"Bewertung von Risiken", category:"Risiko & Entscheidung", card_description:"KI identifiziert und bewertet Projektrisiken auf Basis von Projektdaten, Erfahrungswerten und Mustererkennung.", typical_tools:["ChatGPT","Speziallösungen Risikomanagement"], ethical_flag:false, rejection_consequence:{ effort_impact:"Ohne Systematik werden Risiken übersehen.", classification:"significant" } },
+  { id:"UC-16", title:"Erstellung von Entscheidungsvorlagen", category:"Risiko & Entscheidung", card_description:"KI strukturiert Entscheidungsbedarfe, fasst Optionen zusammen und bereitet Empfehlungen auf.", typical_tools:["ChatGPT","Copilot"], ethical_flag:true, ethical_note:"Wenn KI eine Empfehlung gibt, sinkt die kritische Auseinandersetzung mit Alternativen.", rejection_consequence:{ effort_impact:"Erfahrene PMs erstellen gute Vorlagen auch manuell.", classification:"valuable" } },
+  { id:"UC-17", title:"Analyse von Projektperformance", category:"Risiko & Entscheidung", card_description:"KI analysiert KPIs, Trends und Muster in Projektdaten und gibt Hinweise auf Abweichungen und Verbesserungspotenziale.", typical_tools:["Power BI mit KI","Tableau AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"Muster werden ohne KI oft zu spät erkannt.", classification:"significant" } },
+  { id:"UC-18", title:"Erstellung von Testfällen", category:"Qualität & Testing", card_description:"KI generiert auf Basis von Anforderungen oder User Stories strukturierte Testfälle und Testszenarien.", typical_tools:["GitHub Copilot","ChatGPT"], ethical_flag:false, rejection_consequence:{ effort_impact:"Testfallentwicklung ist sehr zeitaufwändig.", classification:"significant" } },
+  { id:"UC-20", title:"Identifikation von Qualitätsproblemen", category:"Qualität & Testing", card_description:"KI erkennt Qualitätsmuster, analysiert Testergebnisse und warnt vor systemischen Problemen in Entwicklung und Testing.", typical_tools:["PM-Tools mit Analytics"], ethical_flag:false, rejection_consequence:{ effort_impact:"Frühe Erkennung verhindert späte Eskalationen.", classification:"significant" } },
+  { id:"UC-21", title:"Beantwortung von Projektfragen", category:"Dokumentation & Wissen", card_description:"KI beantwortet Fragen von Projektmitgliedern auf Basis der Projektdokumentation sofort und entlastet den PM.", typical_tools:["ChatGPT","Copilot für SharePoint"], ethical_flag:false, rejection_consequence:{ effort_impact:"Fragen an den PM binden erheblich Kapazität.", classification:"significant" } },
+  { id:"UC-22", title:"Durchsuchung von Projektdokumentation", category:"Dokumentation & Wissen", card_description:"KI durchsucht die Projektdokumentation semantisch und findet relevante Inhalte auch ohne exakte Stichwörter.", typical_tools:["Copilot für SharePoint","Confluence AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"Suche in großen Dokumentenbeständen ist mühsam.", classification:"valuable" } },
+  { id:"UC-24", title:"Onboarding neuer Projektmitglieder", category:"Dokumentation & Wissen", card_description:"KI führt neue Teammitglieder durch den Projektkontext, beantwortet Fragen und erklärt Entscheidungshistorie.", typical_tools:["ChatGPT mit Projektdaten","Copilot"], ethical_flag:false, rejection_consequence:{ effort_impact:"Onboarding ohne KI bindet erfahrene Teammitglieder stark.", classification:"significant" } },
+  { id:"UC-25", title:"Unterstützung im Vendor- und Vertragsmanagement", category:"Risiko & Entscheidung", card_description:"KI analysiert und fasst Verträge zusammen, identifiziert Risiken und unterstützt bei der Lieferantenbewertung.", typical_tools:["ChatGPT","Speziallösungen Legal Tech"], ethical_flag:false, rejection_consequence:{ effort_impact:"Kritische Klauseln werden manuell eher übersehen.", classification:"valuable" } },
+  { id:"UC-26", title:"Budgetüberwachung und Kostenprognose", category:"Planung & Steuerung", card_description:"KI überwacht den Budgetverbrauch, erkennt Abweichungen frühzeitig und erstellt Kostenprognosen.", typical_tools:["SAP mit KI","Power BI AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"Späte Erkennung von Budgetabweichungen ist ein häufiger Risikofaktor.", classification:"significant" } },
+];
+
+// ── State ──
+let currentIndex = 0;
+let history = [];
+let swipeResults = [];
+let isDragging = false;
+let startX = 0, startY = 0;
+let currentX = 0, currentY = 0;
+let pendingSkipIndex = null;
+let isAnimating = false;
+
+const classLabels = { significant: 'Hohe Relevanz', valuable: 'Wertvoll', nice_to_have: 'Nice to have' };
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('card-total').textContent = USE_CASES.length;
+  renderCards();
+  initDrag();
+});
+
+function renderCards() {
+  const stack = document.getElementById('card-stack');
+  stack.innerHTML = '';
+  for (let i = Math.min(currentIndex + 2, USE_CASES.length - 1); i >= currentIndex; i--) {
+    if (i >= USE_CASES.length) continue;
+    const card = createCardEl(USE_CASES[i]);
+    if (i === currentIndex) card.classList.add('active');
+    else if (i === currentIndex + 1) card.classList.add('behind-1');
+    else card.classList.add('behind-2');
+    stack.appendChild(card);
+  }
+  updateCounter();
+}
+
+function createCardEl(uc) {
+  const classColor = { significant:'classification-significant', valuable:'classification-valuable', nice_to_have:'classification-nice_to_have' };
+  const div = document.createElement('div');
+  div.className = 'swipe-card';
+  div.dataset.id = uc.id;
+  div.innerHTML = `
+    <div class="swipe-overlay overlay-right"><span class="swipe-badge badge-right">Shortlist ✓</span></div>
+    <div class="swipe-overlay overlay-left"><span class="swipe-badge badge-left">Überspringen ✕</span></div>
+    <div class="swipe-overlay overlay-up"><span class="swipe-badge badge-up">⚡ Sofort</span></div>
+    <div class="card-id">${uc.id}</div>
+    <div class="card-category">${uc.category}</div>
+    <div class="card-title">${uc.title}</div>
+    <div class="card-description">${uc.card_description}</div>
+    <div class="card-divider"></div>
+    <div class="card-tools">${uc.typical_tools.map(t=>`<span class="tool-chip">${t}</span>`).join('')}</div>
+    ${uc.ethical_flag ? `<div class="ethics-flag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>${uc.ethical_note}</span></div>` : ''}
+    <div class="rejection-hint">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span>Ohne KI: ${uc.rejection_consequence.effort_impact} &nbsp;<span class="${classColor[uc.rejection_consequence.classification]}">${classLabels[uc.rejection_consequence.classification]}</span></span>
+    </div>
+  `;
+  return div;
+}
+
+function updateCounter() {
+  document.getElementById('card-counter').textContent = currentIndex + 1;
+  document.getElementById('undo-btn').disabled = history.length === 0;
+}
+
+// ── Drag ──
+function initDrag() {
+  const stack = document.getElementById('card-stack');
+  stack.addEventListener('mousedown', onDragStart);
+  stack.addEventListener('touchstart', onDragStart, { passive: true });
+  document.addEventListener('mousemove', onDragMove);
+  document.addEventListener('touchmove', onDragMove, { passive: false });
+  document.addEventListener('mouseup', onDragEnd);
+  document.addEventListener('touchend', onDragEnd);
+}
+
+function getActiveCard() { return document.querySelector('.swipe-card.active'); }
+
+function onDragStart(e) {
+  if (isAnimating) return;
+  const card = getActiveCard(); if (!card) return;
+  isDragging = true;
+  const pt = e.touches ? e.touches[0] : e;
+  startX = pt.clientX; startY = pt.clientY;
+  currentX = 0; currentY = 0;
+}
+
+function onDragMove(e) {
+  if (!isDragging) return;
+  if (e.cancelable) e.preventDefault();
+  const pt = e.touches ? e.touches[0] : e;
+  currentX = pt.clientX - startX;
+  currentY = pt.clientY - startY;
+  const card = getActiveCard(); if (!card) return;
+  card.style.transform = `translate(${currentX}px,${currentY}px) rotate(${currentX*0.06}deg)`;
+  card.style.transition = 'none';
+  const THRESH = 60;
+  const oR = card.querySelector('.overlay-right');
+  const oL = card.querySelector('.overlay-left');
+  const oU = card.querySelector('.overlay-up');
+  if (currentY < -THRESH && Math.abs(currentX) < Math.abs(currentY)) {
+    oU.style.opacity = Math.min(1, Math.abs(currentY)/150); oR.style.opacity=0; oL.style.opacity=0;
+  } else if (currentX > THRESH) {
+    oR.style.opacity = Math.min(1, currentX/150); oL.style.opacity=0; oU.style.opacity=0;
+  } else if (currentX < -THRESH) {
+    oL.style.opacity = Math.min(1, Math.abs(currentX)/150); oR.style.opacity=0; oU.style.opacity=0;
+  } else {
+    oR.style.opacity=0; oL.style.opacity=0; oU.style.opacity=0;
+  }
+}
+
+function onDragEnd() {
+  if (!isDragging) return;
+  isDragging = false;
+  const card = getActiveCard(); if (!card) return;
+  if (currentY < -80 && Math.abs(currentX) < Math.abs(currentY)) swipeCard('up');
+  else if (currentX > 90) swipeCard('right');
+  else if (currentX < -90) swipeCard('left');
+  else {
+    card.style.transition = 'transform 350ms cubic-bezier(0.34,1.56,0.64,1)';
+    card.style.transform = 'translate(0,0) rotate(0deg)';
+    card.querySelectorAll('.swipe-overlay').forEach(o=>o.style.opacity=0);
+    setTimeout(()=>{card.style.transition='';},360);
+  }
+  currentX=0; currentY=0;
+}
+
+function swipeCard(direction) {
+  if (isAnimating || currentIndex >= USE_CASES.length) return;
+  if (direction === 'left') { pendingSkipIndex = currentIndex; openSkipModal(); return; }
+  isAnimating = true;
+  const card = getActiveCard();
+  const uc = USE_CASES[currentIndex];
+  history.push({ index: currentIndex, resultLen: swipeResults.length });
+  swipeResults.push({ use_case_id: uc.id, decision: direction === 'right' ? 'right' : 'up', swiped_at: new Date().toISOString() });
+  animateOut(card, direction, advance);
+}
+
+function confirmSkip(reason) {
+  closeSkipModal();
+  if (pendingSkipIndex === null) return;
+  isAnimating = true;
+  const card = getActiveCard();
+  const uc = USE_CASES[pendingSkipIndex];
+  history.push({ index: pendingSkipIndex, resultLen: swipeResults.length });
+  swipeResults.push({ use_case_id: uc.id, decision: 'left', skip_reason: reason, swiped_at: new Date().toISOString() });
+  pendingSkipIndex = null;
+  animateOut(card, 'left', advance);
+}
+
+function advance() {
+  currentIndex++;
+  isAnimating = false;
+  if (currentIndex >= USE_CASES.length) showDone();
+  else renderCards();
+}
+
+function animateOut(card, dir, cb) {
+  card.style.transition = 'transform 340ms cubic-bezier(0.4,0,0.2,1), opacity 340ms ease';
+  if (dir==='right') card.style.transform='translateX(130%) rotate(22deg)';
+  else if (dir==='left') card.style.transform='translateX(-130%) rotate(-22deg)';
+  else { card.style.transform='translateY(-110%) scale(0.85)'; card.style.opacity='0'; }
+  setTimeout(cb, 350);
+}
+
+function undoLast() {
+  if (history.length === 0 || isAnimating) return;
+  const last = history.pop();
+  swipeResults.splice(last.resultLen);
+  currentIndex = last.index;
+  renderCards();
+  const card = getActiveCard();
+  if (card) { card.style.animation='none'; card.offsetHeight; card.style.animation='fadeUp 0.35s ease both'; }
+}
+
+function openSkipModal() { document.getElementById('skip-modal').classList.add('open'); }
+function closeSkipModal() { document.getElementById('skip-modal').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target===document.getElementById('skip-modal')) closeSkipModal(); }
+
+function showDone() {
+  const ab = document.getElementById('action-bar');
+  ab.style.opacity='0'; ab.style.pointerEvents='none';
+  const counts = {up:0,right:0,left:0};
+  swipeResults.forEach(r=>counts[r.decision]=(counts[r.decision]||0)+1);
+  document.getElementById('stat-now').textContent = counts.up||0;
+  document.getElementById('stat-shortlist').textContent = counts.right||0;
+  document.getElementById('stat-skip').textContent = counts.left||0;
+  document.getElementById('done-screen').classList.add('visible');
+  try {
+    const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    proj.swipe_results = swipeResults;
+    proj.status = 'shortlist';
+    localStorage.setItem('trust_ai_project', JSON.stringify(proj));
+  } catch(e){}
+}
+
+function goToShortlist() {
+  // Save to single project slot too
+  try {
+    const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    proj.swipe_results = swipeResults;
+    proj.status = 'shortlist';
+    localStorage.setItem('trust_ai_project', JSON.stringify(proj));
+  } catch(e){}
+  window.location.href = 'trust-ai-screen4.html';
+}
+</script>
+</body>
+</html>

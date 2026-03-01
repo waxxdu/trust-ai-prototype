@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRUST-AI – Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0f1117; --surface:#1a1d27; --surface2:#22263a; --surface3:#2a2f45;
+    --border:#2e3350; --border2:#3d4468;
+    --text:#e8eaf6; --text2:#9ba3c7; --text3:#5c6490;
+    --accent:#6366f1; --accent2:#818cf8; --accent3:#4f46e5;
+    --green:#22c55e; --green-bg:rgba(34,197,94,.1); --green-border:rgba(34,197,94,.25);
+    --yellow:#eab308; --yellow-bg:rgba(234,179,8,.1); --yellow-border:rgba(234,179,8,.25);
+    --red:#ef4444; --red-bg:rgba(239,68,68,.1); --red-border:rgba(239,68,68,.25);
+    --orange:#f97316;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+
+  /* TOPBAR */
+  .topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .logo{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent2);letter-spacing:.05em;}
+  .btn{padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+  .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--border2);color:var(--text);}
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:var(--accent3);}
+
+  /* HERO */
+  .hero{padding:48px 32px 36px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#1a1d27,#1e2235 50%,#1a1d27);}
+  .hero-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent2);margin-bottom:10px;}
+  .hero-title{font-size:28px;font-weight:700;margin-bottom:6px;}
+  .hero-sub{font-size:14px;color:var(--text2);}
+
+  /* CONTENT */
+  .content{max-width:960px;margin:0 auto;padding:36px 32px 80px;}
+  @media(max-width:600px){.content{padding:24px 16px;}.hero{padding:28px 16px;}.topbar{padding:14px 16px;}}
+
+  /* SECTION */
+  .section{margin-bottom:40px;}
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .section-title{font-size:15px;font-weight:700;}
+
+  /* PROJECT CARDS */
+  .projects-grid{display:flex;flex-direction:column;gap:14px;}
+  .proj-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+  .proj-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3);}
+  .proj-card.active{border-color:var(--accent);background:linear-gradient(135deg,var(--surface),#1e2240);}
+  .proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent3),var(--accent2));opacity:0;transition:opacity .2s;}
+  .proj-card:hover::before,.proj-card.active::before{opacity:1;}
+  .proj-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;}
+  .proj-icon{width:42px;height:42px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .proj-info{flex:1;}
+  .proj-name{font-size:16px;font-weight:700;margin-bottom:3px;}
+  .proj-desc{font-size:13px;color:var(--text2);}
+  .proj-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .tag{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;}
+  .tag-status-setup{background:rgba(99,102,241,.15);color:var(--accent2);}
+  .tag-status-discovery{background:rgba(249,115,22,.15);color:var(--orange);}
+  .tag-status-assessment{background:rgba(234,179,8,.15);color:var(--yellow);}
+  .tag-status-manifest{background:rgba(34,197,94,.15);color:var(--green);}
+  .tag-status-complete{background:rgba(34,197,94,.2);color:var(--green);}
+  .proj-stats{display:flex;gap:10px;flex-wrap:wrap;}
+  .proj-stat{display:flex;align-items:center;gap:6px;font-size:12px;}
+  .proj-stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .proj-stat-dot.green{background:var(--green);}
+  .proj-stat-dot.yellow{background:var(--yellow);}
+  .proj-stat-dot.red{background:var(--red);}
+  .proj-stat-dot.grey{background:var(--text3);}
+  .proj-actions{display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+  .btn-sm{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+  .btn-sm-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+  .btn-sm-ghost:hover{border-color:var(--border2);color:var(--text);}
+  .btn-sm-primary{background:var(--accent);color:#fff;}
+  .btn-sm-primary:hover{background:var(--accent3);}
+
+  /* PROGRESS BAR */
+  .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+  .progress-label{font-size:12px;color:var(--text3);width:100px;flex-shrink:0;}
+  .progress-bar{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+  .progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent3),var(--accent2));transition:width .5s;}
+
+  /* REMINDER BADGE */
+  .reminder-badge{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+  .reminder-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+  .reminder-text{font-size:13px;color:var(--text2);flex:1;}
+  .reminder-text strong{color:var(--text);}
+
+  /* EMPTY STATE */
+  .empty{text-align:center;padding:60px 20px;}
+  .empty-icon{font-size:48px;margin-bottom:16px;}
+  .empty-title{font-size:18px;font-weight:700;margin-bottom:8px;}
+  .empty-sub{font-size:14px;color:var(--text2);margin-bottom:24px;}
+
+  /* QUICK STATS */
+  .stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:32px;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;}
+  .stat-card-num{font-size:28px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent2);line-height:1;margin-bottom:4px;}
+  .stat-card-label{font-size:12px;color:var(--text3);}
+
+  /* ANIMATIONS */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  .fade-up{animation:fadeUp .35s ease forwards;}
+  .fade-up-d1{animation-delay:.05s;opacity:0;}
+  .fade-up-d2{animation-delay:.1s;opacity:0;}
+
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">TRUST-AI</div>
+  <button class="btn btn-primary" onclick="newProject()">+ Neues Projekt</button>
+</div>
+
+<!-- HERO -->
+<div class="hero fade-up">
+  <div class="hero-label">Dashboard</div>
+  <div class="hero-title">Meine KI-Manifeste</div>
+  <div class="hero-sub">Überblick über alle bewerteten Projekte und deren Manifest-Status.</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- GLOBAL STATS -->
+  <div class="stats-row fade-up fade-up-d1" id="globalStats"></div>
+
+  <!-- REMINDERS -->
+  <div id="reminders"></div>
+
+  <!-- PROJECTS -->
+  <div class="section fade-up fade-up-d2">
+    <div class="section-header">
+      <div class="section-title">Projekte</div>
+      <span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;" id="projCount"></span>
+    </div>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </div>
+
+</div>
+
+<script>
+// ────────────────────────────────────────────────
+// DATA
+// ────────────────────────────────────────────────
+
+const STATUS_LABELS = {
+  setup:'Projekt anlegen',
+  discovery:'Use Cases entdecken',
+  assessment:'Bewertung',
+  manifest:'Manifest fertig',
+  complete:'Abgeschlossen'
+};
+const STATUS_PROGRESS = { setup:10, discovery:35, assessment:65, manifest:90, complete:100 };
+const STATUS_ICONS = { setup:'🚀', discovery:'🃏', assessment:'📋', manifest:'📄', complete:'✅' };
+
+// Load all projects – in this MVP there's typically one project in localStorage.
+// We simulate a multi-project dashboard by storing projects[] separately.
+function loadProjects() {
+  // Try multi-project store first
+  let projects = [];
+  try { projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]'); } catch(e) {}
+
+  // Also include current single project if exists
+  try {
+    const p = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    if (p.name && !projects.find(x => x.id === p.id)) {
+      p.id = p.id || 'current';
+      projects.unshift(p);
+    }
+  } catch(e) {}
+
+  // Demo data if nothing found
+  if (!projects.length) {
+    projects = [
+      {
+        id:'demo1', name:'Digitalisierung PM-Prozesse', description:'KI-Unterstützung für alle PM-Kernaufgaben',
+        pm_email:'pm@example.de', status:'manifest',
+        created_at: new Date(Date.now()-14*86400000).toISOString(),
+        assessments_map:{
+          "UC-02":{ result:"green" }, "UC-01":{ result:"green" },
+          "UC-15":{ result:"yellow" }, "UC-10":{ result:"green" }, "UC-04":{ result:"yellow" }
+        },
+        shortlist:[{use_case_id:"UC-02"},{use_case_id:"UC-01"},{use_case_id:"UC-15"},{use_case_id:"UC-10"},{use_case_id:"UC-04"}]
+      },
+      {
+        id:'demo2', name:'Produktentwicklung 2025', description:'KI für Testing und Qualitätssicherung',
+        pm_email:'pm2@example.de', status:'assessment',
+        created_at: new Date(Date.now()-5*86400000).toISOString(),
+        assessments_map:{ "UC-18":{ result:"green" } },
+        shortlist:[{use_case_id:"UC-18"},{use_case_id:"UC-20"},{use_case_id:"UC-15"}]
+      },
+      {
+        id:'demo3', name:'Agile Transformation Q3', description:'',
+        pm_email:'pm3@example.de', status:'discovery',
+        created_at: new Date(Date.now()-2*86400000).toISOString(),
+        assessments_map:{}, shortlist:[]
+      }
+    ];
+  }
+  return projects;
+}
+
+function getCounts(proj) {
+  const a = proj.assessments_map || {};
+  const c = { green:0, yellow:0, red:0, deferred:0, total:(proj.shortlist||[]).length };
+  Object.values(a).forEach(x => { if(c[x.result]!==undefined) c[x.result]++; });
+  return c;
+}
+
+function getReminders(proj) {
+  const msgs = [];
+  const daysSince = d => Math.floor((Date.now() - new Date(d||Date.now()).getTime()) / 86400000);
+  const ds = daysSince(proj.created_at);
+  const sl = (proj.shortlist||[]).length;
+  const assessed = Object.keys(proj.assessments_map||{}).length;
+
+  if (proj.status === 'setup' && ds >= 3)
+    msgs.push('Du hast dieses Projekt angelegt – wann möchtest du mit der Bewertung loslegen?');
+  if (proj.status === 'discovery' && ds >= 2)
+    msgs.push(`Du bist noch mittendrin – wähle deine Use Cases aus und starte die Bewertung.`);
+  if (proj.status === 'assessment' && sl > assessed && ds >= 2)
+    msgs.push(`Noch ${sl - assessed} Use Case${sl-assessed>1?'s':''} fehlen zur Fertigstellung deines Manifests.`);
+  if (proj.status === 'manifest' && ds >= 1)
+    msgs.push('Dein Manifest ist fertig – jetzt als PDF exportieren und teilen.');
+  return msgs;
+}
+
+// ────────────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────────────
+
+function render() {
+  const projects = loadProjects();
+  document.getElementById('projCount').textContent = `${projects.length} Projekt${projects.length!==1?'e':''}`;
+
+  // Global stats
+  let totalGreen=0, totalYellow=0, totalRed=0, totalUC=0;
+  projects.forEach(p => {
+    const c = getCounts(p);
+    totalGreen+=c.green; totalYellow+=c.yellow; totalRed+=c.red; totalUC+=c.total;
+  });
+  document.getElementById('globalStats').innerHTML = [
+    { num:projects.length, lbl:'Projekte' },
+    { num:totalUC, lbl:'Bewertete Use Cases' },
+    { num:totalGreen, lbl:'Freigegeben' },
+    { num:totalYellow, lbl:'Mit Auflagen' },
+  ].map(s => `<div class="stat-card"><div class="stat-card-num">${s.num}</div><div class="stat-card-label">${s.lbl}</div></div>`).join('');
+
+  // Reminders
+  const allReminders = [];
+  projects.forEach(p => {
+    getReminders(p).forEach(msg => allReminders.push({ name:p.name, msg }));
+  });
+  document.getElementById('reminders').innerHTML = allReminders.length
+    ? `<div style="margin-bottom:24px;">${allReminders.map(r=>`
+        <div class="reminder-badge">
+          <div class="reminder-icon">🔔</div>
+          <div class="reminder-text"><strong>${r.name}</strong> — ${r.msg}</div>
+        </div>`).join('')}</div>`
+    : '';
+
+  // Project cards
+  if (!projects.length) {
+    document.getElementById('projectsGrid').innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🚀</div>
+        <div class="empty-title">Noch kein Projekt</div>
+        <div class="empty-sub">Starte dein erstes KI-Manifest und bringe Klarheit in euren KI-Einsatz.</div>
+        <button class="btn btn-primary" onclick="newProject()">Erstes Projekt anlegen</button>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('projectsGrid').innerHTML = projects.map((p,i) => {
+    const c = getCounts(p);
+    const progress = STATUS_PROGRESS[p.status] || 10;
+    const isActive = p.status === 'manifest' || p.status === 'assessment';
+    const created = new Date(p.created_at||Date.now()).toLocaleDateString('de-DE',{day:'2-digit',month:'short',year:'numeric'});
+    const reminders = getReminders(p);
+
+    const statsHtml = [
+      c.green&&`<div class="proj-stat"><div class="proj-stat-dot green"></div><span>${c.green} Freigegeben</span></div>`,
+      c.yellow&&`<div class="proj-stat"><div class="proj-stat-dot yellow"></div><span>${c.yellow} Mit Auflagen</span></div>`,
+      c.red&&`<div class="proj-stat"><div class="proj-stat-dot red"></div><span>${c.red} Abgelehnt</span></div>`,
+      c.total>0&&`<div class="proj-stat"><div class="proj-stat-dot grey"></div><span>${c.total} Use Cases gesamt</span></div>`
+    ].filter(Boolean).join('');
+
+    const nextScreen = { setup:'trust-ai-screen1.html', discovery:'trust-ai-screen3.html', assessment:'trust-ai-screen5.html', manifest:'trust-ai-screen6.html', complete:'trust-ai-screen6.html' }[p.status] || 'trust-ai-screen1.html';
+    const nextLabel = { setup:'Weiter →', discovery:'Use Cases wählen →', assessment:'Bewertung fortsetzen →', manifest:'Manifest anzeigen →', complete:'Manifest anzeigen →' }[p.status] || 'Öffnen →';
+
+    return `<div class="proj-card ${isActive?'active':''}" onclick="openProject('${p.id}','${nextScreen}')">
+      <div class="proj-top">
+        <div class="proj-icon">${STATUS_ICONS[p.status]||'📁'}</div>
+        <div class="proj-info">
+          <div class="proj-name">${p.name}</div>
+          ${p.description?`<div class="proj-desc">${p.description}</div>`:''}
+        </div>
+      </div>
+      <div class="proj-meta">
+        <span class="tag tag-status-${p.status}">${STATUS_LABELS[p.status]||p.status}</span>
+        ${p.pm_email?`<span class="tag" style="background:var(--surface2);color:var(--text2);">📧 ${p.pm_email}</span>`:''}
+        <span class="tag" style="background:var(--surface2);color:var(--text3);">📅 ${created}</span>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label" style="font-size:11px;color:var(--text3);">${progress}% abgeschlossen</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;"></div></div>
+      </div>
+      ${statsHtml?`<div class="proj-stats" style="margin-top:10px;">${statsHtml}</div>`:''}
+      ${reminders.length?`<div style="margin-top:12px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--orange);">🔔 ${reminders[0]}</div>`:''}
+      <div class="proj-actions">
+        <button class="btn-sm btn-sm-ghost" onclick="event.stopPropagation();openManifest('${p.id}')">📄 Manifest</button>
+        ${p.status!=='complete'?`<button class="btn-sm btn-sm-primary" onclick="event.stopPropagation();openProject('${p.id}','${nextScreen}')">${nextLabel}</button>`:''}
+        ${p.status==='complete'||p.status==='manifest'?`<button class="btn-sm btn-sm-ghost" onclick="event.stopPropagation();exportPDF_stub('${p.id}')">⬇ PDF</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ────────────────────────────────────────────────
+// ACTIONS
+// ────────────────────────────────────────────────
+
+function openProject(id, screen) {
+  // Load project into current slot if not already there
+  try {
+    const projects = JSON.parse(localStorage.getItem('trust_ai_projects')||'[]');
+    const p = projects.find(x=>x.id===id);
+    if (p) localStorage.setItem('trust_ai_project', JSON.stringify(p));
+  } catch(e){}
+  window.location.href = screen;
+}
+
+function openManifest(id) {
+  openProject(id, 'trust-ai-screen6.html');
+}
+
+function exportPDF_stub(id) {
+  openProject(id, 'trust-ai-screen6.html');
+  // Screen 6 handles actual PDF export
+}
+
+function newProject() {
+  // Clear current project, go to setup
+  localStorage.removeItem('trust_ai_project');
+  window.location.href = 'trust-ai-screen1.html';
+}
+
+render();
+</script>
+</body>
+</html>

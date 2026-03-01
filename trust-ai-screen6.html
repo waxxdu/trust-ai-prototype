@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRUST-AI – Manifest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --surface3: #2a2f45;
+    --border: #2e3350;
+    --border2: #3d4468;
+    --text: #e8eaf6;
+    --text2: #9ba3c7;
+    --text3: #5c6490;
+    --accent: #6366f1;
+    --accent2: #818cf8;
+    --accent3: #4f46e5;
+    --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.1);
+    --green-border: rgba(34,197,94,0.25);
+    --yellow: #eab308;
+    --yellow-bg: rgba(234,179,8,0.1);
+    --yellow-border: rgba(234,179,8,0.25);
+    --red: #ef4444;
+    --red-bg: rgba(239,68,68,0.1);
+    --red-border: rgba(239,68,68,0.25);
+    --orange: #f97316;
+    --orange-bg: rgba(249,115,22,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
+
+  /* TOPBAR */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .logo { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent2); letter-spacing: 0.05em; }
+  .topbar-actions { display: flex; gap: 10px; }
+  .btn { padding: 9px 20px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent3); }
+  .btn-green { background: var(--green); color: #000; }
+  .btn-green:hover { background: #16a34a; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #1a1d27 0%, #1e2235 50%, #1a1d27 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 32px 36px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; top:-60px; right:-60px;
+    width:300px; height:300px; border-radius:50%;
+    background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent2); margin-bottom: 12px; }
+  .hero-title { font-size: 30px; font-weight: 700; margin-bottom: 6px; }
+  .hero-sub { font-size: 14px; color: var(--text2); margin-bottom: 28px; }
+  .hero-stats { display: flex; gap: 16px; flex-wrap: wrap; }
+  .stat-pill {
+    padding: 10px 18px; border-radius: 50px; border: 1px solid; display: flex; align-items: center; gap: 10px;
+  }
+  .stat-pill.green { border-color: var(--green-border); background: var(--green-bg); }
+  .stat-pill.yellow { border-color: var(--yellow-border); background: var(--yellow-bg); }
+  .stat-pill.red { border-color: var(--red-border); background: var(--red-bg); }
+  .stat-pill.grey { border-color: var(--border); background: var(--surface); }
+  .stat-num { font-size: 22px; font-weight: 700; font-family: 'DM Mono', monospace; line-height: 1; }
+  .stat-pill.green .stat-num { color: var(--green); }
+  .stat-pill.yellow .stat-num { color: var(--yellow); }
+  .stat-pill.red .stat-num { color: var(--red); }
+  .stat-pill.grey .stat-num { color: var(--text2); }
+  .stat-label { font-size: 12px; color: var(--text2); }
+
+  /* CONTENT */
+  .content { max-width: 900px; margin: 0 auto; padding: 36px 32px 80px; }
+  @media (max-width: 600px) { .content { padding: 24px 16px; } .hero { padding: 32px 16px 28px; } .topbar { padding: 14px 16px; } }
+
+  /* SECTION */
+  .section { margin-bottom: 40px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .section-icon { font-size: 20px; }
+  .section-title { font-size: 16px; font-weight: 700; }
+  .section-count { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; margin-left: auto; }
+
+  /* UC CARDS */
+  .uc-grid { display: flex; flex-direction: column; gap: 12px; }
+  .uc-card {
+    border-radius: 14px; border: 1px solid; padding: 18px 20px;
+    transition: transform 0.15s;
+  }
+  .uc-card:hover { transform: translateY(-1px); }
+  .uc-card.green { border-color: var(--green-border); background: var(--green-bg); }
+  .uc-card.yellow { border-color: var(--yellow-border); background: var(--yellow-bg); }
+  .uc-card.red { border-color: var(--red-border); background: var(--red-bg); }
+  .uc-card.deferred { border-color: var(--border); background: var(--surface); }
+  .uc-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .uc-ampel { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .uc-card-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .uc-card-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+  .tag-cat { background: rgba(99,102,241,0.15); color: var(--accent2); }
+  .tag-hitl-1 { background: var(--green-bg); color: var(--green); }
+  .tag-hitl-2 { background: var(--yellow-bg); color: var(--yellow); }
+  .tag-hitl-3 { background: var(--orange-bg); color: var(--orange); }
+  .tag-eth { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .tag-reg { background: rgba(234,179,8,0.15); color: var(--yellow); }
+  .tag-lh { background: rgba(99,102,241,0.2); color: var(--accent2); }
+  .tag-sofort { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .uc-measures { font-size: 12px; color: var(--text2); line-height: 1.7; }
+  .uc-measures strong { color: var(--text3); font-weight: 500; text-transform: uppercase; font-size: 10px; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+  .uc-notes { font-size: 12px; color: var(--text3); font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
+  .expand-btn { font-size: 12px; color: var(--accent2); background: none; border: none; cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif; }
+
+  /* GLOBAL MEASURES */
+  .measures-clusters { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .measure-chip { padding: 10px 14px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); font-size: 13px; display: flex; align-items: flex-start; gap: 8px; }
+  .measure-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); flex-shrink: 0; margin-top: 5px; }
+
+  /* AI SUMMARY */
+  .summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; position: relative; }
+  .summary-box::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background: linear-gradient(90deg, var(--accent3), var(--accent2)); border-radius: 14px 14px 0 0; }
+  .summary-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent2); margin-bottom: 12px; }
+  .summary-text { font-size: 14px; color: var(--text2); line-height: 1.8; }
+  .summary-edit { width: 100%; background: transparent; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text2); line-height: 1.8; resize: vertical; min-height: 140px; outline: none; }
+
+  /* EXPORT */
+  .export-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    z-index: 100;
+  }
+  @media (max-width: 600px) { .export-bar { flex-direction: column; padding: 16px; } }
+  .export-info { font-size: 13px; color: var(--text3); }
+  .export-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-pdf { padding: 11px 28px; border-radius: 10px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, var(--accent3), var(--accent2)); color: #fff; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 8px; }
+  .btn-pdf:hover { opacity: 0.9; }
+
+  /* FLAGS MINI */
+  .flags-mini { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .flag-chip { font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+  .flag-chip.red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .flag-chip.yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+  .fade-up { animation: fadeUp 0.35s ease forwards; }
+  .fade-up-d1 { animation-delay: 0.05s; opacity:0; }
+  .fade-up-d2 { animation-delay: 0.1s; opacity:0; }
+  .fade-up-d3 { animation-delay: 0.15s; opacity:0; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="logo">TRUST-AI</div>
+    <span style="color:var(--border2);">/</span>
+    <span style="font-size:13px;color:var(--text2);" id="projName">Manifest</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost" onclick="window.location.href='trust-ai-screen5.html'">← Bewertung</button>
+    <button class="btn btn-ghost" onclick="window.location.href='trust-ai-screen7.html'">Dashboard →</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero fade-up">
+  <div class="hero-label">KI-Manifest</div>
+  <div class="hero-title" id="heroTitle">Projekt-Manifest</div>
+  <div class="hero-sub" id="heroSub">Erstellt am <span id="heroDate"></span></div>
+  <div class="hero-stats" id="heroStats"></div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- AI SUMMARY -->
+  <div class="section fade-up fade-up-d1">
+    <div class="section-header">
+      <div class="section-icon">✨</div>
+      <div class="section-title">Zusammenfassung</div>
+      <button class="btn btn-ghost" style="font-size:12px;padding:5px 12px;" onclick="toggleSummaryEdit()">Bearbeiten</button>
+    </div>
+    <div class="summary-box">
+      <div class="summary-label">KI-generierte Zusammenfassung · bearbeitbar</div>
+      <div id="summaryDisplay" class="summary-text"></div>
+      <textarea id="summaryEdit" class="summary-edit" style="display:none;" oninput="updateSummary(this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- GREEN -->
+  <div class="section fade-up fade-up-d2" id="secGreen" style="display:none;">
+    <div class="section-header">
+      <div class="section-icon">🟢</div>
+      <div class="section-title">Zugelassene Use Cases</div>
+      <div class="section-count" id="cntGreen"></div>
+    </div>
+    <div class="uc-grid" id="gridGreen"></div>
+  </div>
+
+  <!-- YELLOW -->
+  <div class="section fade-up fade-up-d2" id="secYellow" style="display:none;">
+    <div class="section-header">
+      <div class="section-icon">🟡</div>
+      <div class="section-title">Bedingt zugelassene Use Cases</div>
+      <div class="section-count" id="cntYellow"></div>
+    </div>
+    <div class="uc-grid" id="gridYellow"></div>
+  </div>
+
+  <!-- RED -->
+  <div class="section fade-up fade-up-d3" id="secRed" style="display:none;">
+    <div class="section-header">
+      <div class="section-icon">🔴</div>
+      <div class="section-title">Abgelehnte Use Cases</div>
+      <div class="section-count" id="cntRed"></div>
+    </div>
+    <div class="uc-grid" id="gridRed"></div>
+  </div>
+
+  <!-- DEFERRED -->
+  <div class="section" id="secDeferred" style="display:none;">
+    <div class="section-header">
+      <div class="section-icon">⏸️</div>
+      <div class="section-title">Zurückgestellte Use Cases</div>
+      <div class="section-count" id="cntDeferred"></div>
+    </div>
+    <div class="uc-grid" id="gridDeferred"></div>
+  </div>
+
+  <!-- GLOBAL MEASURES -->
+  <div class="section fade-up fade-up-d3">
+    <div class="section-header">
+      <div class="section-icon">⚙️</div>
+      <div class="section-title">Globale Spielregeln</div>
+      <div class="section-count" id="cntMeasures"></div>
+    </div>
+    <div class="measures-clusters" id="globalMeasures"></div>
+  </div>
+
+  <!-- DECISION LOG -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div class="section-title">Entscheidungsprotokoll</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;">
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;" id="decisionLog"></div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);">
+        Dieses Dokument wurde mit TRUST-AI erstellt. · <span id="logDate"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXPORT BAR -->
+<div class="export-bar">
+  <div class="export-info" id="exportInfo">Manifest bereit für Export</div>
+  <div class="export-actions">
+    <button class="btn btn-ghost" onclick="copyEmail()">📧 E-Mail vorbereiten</button>
+    <button class="btn-pdf" onclick="exportPDF()">⬇ PDF exportieren</button>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────
+// DATA
+// ────────────────────────────────────────────────
+
+const ALL_UCS = {
+  "UC-01":{ title:"Erstellung von Projektstatusberichten", category:"Kommunikation & Reporting", ethical:false, regulated:false },
+  "UC-02":{ title:"Zusammenfassung von Meetings", category:"Dokumentation & Wissen", ethical:true, regulated:false },
+  "UC-03":{ title:"Erstellung von Präsentationen", category:"Kommunikation & Reporting", ethical:false, regulated:false },
+  "UC-04":{ title:"Erstellung von Projektdokumentation", category:"Dokumentation & Wissen", ethical:false, regulated:true },
+  "UC-05":{ title:"Formulierung von Stakeholder-Kommunikation", category:"Kommunikation & Reporting", ethical:false, regulated:false },
+  "UC-06":{ title:"Live-Zusammenfassung während Meetings", category:"Meeting-Unterstützung (Live)", ethical:true, regulated:false },
+  "UC-07":{ title:"Vorschläge für nächste Fragen im Meeting", category:"Meeting-Unterstützung (Live)", ethical:false, regulated:false },
+  "UC-08":{ title:"Hinweise auf offene Punkte oder Unklarheiten", category:"Meeting-Unterstützung (Live)", ethical:false, regulated:false },
+  "UC-09":{ title:"Coaching des Moderators während Meetings", category:"Meeting-Unterstützung (Live)", ethical:true, regulated:false },
+  "UC-10":{ title:"Erstellung von Projektplänen", category:"Planung & Steuerung", ethical:false, regulated:false },
+  "UC-11":{ title:"Schätzung von Aufwänden", category:"Planung & Steuerung", ethical:false, regulated:false },
+  "UC-12":{ title:"Optimierung von Zeitplänen", category:"Planung & Steuerung", ethical:false, regulated:false },
+  "UC-13":{ title:"Simulation von Projektszenarien", category:"Planung & Steuerung", ethical:false, regulated:false },
+  "UC-14":{ title:"Unterstützung bei Stage-Gate-Bewertungen", category:"Planung & Steuerung", ethical:true, regulated:true },
+  "UC-15":{ title:"Bewertung von Risiken", category:"Risiko & Entscheidung", ethical:false, regulated:true },
+  "UC-16":{ title:"Erstellung von Entscheidungsvorlagen", category:"Risiko & Entscheidung", ethical:true, regulated:false },
+  "UC-17":{ title:"Analyse von Projektperformance", category:"Risiko & Entscheidung", ethical:false, regulated:false },
+  "UC-18":{ title:"Erstellung von Testfällen", category:"Qualität & Testing", ethical:false, regulated:true },
+  "UC-20":{ title:"Identifikation von Qualitätsproblemen", category:"Qualität & Testing", ethical:false, regulated:false },
+  "UC-21":{ title:"Beantwortung von Projektfragen", category:"Dokumentation & Wissen", ethical:false, regulated:false },
+  "UC-22":{ title:"Durchsuchung von Projektdokumentation", category:"Dokumentation & Wissen", ethical:false, regulated:false },
+  "UC-24":{ title:"Onboarding neuer Projektmitglieder", category:"Dokumentation & Wissen", ethical:false, regulated:false },
+  "UC-25":{ title:"Unterstützung im Vendor- und Vertragsmanagement", category:"Risiko & Entscheidung", ethical:false, regulated:true },
+  "UC-26":{ title:"Budgetüberwachung und Kostenprognose", category:"Planung & Steuerung", ethical:false, regulated:false }
+};
+
+const MEASURE_LABELS = {
+  human_reviews_every_result:"Mensch prüft jedes KI-Ergebnis",
+  human_decides_final:"Mensch entscheidet final",
+  human_gives_approval:"Mensch gibt Ergebnis frei",
+  human_spot_checks:"Mensch prüft stichprobenartig",
+  human_monitors_usage:"Mensch überwacht die Nutzung",
+  human_can_intervene:"Mensch kann jederzeit eingreifen",
+  define_tasks:"KI nur für definierte Aufgaben",
+  use_verified_data:"Nur geprüfte Daten verwenden",
+  define_rules:"Klare Nutzungsregeln definieren",
+  train_users:"Nutzer schulen",
+  limit_scope:"Einsatzbereich begrenzen",
+  define_responsibilities:"Verantwortlichkeiten definieren",
+  define_data_classification:"Datenklassifizierung durchführen",
+  check_avv:"AVV mit Tool-Anbieter prüfen",
+  check_tool_approval:"Tool-Freigabe bestätigen",
+  no_confidential_data_in_prompt:"Keine vertraulichen Daten im Prompt",
+  no_personal_data:"Personenbezogene Daten ausschließen",
+  define_confidentiality_rules:"Vertraulichkeitsregeln definieren",
+  versioning:"Versionierung sicherstellen",
+  plausibility_check:"Plausibilitätsprüfung",
+  expert_review:"Review durch Fachexperten",
+  document_usage:"Nutzung dokumentieren",
+  audit_log:"Audit-Log führen",
+  regular_review:"Regelmäßige Qualitätsprüfung",
+  define_escalation:"Eskalationswege definieren"
+};
+
+const HITL_LABELS = { level_1:"🛡️ Volle Kontrolle", level_2:"👁️ Überwachte Autonomie", level_3:"🤖 Kontrollierte Automatisierung" };
+const HITL_TAGS = { level_1:"tag-hitl-1", level_2:"tag-hitl-2", level_3:"tag-hitl-3" };
+const AMPEL_ICONS = { green:"🟢", yellow:"🟡", red:"🔴", deferred:"⏸️" };
+
+// ────────────────────────────────────────────────
+// STATE
+// ────────────────────────────────────────────────
+
+let project = {};
+let assessments = {};
+let shortlist = [];
+let summaryText = '';
+let editMode = false;
+
+function loadData() {
+  try {
+    project = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    assessments = project.assessments_map || {};
+    shortlist = project.shortlist || [];
+    if (!shortlist.length) {
+      // Demo data
+      assessments = {
+        "UC-02": { use_case_id:"UC-02", result:"green", hitl_level:"level_1", selected_measures:["human_reviews_every_result","define_tasks","check_avv","document_usage"], flags:[], notes:"", responsible_person:"Projektleiterin Schmidt", assessed_at: new Date().toISOString() },
+        "UC-01": { use_case_id:"UC-01", result:"green", hitl_level:"level_1", selected_measures:["human_reviews_every_result","human_decides_final","use_verified_data","document_usage"], flags:[], notes:"Bericht-Vorlage liegt vor.", responsible_person:"PM-Team", assessed_at: new Date().toISOString() },
+        "UC-15": { use_case_id:"UC-15", result:"yellow", hitl_level:"level_1", selected_measures:["expert_review","human_decides_final","plausibility_check","document_usage"], flags:["flag_regulated_pharma"], notes:"Experten-Review vor Gate-Meeting erforderlich.", responsible_person:"Risikomanager Müller", assessed_at: new Date().toISOString() },
+        "UC-10": { use_case_id:"UC-10", result:"green", hitl_level:"level_1", selected_measures:["define_tasks","human_reviews_every_result","human_decides_final"], flags:[], notes:"", responsible_person:"PM-Team", assessed_at: new Date().toISOString() },
+        "UC-04": { use_case_id:"UC-04", result:"yellow", hitl_level:"level_1", selected_measures:["versioning","human_gives_approval","document_usage","audit_log"], flags:["flag_regulated_pharma","flag_personal_data"], notes:"Audit-Trail muss vor Go-Live eingerichtet sein.", responsible_person:"Projektleiterin Schmidt", assessed_at: new Date().toISOString() }
+      };
+      shortlist = [
+        { use_case_id:"UC-02", priority:1, sofort:false, status:"green" },
+        { use_case_id:"UC-01", priority:2, sofort:false, status:"green" },
+        { use_case_id:"UC-15", priority:3, sofort:false, status:"yellow" },
+        { use_case_id:"UC-10", priority:4, sofort:true, status:"green" },
+        { use_case_id:"UC-04", priority:5, sofort:false, status:"yellow" }
+      ];
+      project = { name:"Musterprojekt Alpha", description:"Digitalisierung der Projektmanagement-Prozesse", pm_email:"pm@example.de", created_at: new Date().toISOString() };
+    }
+  } catch(e) { project = {}; assessments = {}; shortlist = []; }
+}
+
+// ────────────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────────────
+
+function computeGlobalMeasures() {
+  const freq = {};
+  Object.values(assessments).forEach(a => {
+    if (a.result === 'red' || a.result === 'deferred') return;
+    (a.selected_measures || []).forEach(m => { freq[m] = (freq[m]||0) + 1; });
+  });
+  // Return measures that appear in ≥2 UCs or are always important
+  const always = ['human_decides_final','define_responsibilities','document_usage'];
+  return Object.keys(freq).filter(m => freq[m] >= 2 || always.includes(m));
+}
+
+function generateSummary() {
+  const counts = { green:0, yellow:0, red:0, deferred:0 };
+  Object.values(assessments).forEach(a => { if (counts[a.result]!==undefined) counts[a.result]++; });
+  const total = Object.keys(assessments).length;
+  const projName = project.name || 'das Projekt';
+  const dateStr = new Date().toLocaleDateString('de-DE', { day:'2-digit', month:'long', year:'numeric' });
+  const ethicCount = shortlist.filter(s => ALL_UCS[s.use_case_id]?.ethical && assessments[s.use_case_id]?.result !== 'red').length;
+
+  let txt = `Dieses KI-Manifest dokumentiert den geplanten Einsatz von KI-Technologien in „${projName}". Es wurde auf Basis einer strukturierten Bewertung von ${total} Use Cases erstellt und gilt als verbindliche Grundlage für die projektinterne KI-Governance.\n\n`;
+
+  if (counts.green > 0) txt += `${counts.green} Use Case${counts.green>1?'s':''} wurde${counts.green>1?'n':''} vollständig freigegeben und kann${counts.green>1?'n':''} ohne Einschränkungen eingesetzt werden. `;
+  if (counts.yellow > 0) txt += `${counts.yellow} Use Case${counts.yellow>1?'s sind':' ist'} bedingt freigegeben – hier gelten spezifische Auflagen und offene Punkte müssen vor dem Einsatz geklärt werden. `;
+  if (counts.red > 0) txt += `${counts.red} Use Case${counts.red>1?'s wurden':' wurde'} abgelehnt und darf${counts.red>1?'en':''} in diesem Projekt nicht eingesetzt werden. `;
+  if (counts.deferred > 0) txt += `${counts.deferred} Use Case${counts.deferred>1?'s wurden':' wurde'} zurückgestellt und wird${counts.deferred>1?'n':''} zu einem späteren Zeitpunkt neu bewertet.`;
+
+  txt += `\n\nFür alle freigegebenen Use Cases gilt: Der Mensch behält die finale Entscheidungsverantwortung. KI-Ergebnisse werden als Vorschläge behandelt und vor der Nutzung durch eine verantwortliche Person geprüft.`;
+
+  if (ethicCount > 0) txt += ` Bei ${ethicCount} Use Case${ethicCount>1?'s':''} mit ethischen Implikationen sind besondere Maßnahmen zur Transparenz und zum Datenschutz zu beachten.`;
+
+  return txt;
+}
+
+function render() {
+  // Hero
+  document.getElementById('projName').textContent = project.name || 'Manifest';
+  document.getElementById('heroTitle').textContent = `KI-Manifest · ${project.name || 'Projekt'}`;
+  const now = new Date().toLocaleDateString('de-DE', { day:'2-digit', month:'long', year:'numeric' });
+  document.getElementById('heroDate').textContent = now;
+  document.getElementById('logDate').textContent = now;
+
+  const counts = { green:0, yellow:0, red:0, deferred:0 };
+  Object.values(assessments).forEach(a => { if (counts[a.result]!==undefined) counts[a.result]++; });
+
+  document.getElementById('heroStats').innerHTML = [
+    { cls:'green', num:counts.green, lbl:'Freigegeben' },
+    { cls:'yellow', num:counts.yellow, lbl:'Mit Auflagen' },
+    { cls:'red', num:counts.red, lbl:'Abgelehnt' },
+    { cls:'grey', num:counts.deferred, lbl:'Zurückgestellt' }
+  ].filter(s => s.num > 0).map(s => `
+    <div class="stat-pill ${s.cls}">
+      <div class="stat-num">${s.num}</div>
+      <div class="stat-label">${s.lbl}</div>
+    </div>`).join('');
+
+  // Summary
+  summaryText = generateSummary();
+  document.getElementById('summaryDisplay').innerHTML = summaryText.split('\n\n').map(p => `<p style="margin-bottom:10px;">${p}</p>`).join('');
+  document.getElementById('summaryEdit').value = summaryText;
+
+  // UC grids
+  renderUCGrid('green', counts, '🟢');
+  renderUCGrid('yellow', counts, '🟡');
+  renderUCGrid('red', counts, '🔴');
+  renderUCGrid('deferred', counts, '⏸️');
+
+  // Global measures
+  const globalM = computeGlobalMeasures();
+  document.getElementById('cntMeasures').textContent = `${globalM.length} Maßnahmen`;
+  document.getElementById('globalMeasures').innerHTML = globalM.map(m =>
+    `<div class="measure-chip"><div class="measure-chip-dot"></div>${MEASURE_LABELS[m] || m}</div>`
+  ).join('');
+
+  // Decision log
+  const logLines = shortlist.map((s, i) => {
+    const a = assessments[s.use_case_id];
+    const uc = ALL_UCS[s.use_case_id];
+    if (!a || !uc) return '';
+    const ampelLabels = { green:'Freigegeben', yellow:'Bedingt freigegeben', red:'Abgelehnt', deferred:'Zurückgestellt' };
+    return `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <span style="color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;width:24px;flex-shrink:0;">${i+1}</span>
+      <span style="flex:1;font-size:13px;">${uc.title}</span>
+      <span style="font-size:12px;color:var(--text3);">${a.responsible_person || '—'}</span>
+      <span style="font-size:12px;font-weight:600;">${AMPEL_ICONS[a.result]} ${ampelLabels[a.result]}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('decisionLog').innerHTML = logLines;
+
+  document.getElementById('exportInfo').textContent = `${Object.keys(assessments).length} Use Cases bewertet · ${now}`;
+}
+
+function renderUCGrid(result, counts, icon) {
+  const sec = document.getElementById('sec' + result.charAt(0).toUpperCase() + result.slice(1));
+  const grid = document.getElementById('grid' + result.charAt(0).toUpperCase() + result.slice(1));
+  const cnt = document.getElementById('cnt' + result.charAt(0).toUpperCase() + result.slice(1));
+  const items = shortlist.filter(s => assessments[s.use_case_id]?.result === result);
+  if (!items.length) { sec.style.display = 'none'; return; }
+  sec.style.display = '';
+  if (cnt) cnt.textContent = `${items.length} Use Case${items.length>1?'s':''}`;
+
+  grid.innerHTML = items.map(s => {
+    const a = assessments[s.use_case_id];
+    const uc = ALL_UCS[s.use_case_id];
+    if (!a || !uc) return '';
+    const measures = (a.selected_measures || []).map(m => MEASURE_LABELS[m] || m).join(' · ');
+    const hitlClass = HITL_TAGS[a.hitl_level] || 'tag-hitl-1';
+    const flagsHtml = (a.flags || []).length ? `<div class="flags-mini">${(a.flags||[]).slice(0,3).map(f=>`<span class="flag-chip ${f.includes('red')||f.includes('no_')||f.includes('not_approved')||f.includes('transparency')||f.includes('defense')?'red':'yellow'}">⚑ ${f.replace('flag_','').replace(/_/g,' ')}</span>`).join('')}</div>` : '';
+
+    return `<div class="uc-card ${result}">
+      <div class="uc-card-top">
+        <div class="uc-ampel">${icon}</div>
+        <div class="uc-card-title">${uc.title}</div>
+      </div>
+      <div class="uc-card-meta">
+        <span class="tag tag-cat">${uc.category}</span>
+        <span class="tag ${hitlClass}">${HITL_LABELS[a.hitl_level]||a.hitl_level}</span>
+        ${s.sofort ? `<span class="tag tag-sofort">⚡ Sofort</span>` : ''}
+        ${uc.ethical ? `<span class="tag tag-eth">⚠ Ethik</span>` : ''}
+        ${uc.regulated ? `<span class="tag tag-reg">§ Reguliert</span>` : ''}
+        ${a.responsible_person ? `<span class="tag" style="background:var(--surface2);color:var(--text2);">👤 ${a.responsible_person}</span>` : ''}
+      </div>
+      ${measures ? `<div class="uc-measures"><strong>Maßnahmen</strong>${measures}</div>` : ''}
+      ${flagsHtml}
+      ${a.notes ? `<div class="uc-notes">${a.notes}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ────────────────────────────────────────────────
+// INTERACTIONS
+// ────────────────────────────────────────────────
+
+function toggleSummaryEdit() {
+  editMode = !editMode;
+  document.getElementById('summaryDisplay').style.display = editMode ? 'none' : 'block';
+  document.getElementById('summaryEdit').style.display = editMode ? 'block' : 'none';
+  if (!editMode) {
+    summaryText = document.getElementById('summaryEdit').value;
+    document.getElementById('summaryDisplay').innerHTML = summaryText.split('\n\n').map(p => `<p style="margin-bottom:10px;">${p}</p>`).join('');
+  }
+}
+
+function updateSummary(val) { summaryText = val; }
+
+function copyEmail() {
+  const counts = { green:0, yellow:0, red:0, deferred:0 };
+  Object.values(assessments).forEach(a => { if (counts[a.result]!==undefined) counts[a.result]++; });
+  const body = `Hallo,\n\nihm Anhang findet ihr das KI-Manifest für das Projekt "${project.name || 'Projekt'}".\n\nKurzzusammenfassung:\n- Freigegebene Use Cases: ${counts.green}\n- Bedingt freigegebene Use Cases: ${counts.yellow}\n- Abgelehnte Use Cases: ${counts.red}\n\nBitte nehmt das Manifest zur Kenntnis und gebt mir Rückmeldung, falls Fragen bestehen.\n\nViele Grüße\n${project.pm_email || ''}`;
+  const mailtoLink = `mailto:?subject=KI-Manifest: ${encodeURIComponent(project.name || 'Projekt')}&body=${encodeURIComponent(body)}`;
+  window.open(mailtoLink);
+}
+
+// ────────────────────────────────────────────────
+// PDF EXPORT
+// ────────────────────────────────────────────────
+
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W = 210, H = 297;
+  const margin = 18;
+  const contentW = W - 2*margin;
+  let y = 0;
+
+  const colors = {
+    bg: [15,17,23], surface:[26,29,39], accent:[99,102,241],
+    green:[34,197,94], yellow:[234,179,8], red:[239,68,68],
+    text:[232,234,246], text2:[155,163,199], text3:[92,100,144]
+  };
+
+  function newPage() {
+    doc.addPage();
+    y = margin;
+    // subtle header line
+    doc.setDrawColor(...colors.accent);
+    doc.setLineWidth(0.3);
+    doc.line(margin, 8, W-margin, 8);
+    doc.setFontSize(8);
+    doc.setTextColor(...colors.text3);
+    doc.text(`TRUST-AI · ${project.name || 'Projekt'} · KI-Manifest`, margin, 13);
+    y = 20;
+  }
+
+  function checkY(needed = 20) {
+    if (y + needed > H - margin) newPage();
+  }
+
+  function fillRect(x, ry, w, h, color) {
+    doc.setFillColor(...color);
+    doc.roundedRect(x, ry, w, h, 2, 2, 'F');
+  }
+
+  function text(txt, tx, ty, opts = {}) {
+    const { size=10, color=colors.text, weight='normal', maxW=contentW, align='left' } = opts;
+    doc.setFontSize(size);
+    doc.setTextColor(...color);
+    doc.setFont('helvetica', weight);
+    if (maxW) {
+      const lines = doc.splitTextToSize(String(txt), maxW);
+      doc.text(lines, tx, ty, { align });
+      return lines.length * (size * 0.4 + 1.5);
+    }
+    doc.text(String(txt), tx, ty, { align });
+    return size * 0.4 + 1.5;
+  }
+
+  // ── COVER PAGE ──
+  doc.setFillColor(...colors.bg);
+  doc.rect(0, 0, W, H, 'F');
+
+  // Accent gradient strip
+  doc.setFillColor(...colors.accent);
+  doc.rect(0, 0, W, 3, 'F');
+
+  // Big title area
+  fillRect(margin, 40, contentW, 90, colors.surface);
+
+  doc.setFontSize(9);
+  doc.setTextColor(...colors.text3);
+  doc.setFont('helvetica','normal');
+  doc.text('KI-MANIFEST', margin+12, 60);
+
+  doc.setFontSize(26);
+  doc.setTextColor(...colors.text);
+  doc.setFont('helvetica','bold');
+  const titleLines = doc.splitTextToSize(project.name || 'Projekt', contentW-24);
+  doc.text(titleLines, margin+12, 74);
+
+  doc.setFontSize(10);
+  doc.setTextColor(...colors.text2);
+  doc.setFont('helvetica','normal');
+  doc.text(project.description || '', margin+12, 74 + titleLines.length*10 + 6, { maxWidth: contentW-24 });
+
+  // Stats on cover
+  const counts = { green:0, yellow:0, red:0, deferred:0 };
+  Object.values(assessments).forEach(a => { if (counts[a.result]!==undefined) counts[a.result]++; });
+
+  const statItems = [
+    { num:counts.green, lbl:'Freigegeben', col:colors.green },
+    { num:counts.yellow, lbl:'Mit Auflagen', col:colors.yellow },
+    { num:counts.red, lbl:'Abgelehnt', col:colors.red },
+  ];
+  let sx = margin+12;
+  statItems.forEach(s => {
+    fillRect(sx, 148, 48, 26, [30,34,50]);
+    doc.setFontSize(18);
+    doc.setTextColor(...s.col);
+    doc.setFont('helvetica','bold');
+    doc.text(String(s.num), sx+24, 160, { align:'center' });
+    doc.setFontSize(8);
+    doc.setTextColor(...colors.text2);
+    doc.setFont('helvetica','normal');
+    doc.text(s.lbl, sx+24, 167, { align:'center' });
+    sx += 52;
+  });
+
+  // Footer
+  doc.setFontSize(9);
+  doc.setTextColor(...colors.text3);
+  doc.setFont('helvetica','normal');
+  const dateStr = new Date().toLocaleDateString('de-DE', { day:'2-digit', month:'long', year:'numeric' });
+  doc.text(`Erstellt am ${dateStr}`, margin, H-20);
+  doc.text('Erstellt mit TRUST-AI', W-margin, H-20, { align:'right' });
+  if (project.pm_email) doc.text(project.pm_email, W/2, H-20, { align:'center' });
+
+  // ── PAGE 2+: CONTENT ──
+  newPage();
+
+  // Summary
+  fillRect(margin, y, contentW, 8, colors.surface);
+  text('ZUSAMMENFASSUNG', margin+4, y+5.5, { size:8, color:colors.text3, weight:'bold' });
+  y += 12;
+  const summaryLines = doc.splitTextToSize(summaryText.replace(/\n\n/g,'\n').replace(/\n/g,' '), contentW);
+  doc.setFontSize(10);
+  doc.setTextColor(...colors.text2);
+  doc.setFont('helvetica','normal');
+  summaryLines.forEach(line => { checkY(6); doc.text(line, margin, y); y += 5.5; });
+  y += 8;
+
+  // UC sections
+  const sections = [
+    { result:'green', label:'1. ZUGELASSENE USE CASES', color:colors.green },
+    { result:'yellow', label:'2. BEDINGT ZUGELASSENE USE CASES', color:colors.yellow },
+    { result:'red', label:'3. ABGELEHNTE USE CASES', color:colors.red },
+    { result:'deferred', label:'4. ZURÜCKGESTELLTE USE CASES', color:colors.text3 }
+  ];
+
+  sections.forEach(sec => {
+    const items = shortlist.filter(s => assessments[s.use_case_id]?.result === sec.result);
+    if (!items.length) return;
+    checkY(20);
+
+    // Section header
+    doc.setDrawColor(...sec.color);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, W-margin, y);
+    y += 5;
+    text(sec.label, margin, y, { size:11, color:sec.color, weight:'bold' });
+    y += 8;
+
+    items.forEach(s => {
+      const a = assessments[s.use_case_id];
+      const uc = ALL_UCS[s.use_case_id];
+      if (!a || !uc) return;
+      checkY(30);
+
+      // Card
+      const cardH = 6 + (a.selected_measures?.length ? 14 : 0) + (a.notes ? 8 : 0) + 10;
+      fillRect(margin, y, contentW, cardH, [22,26,42]);
+
+      // Title
+      doc.setFontSize(11);
+      doc.setTextColor(...colors.text);
+      doc.setFont('helvetica','bold');
+      doc.text(uc.title, margin+4, y+6);
+
+      // Meta row
+      let mx = margin+4;
+      const metaY = y+11;
+      doc.setFontSize(8);
+      doc.setFont('helvetica','normal');
+
+      const hitlLabels = { level_1:'Volle Kontrolle', level_2:'Überwachte Autonomie', level_3:'Kontrollierte Automatisierung' };
+      const tags = [uc.category, hitlLabels[a.hitl_level]||a.hitl_level];
+      if (a.responsible_person) tags.push('Verantw.: '+a.responsible_person);
+      tags.forEach(t => {
+        const tw = doc.getTextWidth(t) + 4;
+        fillRect(mx, metaY-3.5, tw, 5, [40,46,80]);
+        doc.setTextColor(...colors.text2);
+        doc.text(t, mx+2, metaY);
+        mx += tw + 3;
+      });
+
+      let cardY = metaY + 5;
+      if (a.selected_measures?.length) {
+        doc.setTextColor(...colors.text3);
+        doc.setFontSize(7.5);
+        doc.text('Maßnahmen:', margin+4, cardY+4);
+        const mText = (a.selected_measures||[]).map(m=>MEASURE_LABELS[m]||m).join(' · ');
+        const mLines = doc.splitTextToSize(mText, contentW-12);
+        doc.setTextColor(...colors.text2);
+        mLines.forEach(l => { doc.text(l, margin+4+22, cardY+4); cardY += 4.5; });
+        cardY += 1;
+      }
+      if (a.notes) {
+        doc.setFontSize(8);
+        doc.setTextColor(...colors.text3);
+        doc.setFont('helvetica','italic');
+        doc.text(a.notes, margin+4, cardY+4, { maxWidth: contentW-8 });
+        cardY += 6;
+      }
+      y += cardH + 4;
+    });
+    y += 8;
+  });
+
+  // Global measures section
+  checkY(30);
+  doc.setDrawColor(...colors.accent);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y, W-margin, y);
+  y += 5;
+  text('5. GLOBALE SPIELREGELN', margin, y, { size:11, color:[...colors.accent], weight:'bold' });
+  y += 8;
+
+  const globalM = computeGlobalMeasures();
+  const cols = 2;
+  const colW = contentW/cols;
+  for (let i=0; i<globalM.length; i+=cols) {
+    checkY(8);
+    for (let j=0; j<cols; j++) {
+      const m = globalM[i+j];
+      if (!m) break;
+      const tx2 = margin + j*colW;
+      fillRect(tx2, y, colW-4, 7, colors.surface);
+      doc.setFontSize(9);
+      doc.setTextColor(...colors.text2);
+      doc.setFont('helvetica','normal');
+      doc.text('·  ' + (MEASURE_LABELS[m]||m), tx2+2, y+4.8);
+    }
+    y += 9;
+  }
+
+  // Decision log
+  y += 8;
+  checkY(30);
+  doc.setDrawColor(...colors.text3);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, W-margin, y);
+  y += 5;
+  text('6. ENTSCHEIDUNGSPROTOKOLL', margin, y, { size:11, color:colors.text3, weight:'bold' });
+  y += 8;
+
+  const ampelLabels2 = { green:'Freigegeben', yellow:'Bedingt freigegeben', red:'Abgelehnt', deferred:'Zurückgestellt' };
+  shortlist.forEach((s, i) => {
+    const a = assessments[s.use_case_id];
+    const uc = ALL_UCS[s.use_case_id];
+    if (!a || !uc) return;
+    checkY(8);
+    doc.setFontSize(9);
+    doc.setTextColor(...colors.text3);
+    doc.setFont('helvetica','normal');
+    doc.text(String(i+1).padStart(2,'0'), margin, y);
+    doc.setTextColor(...colors.text);
+    doc.text(uc.title, margin+8, y);
+    doc.setTextColor(...colors.text3);
+    const resultCol = { green:colors.green, yellow:colors.yellow, red:colors.red, deferred:colors.text3 }[a.result] || colors.text3;
+    doc.setTextColor(...resultCol);
+    doc.text(ampelLabels2[a.result]||a.result, W-margin, y, { align:'right' });
+    y += 5.5;
+  });
+
+  y += 10;
+  doc.setFontSize(8);
+  doc.setTextColor(...colors.text3);
+  doc.text(`Erstellt mit TRUST-AI · ${dateStr} · ${project.pm_email||''}`, margin, y);
+
+  const filename = `TRUST-AI_Manifest_${(project.name||'Projekt').replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}.pdf`;
+  doc.save(filename);
+}
+
+// ────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────
+
+loadData();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TRUST-AI – Shortlist & Priorisierung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent: #4F6EF7;
+  --accent-hover: #3B57E8;
+  --accent-subtle: rgba(79,110,247,0.10);
+  --accent-border: rgba(79,110,247,0.30);
+  --green: #22C55E;
+  --green-subtle: rgba(34,197,94,0.12);
+  --green-border: rgba(34,197,94,0.35);
+  --red: #EF4444;
+  --red-subtle: rgba(239,68,68,0.10);
+  --red-border: rgba(239,68,68,0.30);
+  --yellow: #F59E0B;
+  --yellow-subtle: rgba(245,158,11,0.10);
+  --yellow-border: rgba(245,158,11,0.30);
+  --purple: #8B5CF6;
+  --purple-subtle: rgba(139,92,246,0.10);
+  --purple-border: rgba(139,92,246,0.30);
+  --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px;
+  --transition: 200ms cubic-bezier(0.4,0,0.2,1);
+}
+
+:root {
+  --bg: #F4F5F8;
+  --surface: #FFFFFF;
+  --surface-2: #F8F9FC;
+  --surface-3: #EEF0F6;
+  --border: #E2E5EF;
+  --border-hover: #C8CCDC;
+  --text-primary: #0F1523;
+  --text-secondary: #5A6075;
+  --text-tertiary: #9299B0;
+  --nav-bg: rgba(244,245,248,0.9);
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-drag: 0 16px 48px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0D0F17;
+    --surface: #151823;
+    --surface-2: #1C2030;
+    --surface-3: #222638;
+    --border: #262B3E;
+    --border-hover: #333A54;
+    --text-primary: #EDF0FF;
+    --text-secondary: #8B92B0;
+    --text-tertiary: #555D7A;
+    --nav-bg: rgba(13,15,23,0.90);
+    --shadow-card: 0 2px 16px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.2);
+    --shadow-drag: 0 16px 48px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.35);
+  }
+}
+
+html, body { height: 100%; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+.nav-logo-mark { width: 30px; height: 30px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.nav-logo-mark svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-logo-text { font-size: 14px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
+.nav-logo-text span { color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-step { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-tertiary); letter-spacing: 0.05em; }
+.progress-dots { display: flex; gap: 5px; align-items: center; }
+.progress-dot { width: 6px; height: 6px; border-radius: 100px; background: var(--border); transition: all var(--transition); }
+.progress-dot.done { background: var(--accent); opacity: 0.4; width: 18px; }
+.progress-dot.active { background: var(--accent); width: 24px; }
+
+/* MAIN */
+.main { padding-top: 56px; min-height: 100vh; display: flex; flex-direction: column; }
+
+.page-header { padding: 28px 24px 20px; max-width: 760px; margin: 0 auto; width: 100%; }
+.page-header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+.page-header p { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+
+/* STATS */
+.stats-row { display: flex; gap: 10px; padding: 0 24px 20px; max-width: 760px; margin: 0 auto; width: 100%; flex-wrap: wrap; }
+.stat-chip { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 100px; font-size: 12px; font-weight: 500; border: 1px solid; }
+.stat-chip.sofort { background: var(--yellow-subtle); border-color: var(--yellow-border); color: var(--yellow); }
+.stat-chip.shortlist { background: var(--green-subtle); border-color: var(--green-border); color: var(--green); }
+.stat-chip.total { background: var(--accent-subtle); border-color: var(--accent-border); color: var(--accent); }
+.stat-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+/* AI BANNER */
+.ai-banner {
+  margin: 0 24px 20px; max-width: 712px; margin-left: auto; margin-right: auto;
+  background: var(--accent-subtle); border: 1px solid var(--accent-border);
+  border-radius: var(--radius-lg); padding: 16px 18px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.ai-banner-icon { width: 36px; height: 36px; flex-shrink: 0; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.ai-banner-icon svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ai-banner-body { flex: 1; min-width: 0; }
+.ai-banner-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 3px; }
+.ai-banner-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.ai-banner-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.btn-ai-apply { padding: 7px 14px; font-size: 12px; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: background var(--transition); font-family: inherit; }
+.btn-ai-apply:hover { background: var(--accent-hover); }
+.btn-ai-dismiss { padding: 7px 14px; font-size: 12px; font-weight: 500; background: transparent; color: var(--text-secondary); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all var(--transition); font-family: inherit; }
+.btn-ai-dismiss:hover { border-color: var(--border-hover); color: var(--text-primary); }
+
+/* SECTION LABEL */
+.section-label { padding: 0 24px 10px; max-width: 760px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 8px; }
+.section-label-text { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); white-space: nowrap; }
+.section-label-line { flex: 1; height: 1px; background: var(--border); }
+
+/* LIST */
+.list-container { padding: 0 24px; max-width: 760px; margin: 0 auto; width: 100%; padding-bottom: 140px; }
+.sortable-list { display: flex; flex-direction: column; gap: 8px; min-height: 20px; }
+
+/* CARD */
+.uc-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 14px 16px;
+  cursor: grab; transition: box-shadow var(--transition), border-color var(--transition);
+  position: relative; user-select: none; -webkit-user-select: none;
+  touch-action: none; will-change: transform;
+}
+.uc-card:hover { border-color: var(--border-hover); box-shadow: var(--shadow-card); }
+.uc-card.sofort-card { border-color: var(--yellow-border); background: linear-gradient(to right, var(--yellow-subtle), var(--surface)); }
+.uc-card.dragging { opacity: 0; }
+.uc-card.drag-over { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-subtle); }
+
+.uc-card-top { display: flex; align-items: flex-start; gap: 12px; }
+
+.drag-handle { margin-top: 3px; flex-shrink: 0; color: var(--text-tertiary); cursor: grab; display: flex; flex-direction: column; gap: 3px; padding: 4px 2px; }
+.drag-handle span { display: block; width: 14px; height: 2px; background: currentColor; border-radius: 2px; }
+
+.uc-rank { flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px; background: var(--surface-3); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--text-tertiary); }
+.uc-card.sofort-card .uc-rank { background: var(--yellow-subtle); color: var(--yellow); }
+
+.uc-content { flex: 1; min-width: 0; }
+.uc-title { font-size: 14px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; line-height: 1.35; margin-bottom: 4px; }
+.uc-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 10px; }
+.uc-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.uc-category { font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 100px; background: var(--surface-3); color: var(--text-tertiary); }
+.uc-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 100px; border: 1px solid; }
+.uc-badge.sofort { background: var(--yellow-subtle); border-color: var(--yellow-border); color: var(--yellow); }
+.uc-badge.ethical { background: var(--purple-subtle); border-color: var(--purple-border); color: var(--purple); }
+.uc-badge.regulated { background: var(--red-subtle); border-color: var(--red-border); color: var(--red); }
+.uc-consequence { margin-left: auto; font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 100px; border: 1px solid; }
+.uc-consequence.significant { background: var(--red-subtle); border-color: var(--red-border); color: var(--red); }
+.uc-consequence.valuable { background: var(--yellow-subtle); border-color: var(--yellow-border); color: var(--yellow); }
+.uc-consequence.nice_to_have { background: var(--surface-3); border-color: var(--border); color: var(--text-tertiary); }
+
+.ai-score-badge {
+  position: absolute; right: 12px; top: 12px;
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--accent-subtle); border: 1px solid var(--accent-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--accent); font-weight: 700;
+  opacity: 0; transition: opacity var(--transition);
+}
+.show-ai .ai-score-badge { opacity: 1; }
+
+/* AI APPLIED BANNER */
+.ai-applied-banner {
+  margin: 0 24px 14px; max-width: 712px; margin-left: auto; margin-right: auto;
+  background: var(--green-subtle); border: 1px solid var(--green-border);
+  border-radius: var(--radius-md); padding: 10px 16px;
+  display: none; align-items: center; gap: 10px; font-size: 12px; color: var(--green); font-weight: 500;
+}
+.ai-applied-banner.visible { display: flex; }
+.ai-applied-banner svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* EMPTY STATE */
+.empty-state { padding: 60px 24px; text-align: center; color: var(--text-tertiary); font-size: 14px; display: none; }
+.empty-state.visible { display: block; }
+
+/* MODAL */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; visibility: hidden; transition: all 240ms;
+}
+.modal-backdrop.open { opacity: 1; visibility: visible; }
+.modal-backdrop.open .modal-sheet { transform: translateY(0); }
+.modal-sheet {
+  background: var(--surface); border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  width: 100%; max-width: 640px; transform: translateY(100%);
+  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; }
+.modal-header { padding: 20px 24px 0; }
+.modal-header h2 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+.modal-header p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.modal-body { padding: 20px 24px 8px; }
+.question-block { margin-bottom: 20px; }
+.question-label { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+.option-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.option-btn {
+  flex: 1; min-width: 100px; padding: 10px 14px; font-size: 12px; font-weight: 500;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md);
+  cursor: pointer; transition: all var(--transition); font-family: inherit; color: var(--text-secondary); text-align: center; line-height: 1.35;
+}
+.option-btn:hover { border-color: var(--accent-border); color: var(--accent); background: var(--accent-subtle); }
+.option-btn.selected { background: var(--accent-subtle); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.modal-actions { padding: 8px 24px 32px; display: flex; gap: 10px; }
+.btn-primary { flex: 1; padding: 14px; font-size: 14px; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); cursor: pointer; transition: background var(--transition); font-family: inherit; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { padding: 14px 20px; font-size: 14px; font-weight: 500; background: transparent; color: var(--text-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition); font-family: inherit; }
+.btn-secondary:hover { border-color: var(--border-hover); color: var(--text-primary); }
+
+/* BOTTOM BAR */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+  background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border); padding: 12px 24px 28px;
+  display: flex; gap: 10px; align-items: center;
+}
+.bottom-bar-left { flex: 1; font-size: 13px; color: var(--text-secondary); }
+.bottom-bar-left strong { color: var(--text-primary); font-weight: 600; }
+.btn-cta { padding: 13px 24px; font-size: 14px; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); cursor: pointer; transition: background var(--transition); font-family: inherit; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.btn-cta:hover { background: var(--accent-hover); }
+.btn-cta svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* SLIDE IN */
+@keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.uc-card { animation: slideIn 200ms both; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+@media (min-width: 640px) {
+  .page-header { padding: 36px 32px 24px; }
+  .stats-row { padding: 0 32px 24px; }
+  .ai-banner, .ai-applied-banner { margin-left: 32px; margin-right: 32px; }
+  .section-label { padding: 0 32px 12px; }
+  .list-container { padding: 0 32px; }
+  .bottom-bar { max-width: 760px; left: 50%; transform: translateX(-50%); padding: 14px 32px 32px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="trust-ai-screen3.html" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
+    </div>
+    <span class="nav-logo-text">TRUST<span>-AI</span></span>
+  </a>
+  <div class="nav-right">
+    <span class="nav-step">Schritt 4 / 7</span>
+    <div class="progress-dots">
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot active"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="page-header">
+    <h1>Deine Shortlist</h1>
+    <p>Ziehe die Use Cases in deine bevorzugte Reihenfolge – oder lass die KI einen Vorschlag machen.</p>
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="ai-banner" id="aiBanner">
+    <div class="ai-banner-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+    </div>
+    <div class="ai-banner-body">
+      <div class="ai-banner-title">KI-Priorisierungsvorschlag verfügbar</div>
+      <div class="ai-banner-text">Beantworte 4 kurze Fragen, damit die KI deine Shortlist nach Projektkontext sortiert.</div>
+      <div class="ai-banner-actions">
+        <button class="btn-ai-apply" onclick="openPrioModal()">Vorschlag anfordern</button>
+        <button class="btn-ai-dismiss" onclick="dismissAiBanner()">Überspringen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-applied-banner" id="aiAppliedBanner">
+    <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+    KI-Reihenfolge angewendet – du kannst die Karten weiterhin manuell verschieben.
+    <span style="margin-left:auto;cursor:pointer;opacity:0.6;padding:0 4px" onclick="this.closest('.ai-applied-banner').classList.remove('visible')">✕</span>
+  </div>
+
+  <div class="section-label" id="sofortSection" style="display:none">
+    <span class="section-label-text">⚡ Sofort starten</span>
+    <div class="section-label-line"></div>
+  </div>
+  <div class="list-container" id="sofortListWrap" style="display:none">
+    <div class="sortable-list" id="sofortSortable"></div>
+  </div>
+
+  <div class="section-label" id="shortlistSection">
+    <span class="section-label-text">Shortlist</span>
+    <div class="section-label-line"></div>
+  </div>
+  <div class="list-container">
+    <div class="sortable-list" id="shortlistSortable"></div>
+    <div class="empty-state" id="emptyState">Keine Use Cases in der Shortlist.<br>Gehe zurück und swippe Use Cases nach rechts.</div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="prioModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2>KI-Priorisierung</h2>
+      <p>4 kurze Fragen – dann sortiert die KI die Shortlist passend zu deinem Projektkontext.</p>
+    </div>
+    <div class="modal-body">
+      <div class="question-block">
+        <div class="question-label">1. Wie lang ist die geplante Projektlaufzeit?</div>
+        <div class="option-grid">
+          <button class="option-btn" data-q="duration" data-v="short" onclick="selectOpt(this)">Kurz &lt; 6 Mon.</button>
+          <button class="option-btn" data-q="duration" data-v="medium" onclick="selectOpt(this)">Mittel 6–18 Mon.</button>
+          <button class="option-btn" data-q="duration" data-v="long" onclick="selectOpt(this)">Lang &gt; 18 Mon.</button>
+        </div>
+      </div>
+      <div class="question-block">
+        <div class="question-label">2. Was ist eure größte Herausforderung?</div>
+        <div class="option-grid">
+          <button class="option-btn" data-q="challenge" data-v="time" onclick="selectOpt(this)">Zeit</button>
+          <button class="option-btn" data-q="challenge" data-v="quality" onclick="selectOpt(this)">Qualität</button>
+          <button class="option-btn" data-q="challenge" data-v="communication" onclick="selectOpt(this)">Kommunikation</button>
+          <button class="option-btn" data-q="challenge" data-v="complexity" onclick="selectOpt(this)">Komplexität</button>
+        </div>
+      </div>
+      <div class="question-block">
+        <div class="question-label">3. Was ist euer Hauptziel mit KI-Einsatz?</div>
+        <div class="option-grid">
+          <button class="option-btn" data-q="goal" data-v="efficiency" onclick="selectOpt(this)">Effizienz</button>
+          <button class="option-btn" data-q="goal" data-v="quality" onclick="selectOpt(this)">Qualität</button>
+          <button class="option-btn" data-q="goal" data-v="transparency" onclick="selectOpt(this)">Transparenz</button>
+          <button class="option-btn" data-q="goal" data-v="compliance" onclick="selectOpt(this)">Compliance</button>
+        </div>
+      </div>
+      <div class="question-block">
+        <div class="question-label">4. Wie viel KI-Erfahrung hat das Team?</div>
+        <div class="option-grid">
+          <button class="option-btn" data-q="experience" data-v="none" onclick="selectOpt(this)">Keine</button>
+          <button class="option-btn" data-q="experience" data-v="some" onclick="selectOpt(this)">Etwas</button>
+          <button class="option-btn" data-q="experience" data-v="good" onclick="selectOpt(this)">Gut</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closePrioModal()">Abbrechen</button>
+      <button class="btn-primary" id="applyPrioBtn" onclick="applyAiPrio()" disabled>Anwenden</button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left" id="bottomBarText"></div>
+  <button class="btn-cta" onclick="proceed()">
+    Bewertung starten
+    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────
+const ALL_UCS = {
+"UC-01":{ id:"UC-01", title:"Erstellung von Projektstatusberichten", category:"Kommunikation & Reporting", desc:"KI aggregiert Projektdaten und erstellt Statusberichte automatisch.", ethical:false, regulated:false, cls:"significant" },
+"UC-02":{ id:"UC-02", title:"Zusammenfassung von Meetings", category:"Dokumentation & Wissen", desc:"KI transkribiert und fasst Meetinginhalte, Entscheidungen und Action Items zusammen.", ethical:true, regulated:false, cls:"significant" },
+"UC-03":{ id:"UC-03", title:"Erstellung von Präsentationen", category:"Kommunikation & Reporting", desc:"KI erstellt Gliederung, Texte und Vorschläge für Folien.", ethical:false, regulated:false, cls:"nice_to_have" },
+"UC-04":{ id:"UC-04", title:"Erstellung von Projektdokumentation", category:"Dokumentation & Wissen", desc:"KI erstellt und pflegt Projektdokumente wie Konzepte und Spezifikationen.", ethical:false, regulated:true, cls:"significant" },
+"UC-05":{ id:"UC-05", title:"Formulierung von Stakeholder-Kommunikation", category:"Kommunikation & Reporting", desc:"KI formuliert E-Mails und Updates zielgruppengerecht.", ethical:false, regulated:false, cls:"nice_to_have" },
+"UC-06":{ id:"UC-06", title:"Live-Zusammenfassung während Meetings", category:"Meeting-Unterstützung (Live)", desc:"KI fasst laufende Diskussionen in Echtzeit zusammen.", ethical:true, regulated:false, cls:"nice_to_have" },
+"UC-07":{ id:"UC-07", title:"Vorschläge für nächste Fragen im Meeting", category:"Meeting-Unterstützung (Live)", desc:"KI schlägt dem Moderator relevante Folgefragen vor.", ethical:false, regulated:false, cls:"nice_to_have" },
+"UC-08":{ id:"UC-08", title:"Hinweise auf offene Punkte", category:"Meeting-Unterstützung (Live)", desc:"KI erkennt ungelöste Fragen und gibt dem Moderator einen diskreten Hinweis.", ethical:false, regulated:false, cls:"valuable" },
+"UC-09":{ id:"UC-09", title:"Coaching des Moderators während Meetings", category:"Meeting-Unterstützung (Live)", desc:"KI gibt dem Moderator Echtzeit-Hinweise zur Meetingführung.", ethical:true, regulated:false, cls:"nice_to_have" },
+"UC-10":{ id:"UC-10", title:"Erstellung von Projektplänen", category:"Planung & Steuerung", desc:"KI erstellt auf Basis von Projektbeschreibung einen strukturierten Projektplan.", ethical:false, regulated:false, cls:"valuable" },
+"UC-11":{ id:"UC-11", title:"Schätzung von Aufwänden", category:"Planung & Steuerung", desc:"KI unterstützt bei der Aufwandsschätzung durch Analyse ähnlicher Projekte.", ethical:false, regulated:false, cls:"valuable" },
+"UC-12":{ id:"UC-12", title:"Optimierung von Zeitplänen", category:"Planung & Steuerung", desc:"KI analysiert Abhängigkeiten und schlägt optimierte Zeitpläne vor.", ethical:false, regulated:false, cls:"valuable" },
+"UC-13":{ id:"UC-13", title:"Simulation von Projektszenarien", category:"Planung & Steuerung", desc:"KI simuliert 'Was wäre wenn'-Szenarien mit Auswirkungen auf Zeit, Kosten und Qualität.", ethical:false, regulated:false, cls:"significant" },
+"UC-14":{ id:"UC-14", title:"Unterstützung bei Stage-Gate-Bewertungen", category:"Planung & Steuerung", desc:"KI bereitet Stage-Gate-Entscheidungen vor und erstellt Entscheidungsvorlagen.", ethical:true, regulated:true, cls:"valuable" },
+"UC-15":{ id:"UC-15", title:"Bewertung von Risiken", category:"Risiko & Entscheidung", desc:"KI identifiziert und bewertet Projektrisiken auf Basis von Mustererkennung.", ethical:false, regulated:true, cls:"significant" },
+"UC-16":{ id:"UC-16", title:"Erstellung von Entscheidungsvorlagen", category:"Risiko & Entscheidung", desc:"KI strukturiert Entscheidungsbedarfe und bereitet Empfehlungen auf.", ethical:true, regulated:false, cls:"valuable" },
+"UC-17":{ id:"UC-17", title:"Analyse von Projektperformance", category:"Risiko & Entscheidung", desc:"KI analysiert KPIs und Trends und gibt Hinweise auf Abweichungen.", ethical:false, regulated:false, cls:"significant" },
+"UC-18":{ id:"UC-18", title:"Erstellung von Testfällen", category:"Qualität & Testing", desc:"KI generiert auf Basis von Anforderungen strukturierte Testfälle.", ethical:false, regulated:true, cls:"significant" },
+"UC-20":{ id:"UC-20", title:"Identifikation von Qualitätsproblemen", category:"Qualität & Testing", desc:"KI erkennt frühzeitig Qualitätsmuster und warnt vor systemischen Problemen.", ethical:false, regulated:false, cls:"significant" },
+"UC-21":{ id:"UC-21", title:"Beantwortung von Projektfragen", category:"Dokumentation & Wissen", desc:"KI beantwortet Fragen von Projektmitgliedern aus der Projektdokumentation.", ethical:false, regulated:false, cls:"significant" },
+"UC-22":{ id:"UC-22", title:"Durchsuchung von Projektdokumentation", category:"Dokumentation & Wissen", desc:"KI durchsucht Projektdokumentation semantisch.", ethical:false, regulated:false, cls:"valuable" },
+"UC-24":{ id:"UC-24", title:"Onboarding neuer Projektmitglieder", category:"Dokumentation & Wissen", desc:"KI führt neue Teammitglieder durch den Projektkontext.", ethical:false, regulated:false, cls:"significant" },
+"UC-25":{ id:"UC-25", title:"Vendor- und Vertragsmanagement", category:"Risiko & Entscheidung", desc:"KI analysiert Verträge, identifiziert Risiken und unterstützt bei der Lieferantenbewertung.", ethical:false, regulated:true, cls:"valuable" },
+"UC-26":{ id:"UC-26", title:"Budgetüberwachung und Kostenprognose", category:"Planung & Steuerung", desc:"KI überwacht den Budgetverbrauch und erstellt Kostenprognosen.", ethical:false, regulated:false, cls:"significant" }
+};
+
+// Category → AI domain key
+const CAT_KEY = {
+  'Kommunikation & Reporting':'comm',
+  'Dokumentation & Wissen':'docs',
+  'Planung & Steuerung':'plan',
+  'Risiko & Entscheidung':'risk',
+  'Meeting-Unterstützung (Live)':'meeting',
+  'Qualität & Testing':'test'
+};
+
+// ── STATE ──────────────────────────────────────────────────
+let project = null;
+let sofortItems = [];
+let shortlistItems = [];
+let prioAnswers = {};
+let aiApplied = false;
+
+// ── INIT ──────────────────────────────────────────────────
+function init() {
+  const saved = localStorage.getItem('trust_ai_project');
+  if (saved) { project = JSON.parse(saved); }
+  else { project = {}; }
+
+  let results = project.swipe_results || [];
+
+  // Demo data if empty
+  if (!results.length) {
+    results = [
+      {use_case_id:'UC-01',decision:'up'},
+      {use_case_id:'UC-02',decision:'right'},
+      {use_case_id:'UC-04',decision:'up'},
+      {use_case_id:'UC-10',decision:'right'},
+      {use_case_id:'UC-15',decision:'right'},
+      {use_case_id:'UC-17',decision:'right'},
+      {use_case_id:'UC-21',decision:'right'},
+      {use_case_id:'UC-26',decision:'right'},
+    ];
+  }
+
+  // De-duplicate
+  const seen = new Set();
+  for (const r of results) {
+    if (seen.has(r.use_case_id)) continue;
+    seen.add(r.use_case_id);
+    const uc = ALL_UCS[r.use_case_id];
+    if (!uc) continue;
+    if (r.decision === 'up') sofortItems.push(uc);
+    else if (r.decision === 'right') shortlistItems.push(uc);
+  }
+
+  const total = sofortItems.length + shortlistItems.length;
+  const aiBanner = document.getElementById('aiBanner');
+  if (total <= 5) aiBanner.style.display = 'none';
+
+  renderAll();
+  updateBottomBar();
+}
+
+// ── RENDER ─────────────────────────────────────────────────
+function renderAll() {
+  renderStats();
+  renderSofort();
+  renderShortlist();
+}
+
+function renderStats() {
+  const row = document.getElementById('statsRow');
+  let html = '';
+  if (sofortItems.length) html += `<div class="stat-chip sofort"><div class="stat-dot"></div>${sofortItems.length} Sofort</div>`;
+  if (shortlistItems.length) html += `<div class="stat-chip shortlist"><div class="stat-dot"></div>${shortlistItems.length} Shortlist</div>`;
+  html += `<div class="stat-chip total"><div class="stat-dot"></div>${sofortItems.length+shortlistItems.length} gesamt</div>`;
+  row.innerHTML = html;
+}
+
+function renderSofort() {
+  const sec = document.getElementById('sofortSection');
+  const wrap = document.getElementById('sofortListWrap');
+  const sl = document.getElementById('sofortSortable');
+  if (!sofortItems.length) { sec.style.display='none'; wrap.style.display='none'; return; }
+  sec.style.display='flex'; wrap.style.display='block';
+  sl.innerHTML = sofortItems.map((uc,i) => card(uc, i+1, true)).join('');
+  makeSortable(sl, 'sofort');
+}
+
+function renderShortlist() {
+  const sl = document.getElementById('shortlistSortable');
+  const em = document.getElementById('emptyState');
+  if (!shortlistItems.length) { em.classList.add('visible'); sl.innerHTML=''; return; }
+  em.classList.remove('visible');
+  sl.innerHTML = shortlistItems.map((uc,i) => card(uc, sofortItems.length+i+1, false)).join('');
+  makeSortable(sl, 'shortlist');
+}
+
+function card(uc, rank, isSofort) {
+  const clsLabel = {significant:'Hohe Priorität',valuable:'Wertvoll',nice_to_have:'Nice-to-have'}[uc.cls]||'';
+  const aiArrow = aiApplied ? (() => { const s=aiScore(uc); return s>=8?'↑':s>=5?'→':'↓'; })() : '';
+  return `<div class="uc-card ${isSofort?'sofort-card':''} ${aiApplied?'show-ai':''}"
+    data-id="${uc.id}" data-list="${isSofort?'sofort':'shortlist'}">
+    <div class="uc-card-top">
+      <div class="drag-handle"><span></span><span></span><span></span></div>
+      <div class="uc-rank">${rank}</div>
+      <div class="uc-content">
+        <div class="uc-title">${uc.title}</div>
+        <div class="uc-desc">${uc.desc}</div>
+        <div class="uc-footer">
+          <span class="uc-category">${uc.category}</span>
+          ${isSofort?'<span class="uc-badge sofort">⚡ Sofort</span>':''}
+          ${uc.ethical?'<span class="uc-badge ethical">⚠ Ethik</span>':''}
+          ${uc.regulated?'<span class="uc-badge regulated">§ Reg.</span>':''}
+          ${uc.cls?`<span class="uc-consequence ${uc.cls}">${clsLabel}</span>`:''}
+        </div>
+      </div>
+    </div>
+    ${aiApplied?`<div class="ai-score-badge">${aiArrow}</div>`:''}
+  </div>`;
+}
+
+function updateBottomBar() {
+  const n = sofortItems.length + shortlistItems.length;
+  document.getElementById('bottomBarText').innerHTML = `<strong>${n} Use Case${n===1?'':'s'}</strong> bereit für Bewertung`;
+}
+
+// ── DRAG & DROP ────────────────────────────────────────────
+let drag = { el:null, list:null, ghost:null, ox:0, oy:0, insertBefore:null };
+
+function makeSortable(container, listType) {
+  container.querySelectorAll('.uc-card').forEach(card => {
+    card.addEventListener('mousedown', e => startD(e, card, container, listType, false));
+    card.addEventListener('touchstart', e => startD(e, card, container, listType, true), {passive:false});
+  });
+}
+
+function getPos(e, touch) {
+  if (touch) { const t=e.touches[0]; return {x:t.clientX,y:t.clientY}; }
+  return {x:e.clientX,y:e.clientY};
+}
+
+function startD(e, card, container, listType, touch) {
+  if (touch) e.preventDefault();
+  const pos = getPos(e, touch);
+  const r = card.getBoundingClientRect();
+
+  // Build ghost
+  const g = card.cloneNode(true);
+  Object.assign(g.style, {
+    position:'fixed', top:r.top+'px', left:r.left+'px', width:r.width+'px',
+    zIndex:1000, pointerEvents:'none', opacity:'0.92',
+    transform:'rotate(1.5deg) scale(1.02)', boxShadow:'0 16px 48px rgba(0,0,0,0.2)',
+    borderRadius:'14px', background:'var(--surface)', transition:'none'
+  });
+  document.body.appendChild(g);
+
+  drag = { el:card, container, listType, ghost:g, ox:pos.x-r.left, oy:pos.y-r.top };
+  card.classList.add('dragging');
+  document.body.style.cursor = 'grabbing';
+
+  if (touch) {
+    document.addEventListener('touchmove', onMove, {passive:false});
+    document.addEventListener('touchend', onEnd);
+  } else {
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+  }
+}
+
+function onMove(e) {
+  if (!drag.ghost) return;
+  const touch = e.type === 'touchmove';
+  if (touch) e.preventDefault();
+  const pos = getPos(e, touch);
+  drag.ghost.style.left = (pos.x - drag.ox) + 'px';
+  drag.ghost.style.top = (pos.y - drag.oy) + 'px';
+
+  const cards = [...drag.container.querySelectorAll('.uc-card:not(.dragging)')];
+  cards.forEach(c => c.classList.remove('drag-over'));
+  drag.insertBefore = null;
+  for (const c of cards) {
+    const r = c.getBoundingClientRect();
+    if (pos.y < r.top + r.height/2) { drag.insertBefore = c; c.classList.add('drag-over'); break; }
+  }
+}
+
+function onEnd(e) {
+  if (!drag.ghost) return;
+  const touch = e.type === 'touchend';
+  drag.ghost.remove();
+  drag.el.classList.remove('dragging');
+  document.body.style.cursor = '';
+  drag.container.querySelectorAll('.drag-over').forEach(c => c.classList.remove('drag-over'));
+
+  if (touch) { document.removeEventListener('touchmove', onMove); document.removeEventListener('touchend', onEnd); }
+  else { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onEnd); }
+
+  // Reorder
+  const id = drag.el.dataset.id;
+  const arr = drag.listType === 'sofort' ? sofortItems : shortlistItems;
+  const from = arr.findIndex(u => u.id === id);
+  if (from < 0) { drag={}; return; }
+
+  let to;
+  if (drag.insertBefore) { to = arr.findIndex(u => u.id === drag.insertBefore.dataset.id); if (to > from) to--; }
+  else to = arr.length - 1;
+
+  if (to !== from && to >= 0) {
+    const [item] = arr.splice(from, 1);
+    arr.splice(to, 0, item);
+    if (drag.listType === 'sofort') sofortItems = arr;
+    else shortlistItems = arr;
+  }
+
+  drag = {};
+  if (drag.listType === 'sofort') renderSofort(); else renderAll();
+  // Since drag is reset, just re-render both
+  setTimeout(renderAll, 0);
+}
+
+// ── AI PRIO ────────────────────────────────────────────────
+function aiScore(uc) {
+  let s = 0;
+  const cat = CAT_KEY[uc.category] || 'other';
+  const goal = prioAnswers.goal || 'efficiency';
+  const chal = prioAnswers.challenge || 'time';
+  const dur = prioAnswers.duration || 'medium';
+  const exp = prioAnswers.experience || 'some';
+
+  // Goal ↔ category alignment
+  const goalMap = {
+    efficiency: {comm:3,docs:2,plan:2,meeting:2},
+    quality: {test:3,risk:2,docs:2},
+    transparency: {meeting:3,comm:2,risk:1},
+    compliance: {risk:3,docs:3,test:2}
+  };
+  s += goalMap[goal]?.[cat] || 0;
+
+  // Challenge ↔ category
+  const chalMap = {
+    time: {comm:3,docs:2,plan:2},
+    quality: {test:3,risk:2},
+    communication: {comm:3,meeting:3},
+    complexity: {plan:3,risk:2}
+  };
+  s += chalMap[chal]?.[cat] || 0;
+
+  // Consequence weight
+  if (uc.cls === 'significant') s += 2;
+  else if (uc.cls === 'valuable') s += 1;
+
+  // Duration × complexity penalty
+  const heavy = ['UC-13','UC-15','UC-17','UC-20','UC-26'];
+  if (dur === 'short' && heavy.includes(uc.id)) s -= 2;
+
+  // Experience
+  const beginner = ['UC-01','UC-02','UC-03','UC-05'];
+  const advanced = ['UC-13','UC-15','UC-17','UC-26'];
+  if (exp === 'none' && beginner.includes(uc.id)) s += 1;
+  if (exp === 'good' && advanced.includes(uc.id)) s += 1;
+
+  return s;
+}
+
+function openPrioModal() { document.getElementById('prioModal').classList.add('open'); }
+function closePrioModal() { document.getElementById('prioModal').classList.remove('open'); }
+function dismissAiBanner() { document.getElementById('aiBanner').style.display='none'; }
+
+function selectOpt(btn) {
+  btn.closest('.option-grid').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  prioAnswers[btn.dataset.q] = btn.dataset.v;
+  const all = ['duration','challenge','goal','experience'].every(k => prioAnswers[k]);
+  document.getElementById('applyPrioBtn').disabled = !all;
+}
+
+function applyAiPrio() {
+  closePrioModal();
+  document.getElementById('aiBanner').style.display = 'none';
+  shortlistItems.sort((a,b) => aiScore(b) - aiScore(a));
+  aiApplied = true;
+  renderAll();
+  document.getElementById('aiAppliedBanner').classList.add('visible');
+}
+
+// ── PROCEED ────────────────────────────────────────────────
+function proceed() {
+  project.shortlist = [
+    ...sofortItems.map((uc,i) => ({use_case_id:uc.id, priority:i+1, status:'pending', decision:'up'})),
+    ...shortlistItems.map((uc,i) => ({use_case_id:uc.id, priority:sofortItems.length+i+1, status:'pending', decision:'right'}))
+  ];
+  project.prio_answers = prioAnswers;
+  project.ai_prio_applied = aiApplied;
+  project.status = 'assessment';
+  localStorage.setItem('trust_ai_project', JSON.stringify(project));
+  window.location.href = 'trust-ai-screen5.html';
+}
+
+init();
+</script>
+</body>
+</html>
