@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  /* ── Reset & Base ── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -17,20 +16,18 @@
     --accent-subtle: rgba(79,110,247,0.10);
     --accent-border: rgba(79,110,247,0.30);
     --success: #22C55E;
+    --success-subtle: rgba(34,197,94,0.10);
+    --success-border: rgba(34,197,94,0.30);
     --warning: #F59E0B;
     --danger: #EF4444;
-
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
-    --radius-xl: 28px;
-
     --transition: 180ms cubic-bezier(0.4,0,0.2,1);
     --shadow-card: 0 2px 16px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
     --shadow-focus: 0 0 0 3px rgba(79,110,247,0.25);
   }
 
-  /* ── Light Theme ── */
   :root, [data-theme="light"] {
     --bg: #F4F5F8;
     --surface: #FFFFFF;
@@ -41,12 +38,9 @@
     --text-primary: #0F1523;
     --text-secondary: #5A6075;
     --text-tertiary: #9299B0;
-    --tag-bg: #EEF0F6;
-    --tag-text: #5A6075;
     --nav-bg: rgba(244,245,248,0.85);
   }
 
-  /* ── Dark Theme ── */
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #0D0F17;
@@ -58,8 +52,6 @@
       --text-primary: #EDF0FF;
       --text-secondary: #8B92B0;
       --text-tertiary: #555D7A;
-      --tag-bg: #1C2030;
-      --tag-text: #8B92B0;
       --nav-bg: rgba(13,15,23,0.85);
       --shadow-card: 0 2px 16px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
     }
@@ -76,651 +68,322 @@
 
   /* ── Nav ── */
   nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    position: sticky; top: 0; z-index: 100;
     background: var(--nav-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding: 0 24px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
   }
-
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-  }
-
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
   .nav-logo-mark {
-    width: 32px;
-    height: 32px;
-    background: var(--accent);
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    width: 32px; height: 32px; background: var(--accent);
+    border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-
-  .nav-logo-mark svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: #fff;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .nav-logo-text {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: -0.01em;
-  }
-
-  .nav-logo-text span {
-    color: var(--accent);
-  }
-
-  .nav-step-indicator {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-tertiary);
-    letter-spacing: 0.05em;
-  }
+  .nav-logo-mark svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-logo-text { font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
+  .nav-logo-text span { color: var(--accent); }
+  .nav-step-indicator { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-tertiary); letter-spacing: 0.05em; }
 
   /* ── Layout ── */
-  .page {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 40px 20px 80px;
-  }
+  .page { max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
 
   /* ── Page Header ── */
-  .page-header {
-    margin-bottom: 36px;
-    animation: fadeUp 0.4s ease both;
-  }
-
+  .page-header { margin-bottom: 36px; animation: fadeUp 0.4s ease both; }
   .page-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-subtle);
-    border: 1px solid var(--accent-border);
-    border-radius: 100px;
-    padding: 4px 12px;
-    margin-bottom: 16px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-subtle); border: 1px solid var(--accent-border);
+    border-radius: 100px; padding: 4px 12px; margin-bottom: 16px;
   }
+  .page-eyebrow svg { width: 12px; height: 12px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; }
+  .page-title { font-size: clamp(24px, 5vw, 32px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; color: var(--text-primary); margin-bottom: 10px; }
+  .page-subtitle { font-size: 15px; color: var(--text-secondary); line-height: 1.6; font-weight: 300; }
 
-  .page-eyebrow svg {
-    width: 12px;
-    height: 12px;
-    stroke: var(--accent);
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-  }
-
-  .page-title {
-    font-size: clamp(24px, 5vw, 32px);
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    color: var(--text-primary);
-    margin-bottom: 10px;
-  }
-
-  .page-subtitle {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    font-weight: 300;
-  }
-
-  /* ── Progress Bar ── */
-  .progress-bar-wrap {
-    margin-bottom: 32px;
-    animation: fadeUp 0.4s 0.05s ease both;
-  }
-
-  .progress-steps {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-
-  .progress-step {
-    flex: 1;
-    height: 3px;
-    border-radius: 100px;
-    background: var(--border);
-    transition: background var(--transition);
-  }
-
-  .progress-step.active {
-    background: var(--accent);
-  }
-
-  .progress-step.done {
-    background: var(--accent);
-    opacity: 0.4;
-  }
-
-  .progress-label {
-    font-size: 12px;
-    color: var(--text-tertiary);
-  }
-
-  .progress-label strong {
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
+  /* ── Progress ── */
+  .progress-bar-wrap { margin-bottom: 32px; animation: fadeUp 0.4s 0.05s ease both; }
+  .progress-steps { display: flex; gap: 6px; margin-bottom: 10px; }
+  .progress-step { flex: 1; height: 3px; border-radius: 100px; background: var(--border); transition: background var(--transition); }
+  .progress-step.active { background: var(--accent); }
+  .progress-step.done { background: var(--accent); opacity: 0.4; }
+  .progress-label { font-size: 12px; color: var(--text-tertiary); }
+  .progress-label strong { color: var(--text-secondary); font-weight: 500; }
 
   /* ── Card ── */
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    box-shadow: var(--shadow-card);
-    animation: fadeUp 0.4s 0.1s ease both;
-    margin-bottom: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 28px;
+    box-shadow: var(--shadow-card); animation: fadeUp 0.4s 0.1s ease both; margin-bottom: 16px;
   }
+  .card-title { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 20px; }
 
-  .card-title {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--text-tertiary);
-    margin-bottom: 20px;
-  }
-
-  /* ── Form Elements ── */
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-group:last-child {
-    margin-bottom: 0;
-  }
+  /* ── Form ── */
+  .form-group { margin-bottom: 20px; }
+  .form-group:last-child { margin-bottom: 0; }
 
   label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 7px;
+    display: block; font-size: 14px; font-weight: 500;
+    color: var(--text-primary); margin-bottom: 7px;
   }
+  label .hint { font-weight: 400; color: var(--text-tertiary); font-size: 13px; margin-left: 4px; }
+  .required { color: var(--accent); margin-left: 2px; }
 
-  label .required {
-    color: var(--accent);
-    margin-left: 2px;
-  }
-
-  label .hint {
-    font-weight: 400;
-    color: var(--text-tertiary);
-    font-size: 13px;
-    margin-left: 4px;
-  }
-
-  input[type="text"],
-  input[type="email"],
-  textarea,
-  select {
-    width: 100%;
-    background: var(--surface-2);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 11px 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    color: var(--text-primary);
-    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+  input[type="text"], input[type="email"], textarea {
+    width: 100%; background: var(--surface-2); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 11px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-primary);
+    transition: border-color var(--transition), box-shadow var(--transition);
     outline: none;
-    appearance: none;
-    -webkit-appearance: none;
   }
+  input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
+  input:focus, textarea:focus { border-color: var(--accent); box-shadow: var(--shadow-focus); background: var(--surface); }
 
-  input[type="text"]::placeholder,
-  input[type="email"]::placeholder,
-  textarea::placeholder {
-    color: var(--text-tertiary);
-  }
+  textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
 
-  input[type="text"]:hover,
-  input[type="email"]:hover,
-  textarea:hover,
-  select:hover {
-    border-color: var(--border-hover);
-  }
+  .has-error input, .has-error textarea { border-color: var(--danger); }
+  .field-error { display: none; font-size: 12px; color: var(--danger); margin-top: 5px; }
+  .has-error .field-error { display: block; }
 
-  input[type="text"]:focus,
-  input[type="email"]:focus,
-  textarea:focus,
-  select:focus {
-    border-color: var(--accent);
-    box-shadow: var(--shadow-focus);
-    background: var(--surface);
-  }
+  .char-count { font-size: 12px; color: var(--text-tertiary); text-align: right; margin-top: 4px; font-family: 'DM Mono', monospace; }
 
-  textarea {
-    resize: vertical;
-    min-height: 90px;
-    line-height: 1.6;
-  }
-
-  .char-count {
-    text-align: right;
-    font-size: 12px;
-    color: var(--text-tertiary);
-    margin-top: 5px;
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* ── Select Custom Arrow ── */
-  .select-wrapper {
-    position: relative;
-  }
-
-  .select-wrapper::after {
-    content: '';
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid var(--text-tertiary);
-    pointer-events: none;
-  }
-
-  select option {
-    background: var(--surface);
-    color: var(--text-primary);
-  }
-
-  /* ── Tag Chips (Multi-Select) ── */
-  .chip-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: 100px;
-    border: 1.5px solid var(--border);
-    background: var(--surface-2);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all var(--transition);
-    user-select: none;
-    -webkit-user-select: none;
-  }
-
-  .chip:hover {
-    border-color: var(--accent-border);
-    color: var(--text-primary);
-  }
-
-  .chip.selected {
-    background: var(--accent-subtle);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .chip svg {
-    width: 14px;
-    height: 14px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    display: none;
-  }
-
-  .chip.selected svg {
-    display: block;
-  }
-
-  /* ── Project Type Cards ── */
-  .type-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  @media (max-width: 480px) {
-    .type-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+  /* ── Project Type ── */
+  .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .type-grid { grid-template-columns: 1fr; } }
 
   .type-card {
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 16px;
-    cursor: pointer;
-    transition: all var(--transition);
-    background: var(--surface-2);
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    display: flex; align-items: center; gap: 12px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-md);
+    padding: 14px 16px; cursor: pointer;
+    transition: all var(--transition); background: var(--surface-2);
     user-select: none;
-    -webkit-user-select: none;
   }
-
-  .type-card:hover {
-    border-color: var(--accent-border);
-  }
-
-  .type-card.selected {
-    background: var(--accent-subtle);
-    border-color: var(--accent);
-  }
-
+  .type-card:hover { border-color: var(--accent-border); background: var(--accent-subtle); }
+  .type-card.selected { border-color: var(--accent); background: var(--accent-subtle); }
   .type-card-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
-    background: var(--surface-3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    width: 36px; height: 36px; border-radius: 10px; background: var(--surface-3);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     transition: background var(--transition);
   }
+  .type-card.selected .type-card-icon { background: var(--accent-subtle); }
+  .type-card-icon svg { width: 18px; height: 18px; stroke: var(--text-tertiary); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--transition); }
+  .type-card.selected .type-card-icon svg { stroke: var(--accent); }
+  .type-card-label { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .type-card-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.4; margin-top: 2px; }
 
-  .type-card.selected .type-card-icon {
-    background: var(--accent);
+  /* ── Industry Chips ── */
+  .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 13px; border-radius: 100px;
+    border: 1.5px solid var(--border); background: var(--surface-2);
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+    transition: all var(--transition); user-select: none;
   }
+  .chip svg { width: 13px; height: 13px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .chip:hover { border-color: var(--accent-border); color: var(--text-primary); }
+  .chip.selected { border-color: var(--accent); background: var(--accent-subtle); color: var(--accent); font-weight: 500; }
+  .chip.selected svg { stroke: var(--accent); }
 
-  .type-card-icon svg {
-    width: 18px;
-    height: 18px;
-    stroke: var(--text-tertiary);
-    fill: none;
-    stroke-width: 1.75;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: stroke var(--transition);
+  /* ── Tool Inventory (Collapsible) ── */
+  .tool-section-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-radius: var(--radius-md);
+    border: 1.5px dashed var(--border); cursor: pointer;
+    transition: all var(--transition); background: var(--surface-2);
+    user-select: none;
   }
+  .tool-section-toggle:hover { border-color: var(--accent-border); background: var(--accent-subtle); }
+  .tool-section-toggle.open { border-color: var(--accent); background: var(--accent-subtle); border-style: solid; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+  .tool-toggle-left { display: flex; align-items: center; gap: 12px; }
+  .tool-toggle-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--surface-3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .tool-toggle-icon svg { width: 17px; height: 17px; stroke: var(--text-tertiary); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .tool-section-toggle.open .tool-toggle-icon { background: var(--accent-subtle); }
+  .tool-section-toggle.open .tool-toggle-icon svg { stroke: var(--accent); }
+  .tool-toggle-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .tool-toggle-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 1px; }
+  .tool-toggle-badge {
+    font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace;
+    background: var(--success-subtle); color: var(--success); border: 1px solid var(--success-border);
+    border-radius: 100px; padding: 2px 8px;
+  }
+  .tool-toggle-chevron { width: 18px; height: 18px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--transition); flex-shrink: 0; }
+  .tool-section-toggle.open .tool-toggle-chevron { transform: rotate(180deg); stroke: var(--accent); }
 
-  .type-card.selected .type-card-icon svg {
-    stroke: #fff;
+  .tool-body {
+    display: none; border: 1.5px solid var(--accent); border-top: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    padding: 20px; background: var(--surface);
   }
+  .tool-body.visible { display: block; animation: fadeUp 0.25s ease both; }
 
-  .type-card-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 2px;
-    line-height: 1.3;
+  .option-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .option-btn {
+    border: 1.5px solid var(--border); border-radius: var(--radius-md);
+    padding: 14px; cursor: pointer; transition: all var(--transition);
+    background: var(--surface-2); text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 7px; user-select: none;
   }
+  .option-btn:hover { border-color: var(--accent-border); }
+  .option-btn.selected { background: var(--accent-subtle); border-color: var(--accent); }
+  .option-btn svg { width: 22px; height: 22px; stroke: var(--text-tertiary); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--transition); }
+  .option-btn.selected svg { stroke: var(--accent); }
+  .option-btn-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .option-btn-desc { font-size: 11px; color: var(--text-tertiary); line-height: 1.4; }
 
-  .type-card-desc {
-    font-size: 12px;
-    color: var(--text-tertiary);
-    line-height: 1.4;
-  }
+  .csv-section { display: none; }
+  .csv-section.visible { display: block; animation: fadeUp 0.25s ease both; }
 
-  /* ── Divider ── */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 24px 0;
+  .csv-format-hint {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 14px;
   }
+  .csv-format-title { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .csv-code { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-secondary); line-height: 1.7; white-space: pre; overflow-x: auto; }
+  .csv-code .col-header { color: var(--accent); }
+
+  .csv-textarea {
+    width: 100%; background: var(--surface-2); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 12px;
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-primary);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    outline: none; resize: vertical; min-height: 110px; line-height: 1.6;
+  }
+  .csv-textarea:focus { border-color: var(--accent); box-shadow: var(--shadow-focus); background: var(--surface); }
+
+  .csv-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+  .parse-status {
+    display: none; align-items: center; gap: 8px; margin-top: 10px;
+    padding: 10px 14px; border-radius: var(--radius-sm);
+    background: var(--success-subtle); border: 1px solid var(--success-border);
+    font-size: 13px; color: var(--success);
+  }
+  .parse-status.visible { display: flex; }
+  .parse-error {
+    display: none; align-items: center; gap: 8px; margin-top: 10px;
+    padding: 10px 14px; border-radius: var(--radius-sm);
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+    font-size: 13px; color: var(--danger);
+  }
+  .parse-error.visible { display: flex; }
+
+  .tool-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .tool-item {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 12px 14px; border-radius: var(--radius-md); border: 1px solid var(--border);
+    background: var(--surface-2); animation: fadeUp 0.25s ease both;
+  }
+  .tool-item-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .tool-item-vendor { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+  .tool-item-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  .tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 500; }
+  .tag svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .tag-uc { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent-border); }
+  .tag-avv-yes { background: var(--success-subtle); color: var(--success); border: 1px solid var(--success-border); }
+  .tag-avv-no { background: rgba(239,68,68,0.08); color: var(--danger); border: 1px solid rgba(239,68,68,0.25); }
+  .tag-restriction { background: var(--surface-3); color: var(--text-secondary); border: 1px solid var(--border); }
+  .icon-btn {
+    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition); flex-shrink: 0;
+  }
+  .icon-btn svg { width: 14px; height: 14px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .icon-btn.danger:hover { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); }
+  .icon-btn.danger:hover svg { stroke: var(--danger); }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px; border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all var(--transition); border: none; outline: none;
+  }
+  .btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(79,110,247,0.30); }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .btn-primary:disabled { background: var(--surface-3); color: var(--text-tertiary); box-shadow: none; cursor: not-allowed; transform: none; }
+  .btn-ghost { background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text-primary); }
+  .btn-sm { padding: 8px 14px; font-size: 13px; }
 
   /* ── Info Box ── */
   .info-box {
-    display: flex;
-    gap: 12px;
-    background: var(--accent-subtle);
-    border: 1px solid var(--accent-border);
-    border-radius: var(--radius-md);
-    padding: 14px 16px;
-    margin-bottom: 16px;
-    animation: fadeUp 0.4s 0.15s ease both;
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 16px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.5;
   }
+  .info-box svg { width: 16px; height: 16px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; margin-top: 1px; }
+  .info-box strong { color: var(--text-primary); }
 
-  .info-box svg {
-    width: 18px;
-    height: 18px;
-    stroke: var(--accent);
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .info-box-text {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.55;
-  }
-
-  /* ── Footer Actions ── */
-  .form-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-top: 8px;
-    animation: fadeUp 0.4s 0.2s ease both;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 22px;
-    border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition);
-    border: none;
-    outline: none;
-    text-decoration: none;
-  }
-
-  .btn svg {
-    width: 17px;
-    height: 17px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(79,110,247,0.30);
-  }
-
-  .btn-primary:hover {
-    background: var(--accent-hover);
-    box-shadow: 0 4px 16px rgba(79,110,247,0.40);
-    transform: translateY(-1px);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0);
-  }
-
-  .btn-primary:disabled {
-    background: var(--surface-3);
-    color: var(--text-tertiary);
-    box-shadow: none;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--text-secondary);
-    border: 1.5px solid var(--border);
-  }
-
-  .btn-ghost:hover {
-    border-color: var(--border-hover);
-    color: var(--text-primary);
-  }
-
-  .required-note {
-    font-size: 13px;
-    color: var(--text-tertiary);
-  }
-
-  .required-note span {
-    color: var(--accent);
-  }
-
-  /* ── Validation ── */
-  .field-error {
-    font-size: 12px;
-    color: var(--danger);
-    margin-top: 5px;
-    display: none;
-  }
-
-  .form-group.has-error input,
-  .form-group.has-error textarea,
-  .form-group.has-error select {
-    border-color: var(--danger);
-  }
-
-  .form-group.has-error .field-error {
-    display: block;
-  }
+  /* ── Footer ── */
+  .form-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; gap: 16px; flex-wrap: wrap; }
+  .required-note { font-size: 12px; color: var(--text-tertiary); }
+  .required-note span { color: var(--accent); }
 
   /* ── Toast ── */
   .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 12px 20px;
-    font-size: 14px;
-    color: var(--text-primary);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-    z-index: 999;
-    white-space: nowrap;
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--text-primary); color: var(--bg); padding: 12px 20px; border-radius: 100px;
+    font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 999; white-space: nowrap;
   }
+  .toast svg { width: 15px; height: 15px; stroke: var(--success); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
 
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-  }
-
-  .toast svg {
-    width: 18px;
-    height: 18px;
-    stroke: var(--success);
-    fill: none;
-    stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex-shrink: 0;
-  }
-
-  /* ── Animations ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
 
-<!-- Nav -->
 <nav>
   <a class="nav-logo" href="trust-ai-screen7.html">
     <div class="nav-logo-mark">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/>
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/></svg>
     </div>
     <span class="nav-logo-text">TRUST<span>-AI</span></span>
   </a>
-  <span class="nav-step-indicator">SCHRITT 1 / 7</span>
+  <span class="nav-step-indicator">SCHRITT 1 VON 4</span>
 </nav>
 
-<!-- Page -->
 <main class="page">
 
-  <!-- Header -->
   <div class="page-header">
     <div class="page-eyebrow">
-      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Neues Projekt
     </div>
     <h1 class="page-title">Projekt anlegen</h1>
-    <p class="page-subtitle">Beschreibe dein Projekt – die Angaben helfen dabei, die richtigen KI-Use Cases vorzuschlagen und das Manifest passend zu erstellen.</p>
+    <p class="page-subtitle">Beschreibe dein Projekt und lade optional euer Tool-Inventar hoch – alles an einem Ort.</p>
   </div>
 
-  <!-- Progress -->
   <div class="progress-bar-wrap">
     <div class="progress-steps">
       <div class="progress-step active"></div>
       <div class="progress-step"></div>
       <div class="progress-step"></div>
       <div class="progress-step"></div>
-      <div class="progress-step"></div>
-      <div class="progress-step"></div>
-      <div class="progress-step"></div>
     </div>
-    <div class="progress-label"><strong>Projekt anlegen</strong> · Tool-Inventar → Use Cases → Priorisierung → Bewertung → Manifest → Abschluss</div>
+    <div class="progress-label"><strong>Projektdetails</strong> – Use Cases entdecken · Bewertung · Manifest</div>
   </div>
 
   <!-- Card 1: Basics -->
   <div class="card">
-    <div class="card-title">Grundinfos</div>
+    <div class="card-title">Projektdetails</div>
 
     <div class="form-group" id="group-name">
       <label for="project-name">Projektname <span class="required">*</span></label>
-      <input type="text" id="project-name" placeholder="z.B. ERP-Rollout Q3 2026" maxlength="80" oninput="updateChar('project-name','name-count',80); validate('group-name','project-name')"/>
+      <input type="text" id="project-name" placeholder="z.B. ERP-Migration auf SAP S/4HANA" maxlength="80"
+        oninput="updateChar('project-name','name-count',80); validate('group-name','project-name')"/>
       <div class="char-count"><span id="name-count">0</span> / 80</div>
       <div class="field-error" id="err-name">Bitte gib einen Projektnamen ein.</div>
     </div>
 
     <div class="form-group" id="group-desc">
       <label for="project-desc">Kurzbeschreibung <span class="required">*</span> <span class="hint">– Was ist das Ziel des Projekts?</span></label>
-      <textarea id="project-desc" placeholder="z.B. Migration des bestehenden ERP-Systems auf SAP S/4HANA inklusive Change Management und Schulungen für 400 Mitarbeitende." maxlength="400" oninput="updateChar('project-desc','desc-count',400); validate('group-desc','project-desc')"></textarea>
+      <textarea id="project-desc" placeholder="z.B. Migration des bestehenden ERP-Systems auf SAP S/4HANA inklusive Change Management und Schulungen für 400 Mitarbeitende." maxlength="400"
+        oninput="updateChar('project-desc','desc-count',400); validate('group-desc','project-desc')"></textarea>
       <div class="char-count"><span id="desc-count">0</span> / 400</div>
       <div class="field-error" id="err-desc">Bitte beschreibe das Projekt kurz.</div>
     </div>
@@ -736,47 +399,22 @@
   <div class="card">
     <div class="card-title">Projektart <span style="color:var(--accent);font-size:11px;">*</span></div>
     <div class="type-grid" id="type-grid">
-
       <div class="type-card" data-type="it" onclick="selectType(this)">
-        <div class="type-card-icon">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-        </div>
-        <div>
-          <div class="type-card-label">IT-Projekt</div>
-          <div class="type-card-desc">Software, Infrastruktur, digitale Transformation</div>
-        </div>
+        <div class="type-card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <div><div class="type-card-label">IT-Projekt</div><div class="type-card-desc">Software, Infrastruktur, Transformation</div></div>
       </div>
-
       <div class="type-card" data-type="org" onclick="selectType(this)">
-        <div class="type-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <div>
-          <div class="type-card-label">Org-Projekt</div>
-          <div class="type-card-desc">Change Management, Restrukturierung, Prozesse</div>
-        </div>
+        <div class="type-card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div><div class="type-card-label">Org-Projekt</div><div class="type-card-desc">Change, Restrukturierung, Prozesse</div></div>
       </div>
-
       <div class="type-card" data-type="product" onclick="selectType(this)">
-        <div class="type-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        </div>
-        <div>
-          <div class="type-card-label">Produktentwicklung</div>
-          <div class="type-card-desc">Neue Produkte, Features, Hardware/Software</div>
-        </div>
+        <div class="type-card-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <div><div class="type-card-label">Produktentwicklung</div><div class="type-card-desc">Neue Produkte, Features, Hardware</div></div>
       </div>
-
       <div class="type-card" data-type="other" onclick="selectType(this)">
-        <div class="type-card-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-        </div>
-        <div>
-          <div class="type-card-label">Sonstiges</div>
-          <div class="type-card-desc">Beratung, Strategie, Forschung & Analyse</div>
-        </div>
+        <div class="type-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+        <div><div class="type-card-label">Sonstiges</div><div class="type-card-desc">Beratung, Strategie, Forschung</div></div>
       </div>
-
     </div>
     <div class="field-error" id="err-type" style="margin-top:10px;">Bitte wähle eine Projektart.</div>
   </div>
@@ -820,54 +458,112 @@
     </div>
   </div>
 
-  <!-- Info Box -->
-  <div class="info-box">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-    <div class="info-box-text">
-      <strong>Deine Daten bleiben lokal.</strong> Im MVP werden alle Projektdaten ausschließlich in deinem Browser gespeichert. Nichts wird übertragen oder geteilt.
+  <!-- Card 4: Tool Inventory (collapsible) -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="tool-section-toggle" id="toolToggle" onclick="toggleToolSection()">
+      <div class="tool-toggle-left">
+        <div class="tool-toggle-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div>
+          <div class="tool-toggle-title">Tool-Inventar <span style="color:var(--text-tertiary);font-size:12px;font-weight:400;">(optional)</span></div>
+          <div class="tool-toggle-sub" id="toolToggleSub">Habt ihr eine Liste zugelassener KI-Tools? Hier einfügen.</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="tool-toggle-badge" id="toolBadge" style="display:none;">0 Tools</span>
+        <svg class="tool-toggle-chevron" id="toolChevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
+    <div class="tool-body" id="toolBody">
+      <!-- Option selector -->
+      <div class="option-toggle" id="toolOptions">
+        <div class="option-btn" id="opt-yes" onclick="selectToolOption('yes')">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div class="option-btn-label">Inventar einfügen</div>
+          <div class="option-btn-desc">CSV aus eurem Tool-Verzeichnis</div>
+        </div>
+        <div class="option-btn selected" id="opt-no" onclick="selectToolOption('no')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <div class="option-btn-label">Kein Inventar</div>
+          <div class="option-btn-desc">Direkt weiter ohne Tool-Liste</div>
+        </div>
+      </div>
+
+      <!-- CSV Input -->
+      <div class="csv-section" id="csv-section">
+        <div class="csv-format-hint">
+          <div class="csv-format-title">Erwartetes Format (CSV, kommagetrennt)</div>
+          <div class="csv-code"><span class="col-header">Tool-Name, Anbieter, Zugelassene Use Cases (;-getrennt), Einschränkungen, AVV vorhanden, Anmerkungen</span>
+Microsoft Copilot, Microsoft, "UC-01; UC-02; UC-03", Nur interne Daten, Ja, Freigabe IT
+ChatGPT, OpenAI, "UC-05; UC-10", Keine PB-Daten, Nein, Pilotfreigabe</div>
+        </div>
+
+        <label for="csv-input">CSV einfügen</label>
+        <textarea class="csv-textarea" id="csv-input" placeholder="Hier den CSV-Inhalt einfügen..." oninput="onCsvInput()"></textarea>
+
+        <div class="csv-actions">
+          <button class="btn btn-primary btn-sm" id="parse-btn" onclick="parseCsv()" disabled>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Importieren
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="loadExample()">Beispiel laden</button>
+        </div>
+
+        <div class="parse-status" id="parse-status">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="parse-status-text"></span>
+        </div>
+        <div class="parse-error" id="parse-error">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="parse-error-text"></span>
+        </div>
+
+        <div class="tool-list" id="tool-list"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Footer -->
+  <div class="info-box">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <div><strong>Deine Daten bleiben lokal.</strong> Alle Projektdaten werden ausschließlich in deinem Browser gespeichert. Nichts wird übertragen oder geteilt.</div>
+  </div>
+
   <div class="form-footer">
     <span class="required-note"><span>*</span> Pflichtfelder</span>
     <button class="btn btn-primary" id="submit-btn" onclick="handleSubmit()">
-      Weiter
+      Weiter zu Use Cases
       <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
   </div>
 
 </main>
 
-<!-- Toast -->
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
   Projekt wurde gespeichert!
 </div>
 
 <script>
+  let parsedTools = [];
+  let toolOption = 'no';
+  let toolSectionOpen = false;
+
   // ── Char Counter ──
   function updateChar(inputId, countId, max) {
-    const val = document.getElementById(inputId).value.length;
-    document.getElementById(countId).textContent = val;
+    document.getElementById(countId).textContent = document.getElementById(inputId).value.length;
   }
 
   // ── Validation ──
   function validate(groupId, inputId) {
-    const group = document.getElementById(groupId);
-    const val = document.getElementById(inputId).value.trim();
-    if (val.length > 0) {
-      group.classList.remove('has-error');
-    }
+    if (document.getElementById(inputId).value.trim().length > 0)
+      document.getElementById(groupId).classList.remove('has-error');
   }
-
   function validateEmail() {
-    const group = document.getElementById('group-email');
     const val = document.getElementById('pm-email').value.trim();
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-    if (valid || val === '') {
-      group.classList.remove('has-error');
-    }
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || val === '')
+      document.getElementById('group-email').classList.remove('has-error');
   }
 
   // ── Project Type ──
@@ -879,92 +575,171 @@
 
   // ── Industry Chips ──
   function toggleChip(el) {
-    // Deselect "Keine Regulierung" if selecting something else
     const noneChip = document.querySelector('[data-value="none"]');
-    if (noneChip && noneChip.classList.contains('selected')) {
-      noneChip.classList.remove('selected');
-    }
+    if (noneChip && noneChip.classList.contains('selected')) noneChip.classList.remove('selected');
     el.classList.toggle('selected');
   }
-
   function toggleChipExclusive(el) {
-    // Selecting "Keine" deselects everything else
     const wasSelected = el.classList.contains('selected');
     document.querySelectorAll('#industry-chips .chip').forEach(c => c.classList.remove('selected'));
     if (!wasSelected) el.classList.add('selected');
   }
 
+  // ── Tool Section Toggle ──
+  function toggleToolSection() {
+    toolSectionOpen = !toolSectionOpen;
+    document.getElementById('toolToggle').classList.toggle('open', toolSectionOpen);
+    document.getElementById('toolBody').classList.toggle('visible', toolSectionOpen);
+  }
+
+  function selectToolOption(opt) {
+    toolOption = opt;
+    document.getElementById('opt-yes').classList.toggle('selected', opt === 'yes');
+    document.getElementById('opt-no').classList.toggle('selected', opt === 'no');
+    document.getElementById('csv-section').classList.toggle('visible', opt === 'yes');
+  }
+
+  // ── CSV ──
+  function onCsvInput() {
+    const val = document.getElementById('csv-input').value.trim();
+    document.getElementById('parse-btn').disabled = val.length === 0;
+    document.getElementById('parse-status').classList.remove('visible');
+    document.getElementById('parse-error').classList.remove('visible');
+  }
+
+  function loadExample() {
+    document.getElementById('csv-input').value =
+`Microsoft Copilot, Microsoft, "UC-01; UC-02; UC-03; UC-05", Nur interne Daten, Ja, Freigabe durch IT am 01.01.2025
+ChatGPT (OpenAI), OpenAI, "UC-05; UC-10; UC-16", Keine personenbezogenen Daten, Nein, Pilotfreigabe bis 30.06.2026
+Otter.ai, Otter.ai Inc., "UC-02; UC-06", Nur für interne Meetings, Ja, DSGVO-konform lt. IT`;
+    document.getElementById('parse-btn').disabled = false;
+  }
+
+  function parseCsv() {
+    const raw = document.getElementById('csv-input').value.trim();
+    if (!raw) return;
+    try {
+      const lines = raw.split('\n').filter(l => l.trim());
+      const startIdx = lines[0].toLowerCase().includes('tool-name') ? 1 : 0;
+      const dataLines = lines.slice(startIdx);
+      if (dataLines.length === 0) throw new Error('Keine Datenzeilen gefunden.');
+      parsedTools = dataLines.map((line, idx) => {
+        const cols = parseCSVLine(line);
+        const name = (cols[0] || '').trim();
+        if (!name) throw new Error(`Zeile ${idx + 1}: Kein Tool-Name.`);
+        return {
+          id: crypto.randomUUID(),
+          name,
+          vendor: (cols[1] || '').trim(),
+          approved_use_cases: (cols[2] || '').trim().split(/[;,]/).map(s => s.trim()).filter(Boolean),
+          restrictions: (cols[3] || '').trim(),
+          avv_exists: ['ja','yes','true'].includes((cols[4] || '').trim().toLowerCase()),
+          notes: (cols[5] || '').trim()
+        };
+      });
+      renderToolList();
+      document.getElementById('parse-status-text').textContent = `${parsedTools.length} Tool${parsedTools.length !== 1 ? 's' : ''} importiert.`;
+      document.getElementById('parse-status').classList.add('visible');
+      document.getElementById('parse-error').classList.remove('visible');
+      updateToolBadge();
+    } catch(e) {
+      document.getElementById('parse-error-text').textContent = e.message;
+      document.getElementById('parse-error').classList.add('visible');
+      document.getElementById('parse-status').classList.remove('visible');
+    }
+  }
+
+  function parseCSVLine(line) {
+    const result = []; let current = ''; let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQuotes = !inQuotes; continue; }
+      if (ch === ',' && !inQuotes) { result.push(current); current = ''; continue; }
+      current += ch;
+    }
+    result.push(current);
+    return result;
+  }
+
+  function renderToolList() {
+    const list = document.getElementById('tool-list');
+    if (!parsedTools.length) { list.innerHTML = ''; return; }
+    list.innerHTML = parsedTools.map((tool, idx) => `
+      <div class="tool-item" style="animation-delay:${idx * 0.04}s">
+        <div>
+          <div class="tool-item-name">${escHtml(tool.name)}</div>
+          <div class="tool-item-vendor">${escHtml(tool.vendor) || '–'}</div>
+          <div class="tool-item-tags">
+            ${tool.approved_use_cases.slice(0,3).map(uc => `<span class="tag tag-uc"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>${escHtml(uc)}</span>`).join('')}
+            ${tool.approved_use_cases.length > 3 ? `<span class="tag tag-uc">+${tool.approved_use_cases.length - 3}</span>` : ''}
+            <span class="tag ${tool.avv_exists ? 'tag-avv-yes' : 'tag-avv-no'}">
+              <svg viewBox="0 0 24 24">${tool.avv_exists ? '<polyline points="20 6 9 17 4 12"/>' : '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'}</svg>
+              AVV ${tool.avv_exists ? 'vorhanden' : 'fehlt'}
+            </span>
+          </div>
+        </div>
+        <button class="icon-btn danger" onclick="deleteTool('${tool.id}')">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>`).join('');
+  }
+
+  function updateToolBadge() {
+    const badge = document.getElementById('toolBadge');
+    const sub = document.getElementById('toolToggleSub');
+    if (parsedTools.length > 0) {
+      badge.textContent = `${parsedTools.length} Tool${parsedTools.length !== 1 ? 's' : ''}`;
+      badge.style.display = 'inline-flex';
+      sub.textContent = `${parsedTools.length} Tool${parsedTools.length !== 1 ? 's' : ''} importiert und bereit.`;
+    } else {
+      badge.style.display = 'none';
+      sub.textContent = 'Habt ihr eine Liste zugelassener KI-Tools? Hier einfügen.';
+    }
+  }
+
+  function deleteTool(id) {
+    parsedTools = parsedTools.filter(t => t.id !== id);
+    renderToolList();
+    updateToolBadge();
+    if (parsedTools.length === 0) document.getElementById('parse-status').classList.remove('visible');
+    else document.getElementById('parse-status-text').textContent = `${parsedTools.length} Tool${parsedTools.length !== 1 ? 's' : ''} im Inventar.`;
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
   // ── Submit ──
   function handleSubmit() {
     let valid = true;
-
-    // Name
     const name = document.getElementById('project-name').value.trim();
-    if (!name) {
-      document.getElementById('group-name').classList.add('has-error');
-      valid = false;
-    }
-
-    // Description
+    if (!name) { document.getElementById('group-name').classList.add('has-error'); valid = false; }
     const desc = document.getElementById('project-desc').value.trim();
-    if (!desc) {
-      document.getElementById('group-desc').classList.add('has-error');
-      valid = false;
-    }
-
-    // Email
+    if (!desc) { document.getElementById('group-desc').classList.add('has-error'); valid = false; }
     const email = document.getElementById('pm-email').value.trim();
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailValid) {
-      document.getElementById('group-email').classList.add('has-error');
-      valid = false;
-    }
-
-    // Type
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('group-email').classList.add('has-error'); valid = false; }
     const type = document.querySelector('.type-card.selected');
-    if (!type) {
-      document.getElementById('err-type').style.display = 'block';
-      valid = false;
-    }
-
+    if (!type) { document.getElementById('err-type').style.display = 'block'; valid = false; }
     if (!valid) {
-      // Scroll to first error
-      const firstError = document.querySelector('.has-error, [style*="display: block"]');
-      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.querySelector('.has-error, [style*="display: block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-
-    // Collect industries
     const industries = [];
-    document.querySelectorAll('#industry-chips .chip.selected').forEach(c => {
-      industries.push(c.dataset.value);
-    });
-
-    // Build project object
+    document.querySelectorAll('#industry-chips .chip.selected').forEach(c => industries.push(c.dataset.value));
     const project = {
       id: crypto.randomUUID(),
-      name,
-      description: desc,
-      pm_email: email,
-      project_type: type.dataset.type,
-      industry: industries,
+      name, description: desc, pm_email: email,
+      project_type: type.dataset.type, industry: industries,
+      tool_inventory: parsedTools,
       created_at: new Date().toISOString(),
-      status: 'setup'
+      status: 'discovery'
     };
-
-    // Save to localStorage
     localStorage.setItem('trust_ai_project', JSON.stringify(project));
-    // Also keep in projects list for dashboard
     const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
     projects.push(project);
     localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
-
-    // Show toast
     showToast();
-
-    setTimeout(() => {
-      window.location.href = 'trust-ai-screen2.html';
-    }, 1200);
+    setTimeout(() => { window.location.href = 'trust-ai-screen3.html'; }, 1100);
   }
 
   function showToast() {
