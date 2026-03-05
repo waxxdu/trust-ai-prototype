@@ -408,7 +408,7 @@ function generateSummary() {
 
   if (counts.green > 0) txt += `${counts.green} Use Case${counts.green>1?'s':''} wurde${counts.green>1?'n':''} vollständig freigegeben und kann${counts.green>1?'n':''} ohne Einschränkungen eingesetzt werden. `;
   if (counts.yellow > 0) txt += `${counts.yellow} Use Case${counts.yellow>1?'s sind':' ist'} bedingt freigegeben – hier gelten spezifische Auflagen und offene Punkte müssen vor dem Einsatz geklärt werden. `;
-  if (counts.red > 0) txt += `${counts.red} Use Case${counts.red>1?'s wurden':' wurde'} abgelehnt und darf${counts.red>1?'en':''} in diesem Projekt nicht eingesetzt werden. `;
+  if (counts.red > 0) txt += `${counts.red} Use Case${counts.red>1?'s sind':' ist'} derzeit nicht empfohlen und sollte${counts.red>1?'n':''} in diesem Projektzusammenhang nicht eingesetzt werden – eine spätere Neubewertung ist möglich. `;
   if (counts.deferred > 0) txt += `${counts.deferred} Use Case${counts.deferred>1?'s wurden':' wurde'} zurückgestellt und wird${counts.deferred>1?'n':''} zu einem späteren Zeitpunkt neu bewertet.`;
 
   txt += `\n\nFür alle freigegebenen Use Cases gilt: Der Mensch behält die finale Entscheidungsverantwortung. KI-Ergebnisse werden als Vorschläge behandelt und vor der Nutzung durch eine verantwortliche Person geprüft.`;
@@ -457,6 +457,30 @@ function render() {
   document.getElementById('globalMeasures').innerHTML = globalM.map(m =>
     `<div class="measure-chip"><div class="measure-chip-dot"></div>${MEASURE_LABELS[m] || m}</div>`
   ).join('');
+
+  // D1: Best Practices Überblick aus Assessments
+  const bpSection = document.getElementById('manifestBestPractices');
+  if (bpSection) {
+    const bpItems = [];
+    shortlist.forEach(item => {
+      const a = assessments[item.use_case_id];
+      const uc = ALL_UCS[item.use_case_id];
+      if (!a || !uc || a.result === 'deferred' || a.result === 'red') return;
+      if (a.bp_custom && a.bp_custom.trim()) {
+        bpItems.push({ title: uc.title, text: a.bp_custom });
+      }
+    });
+    if (bpItems.length) {
+      bpSection.style.display = 'block';
+      bpSection.innerHTML = '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:12px;">✓ Projektspezifische Hinweise & Best Practices</div>' +
+        bpItems.map(bp => `<div style="padding:8px 0;border-bottom:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px;">${bp.title}</div>
+          <div style="font-size:13px;color:var(--text1);">${bp.text}</div>
+        </div>`).join('');
+    } else {
+      bpSection.style.display = 'none';
+    }
+  }
 
   // D1+D6: Flags & Best Practices Überblick
   const allFlags = [];

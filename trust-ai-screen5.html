@@ -1,434 +1,456 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>TRUST-AI – Bewertung</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --surface3: #2a2f45;
-    --border: #2e3350;
-    --border2: #3d4468;
-    --text: #e8eaf6;
-    --text2: #9ba3c7;
-    --text3: #5c6490;
-    --accent: #6366f1;
-    --accent2: #818cf8;
-    --accent3: #4f46e5;
-    --green: #22c55e;
-    --green-bg: rgba(34,197,94,0.12);
-    --yellow: #eab308;
-    --yellow-bg: rgba(234,179,8,0.12);
-    --red: #ef4444;
-    --red-bg: rgba(239,68,68,0.12);
-    --orange: #f97316;
-    --orange-bg: rgba(249,115,22,0.12);
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --surface3: #2a2f45;
+    --border: #2e3350; --border2: #3d4468;
+    --text: #e8eaf6; --text2: #9ba3c7; --text3: #5c6490;
+    --accent: #6366f1; --accent2: #818cf8; --accent3: #4f46e5;
+    --green: #22c55e; --green-bg: rgba(34,197,94,0.12);
+    --yellow: #eab308; --yellow-bg: rgba(234,179,8,0.12);
+    --red: #ef4444; --red-bg: rgba(239,68,68,0.12);
+    --orange: #f97316; --orange-bg: rgba(249,115,22,0.12);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 15px;
-  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
 
-  /* TOP NAV */
+  /* ── TOPBAR ── */
   .topbar {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px;
+    position: sticky; top: 0; z-index: 200;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 0 20px; height: 56px;
+    display: flex; align-items: center; gap: 12px;
   }
-  .theme-btn-5 { background:transparent; border:1px solid var(--border); border-radius:8px; width:30px; height:30px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; color:var(--text2); flex-shrink:0; }
-  .topbar-left { display: flex; align-items: center; gap: 16px; }
-  .logo { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent2); letter-spacing: 0.05em; }
-  .sep { color: var(--border2); }
-  .uc-badge { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
-  .progress-wrap { flex: 1; max-width: 240px; }
-  .progress-bar { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent3), var(--accent2)); border-radius: 2px; transition: width 0.4s ease; }
-  .progress-label { font-size: 11px; color: var(--text3); margin-top: 5px; font-family: 'DM Mono', monospace; }
-  .btn-sm { padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; }
-  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
-  .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: var(--accent3); }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .topbar-logo { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent2); letter-spacing: 0.05em; flex-shrink: 0; }
+  .topbar-sep { width: 1px; height: 20px; background: var(--border2); flex-shrink: 0; }
+  .topbar-uc {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .topbar-uc-name {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .topbar-uc-meta { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; white-space: nowrap; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .topbar-step-pill {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text2);
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 100px; padding: 3px 10px; white-space: nowrap;
+  }
+  .topbar-btn {
+    padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 500;
+    cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
+  }
+  .topbar-btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+  .topbar-btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+  /* Mobile UC menu button (hamburger for sidebar) */
+  .topbar-menu-btn {
+    display: none; width: 34px; height: 34px; border-radius: 8px;
+    background: var(--surface2); border: 1px solid var(--border); cursor: pointer;
+    align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .topbar-menu-btn svg { width: 16px; height: 16px; stroke: var(--text2); fill: none; stroke-width: 2; stroke-linecap: round; }
+  @media (max-width: 900px) { .topbar-menu-btn { display: flex; } }
 
-  /* LAYOUT */
-  .layout { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 57px); }
-  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+  /* ── LAYOUT ── */
+  .layout { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 56px); }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 
-  /* SIDEBAR */
+  /* ── SIDEBAR ── */
   .sidebar {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    padding: 24px;
-    position: sticky; top: 57px;
-    height: calc(100vh - 57px);
-    overflow-y: auto;
+    background: var(--surface); border-right: 1px solid var(--border);
+    padding: 20px; position: sticky; top: 56px;
+    height: calc(100vh - 56px); overflow-y: auto;
   }
-  .sidebar-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 16px; }
-  .uc-list { display: flex; flex-direction: column; gap: 6px; }
+  @media (max-width: 900px) {
+    .sidebar {
+      display: none; position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
+      z-index: 150; height: auto; border-right: none; border-bottom: 1px solid var(--border);
+    }
+    .sidebar.mobile-open { display: block; }
+  }
+  .sidebar-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 14px; }
+  .uc-list { display: flex; flex-direction: column; gap: 5px; }
   .uc-list-item {
-    padding: 10px 12px; border-radius: 10px; cursor: pointer;
-    display: flex; align-items: center; gap: 10px;
-    transition: background 0.15s;
-    border: 1px solid transparent;
+    padding: 9px 11px; border-radius: 9px; cursor: pointer;
+    display: flex; align-items: center; gap: 9px;
+    border: 1px solid transparent; transition: background 0.15s;
   }
   .uc-list-item:hover { background: var(--surface2); }
   .uc-list-item.active { background: var(--surface2); border-color: var(--border2); }
+  .uc-list-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
+  .uc-list-item.active .uc-list-dot { background: var(--accent2); }
   .uc-list-item.done-green .uc-list-dot { background: var(--green); }
   .uc-list-item.done-yellow .uc-list-dot { background: var(--yellow); }
   .uc-list-item.done-red .uc-list-dot { background: var(--red); }
-  .uc-list-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
-  .uc-list-item.active .uc-list-dot { background: var(--accent2); }
-  .uc-list-name { font-size: 13px; color: var(--text2); line-height: 1.4; }
+  .uc-list-name { font-size: 12px; color: var(--text2); line-height: 1.4; flex: 1; }
   .uc-list-item.active .uc-list-name { color: var(--text); }
-  .uc-list-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); margin-left: auto; flex-shrink: 0; }
-  .uc-list-item.sofort-item { border-left: 2px solid var(--orange); padding-left: 10px; }
+  .uc-list-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); flex-shrink: 0; }
+  .uc-list-item.sofort-item { border-left: 2px solid var(--orange); padding-left: 9px; }
+  .sidebar-progress { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .sp-bar { height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+  .sp-fill { height: 100%; background: linear-gradient(90deg, var(--accent3), var(--accent2)); border-radius: 2px; transition: width 0.4s; }
+  .sp-label { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
 
-  /* MAIN */
-  .main { padding: 32px; max-width: 800px; }
-  @media (max-width: 600px) { .main { padding: 16px; } }
+  /* ── MAIN ── */
+  .main { padding: 28px 28px 100px; max-width: 720px; }
+  @media (max-width: 600px) { .main { padding: 16px 16px 100px; } }
 
-  /* UC HEADER */
-  .uc-header { margin-bottom: 28px; }
-  .uc-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
-  .uc-title { font-size: 22px; font-weight: 700; line-height: 1.3; }
-  .uc-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
-  .tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
-  .tag-cat { background: rgba(99,102,241,0.15); color: var(--accent2); }
-  .tag-eth { background: rgba(249,115,22,0.15); color: var(--orange); }
-  .tag-reg { background: rgba(234,179,8,0.15); color: var(--yellow); }
-  .tag-sofort { background: rgba(249,115,22,0.15); color: var(--orange); }
-  .uc-desc { font-size: 14px; color: var(--text2); line-height: 1.6; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  /* ── WIZARD STEP HEADER ── */
+  .wizard-header { margin-bottom: 24px; }
+  .wizard-steps { display: flex; gap: 4px; margin-bottom: 10px; }
+  .wstep { flex: 1; height: 3px; border-radius: 2px; background: var(--surface3); transition: background 0.3s; }
+  .wstep.done { background: var(--accent3); opacity: 0.5; }
+  .wstep.active { background: var(--accent2); }
+  .wizard-step-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); }
+  .wizard-step-label strong { color: var(--text2); }
 
-  /* SECTIONS */
-  .section { margin-bottom: 28px; }
-  .section-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; cursor:pointer; }
-  .section-title:hover { color: var(--accent2); }
-  .section-title::after { content:''; flex: 1; height: 1px; background: var(--border); }
-  .section-title[data-anchor] { scroll-margin-top: 80px; }
+  /* ── UC HEADER CARD ── */
+  .uc-header-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px; margin-bottom: 20px;
+  }
+  .uc-header-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 100px; font-size: 11px; font-weight: 500;
+  }
+  .tag-cat { background: var(--surface3); color: var(--text2); }
+  .tag-sofort { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(249,115,22,0.3); }
+  .tag-eth { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(234,179,8,0.3); }
+  .tag-reg { background: rgba(99,102,241,0.12); color: var(--accent2); border: 1px solid rgba(99,102,241,0.25); }
+  .uc-header-title { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .uc-header-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
 
-  /* QUESTIONS */
-  .q-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
-  .q-text { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-  .q-hint { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
+  /* ── SECTION CARD ── */
+  .section-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px; margin-bottom: 16px;
+    animation: fadeIn 0.25s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--text3); margin-bottom: 18px;
+  }
+
+  /* ── QUESTIONS ── */
+  .q-block { margin-bottom: 22px; }
+  .q-block:last-child { margin-bottom: 0; }
+  .q-text { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; line-height: 1.5; }
+  .q-hint { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
   .q-options { display: flex; flex-direction: column; gap: 7px; }
   .q-opt {
-    display: flex; align-items: flex-start; gap: 11px; padding: 10px 13px;
-    border-radius: 10px; border: 1px solid var(--border); cursor: pointer;
-    transition: all 0.15s; font-size: 14px; color: var(--text2);
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 13px; border-radius: 9px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--surface2);
+    font-size: 13px; color: var(--text2); transition: all 0.15s; user-select: none;
   }
-  .q-opt:hover { border-color: var(--accent); color: var(--text); background: rgba(99,102,241,0.05); }
-  .q-opt.selected { border-color: var(--accent); background: rgba(99,102,241,0.1); color: var(--text); }
-  .q-opt.selected .radio-circle { border-color: var(--accent); background: var(--accent); }
-  .q-opt-multi.selected { border-color: var(--accent2); background: rgba(99,102,241,0.1); color: var(--text); }
-  .radio-circle { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border2); flex-shrink: 0; margin-top: 1px; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
-  .radio-circle.checked { border-color: var(--accent2); background: var(--accent2); }
-  .radio-circle.checked::after { content:'✓'; font-size: 10px; color: #fff; }
-  .check-box { width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--border2); flex-shrink: 0; margin-top: 1px; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
-  .check-box.checked { border-color: var(--accent2); background: var(--accent2); }
-  .check-box.checked::after { content:'✓'; font-size: 10px; color: #fff; }
-  .q-input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border 0.15s; }
+  .q-opt:hover { border-color: var(--border2); color: var(--text); }
+  .q-opt.selected { border-color: var(--accent); background: rgba(99,102,241,0.08); color: var(--text); }
+  .radio-circle {
+    width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border2);
+    flex-shrink: 0; transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+  }
+  .radio-circle.checked { border-color: var(--accent); background: var(--accent); }
+  .radio-circle.checked::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+  .check-box {
+    width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--border2);
+    flex-shrink: 0; transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+  }
+  .check-box.checked { border-color: var(--accent); background: var(--accent); }
+  .check-box.checked::after { content: '✓'; font-size: 10px; color: #fff; font-weight: 700; }
+  .q-input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 13px; color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; outline: none; transition: border-color 0.15s;
+  }
   .q-input:focus { border-color: var(--accent); }
   .q-input::placeholder { color: var(--text3); }
 
-  /* FLAGS */
-  .flag-list { display: flex; flex-direction: column; gap: 8px; }
-  .flag-item { display: flex; gap: 12px; padding: 12px 14px; border-radius: 10px; border: 1px solid; }
-  .flag-item.yellow { border-color: rgba(234,179,8,0.3); background: var(--yellow-bg); }
-  .flag-item.red { border-color: rgba(239,68,68,0.3); background: var(--red-bg); }
-  .flag-item.blue { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.08); }
-  .flag-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .flag-msg { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
-  .flag-item.yellow .flag-msg { color: var(--yellow); }
-  .flag-item.red .flag-msg { color: var(--red); }
-  .flag-item.blue .flag-msg { color: var(--accent2); }
+  /* ── FLAGS ── */
+  .flag-list { display: flex; flex-direction: column; gap: 10px; }
+  .flag-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 14px; border-radius: 10px;
+    border: 1px solid; font-size: 13px;
+  }
+  .flag-item.red { background: var(--red-bg); border-color: rgba(239,68,68,0.3); }
+  .flag-item.yellow { background: var(--yellow-bg); border-color: rgba(234,179,8,0.3); }
+  .flag-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .flag-msg { font-weight: 500; color: var(--text); margin-bottom: 3px; }
   .flag-action { font-size: 12px; color: var(--text2); }
-  .decision-flags-summary { margin-bottom: 18px; padding: 14px 16px; background: var(--surface); border: 1.5px solid var(--border2); border-radius: 12px; }
-  .decision-flags-summary .dfs-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 10px; }
-  .dfs-flag { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text2); }
-  .dfs-flag:last-child { border-bottom: none; }
-  .dfs-flag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-  /* HITL */
-  .hitl-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  @media (max-width: 600px) { .hitl-options { grid-template-columns: 1fr; } }
+  /* ── HITL ── */
+  .hitl-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  @media (max-width: 560px) { .hitl-grid { grid-template-columns: 1fr; } }
   .hitl-opt {
-    padding: 14px; border-radius: 12px; border: 2px solid var(--border); cursor: pointer;
-    text-align: center; transition: all 0.15s;
+    padding: 14px; border-radius: 11px; cursor: pointer; user-select: none;
+    border: 1.5px solid var(--border); background: var(--surface2); transition: all 0.15s;
+    text-align: center;
   }
   .hitl-opt:hover { border-color: var(--border2); }
   .hitl-opt.selected { border-color: var(--accent); background: rgba(99,102,241,0.08); }
   .hitl-opt.selected.level_1 { border-color: var(--green); background: var(--green-bg); }
   .hitl-opt.selected.level_2 { border-color: var(--yellow); background: var(--yellow-bg); }
   .hitl-opt.selected.level_3 { border-color: var(--orange); background: var(--orange-bg); }
-  .hitl-icon { font-size: 22px; margin-bottom: 6px; }
-  .hitl-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .hitl-opt.recommended { position: relative; }
+  .hitl-opt.recommended::after {
+    content: 'Empfohlen'; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+    font-size: 10px; font-weight: 600; background: var(--accent); color: #fff;
+    padding: 1px 7px; border-radius: 100px; white-space: nowrap;
+  }
+  .hitl-icon { font-size: 20px; margin-bottom: 7px; }
+  .hitl-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
   .hitl-desc { font-size: 11px; color: var(--text2); line-height: 1.4; }
-  .hitl-hint { font-size: 12px; color: var(--text3); margin-top: 8px; display: flex; align-items: center; gap: 6px; }
 
-  /* MEASURES */
-  .measures-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+  /* ── MEASURES ── */
+  .measures-cat-label { font-size: 10px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .measures-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 7px; margin-bottom: 16px; }
   .measure-item {
-    padding: 11px 13px; border-radius: 10px; border: 1px solid var(--border);
-    cursor: pointer; transition: all 0.15s; display: flex; gap: 10px; align-items: flex-start;
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 12px; border-radius: 9px; cursor: pointer; user-select: none;
+    border: 1px solid var(--border); background: var(--surface2); transition: all 0.15s;
   }
   .measure-item:hover { border-color: var(--border2); }
-  .measure-item.selected { border-color: var(--accent2); background: rgba(99,102,241,0.08); }
-  .measure-item.suggested { border-color: rgba(99,102,241,0.4); }
-  .measure-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-  .measure-cat { font-size: 11px; color: var(--text3); }
-  .suggested-dot { font-size: 9px; color: var(--accent2); margin-top: 3px; }
+  .measure-item.selected { border-color: var(--accent); background: rgba(99,102,241,0.08); }
+  .measure-item.required { border-color: rgba(234,179,8,0.5); background: var(--yellow-bg); cursor: default; }
+  .measure-name { font-size: 12px; color: var(--text); }
+  .measure-badge { font-size: 10px; color: var(--yellow); margin-left: auto; flex-shrink: 0; }
 
-  /* BEST PRACTICES */
+  /* ── BEST PRACTICES ── */
   .bp-list { display: flex; flex-direction: column; gap: 8px; }
-  .bp-item { padding: 12px 14px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); font-size: 13px; line-height: 1.5; color: var(--text2); display: flex; gap: 10px; }
-  .bp-item::before { content:'→'; color: var(--accent2); flex-shrink: 0; margin-top: 1px; }
-  .bp-custom-note { margin-top: 10px; }
-  .bp-custom-note textarea { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:10px 13px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text); outline:none; resize:vertical; min-height:70px; line-height:1.5; }
-  .bp-custom-note textarea:focus { border-color:var(--accent); }
-  .bp-custom-note textarea::placeholder { color:var(--text3); }
-  .bp-custom-note label { font-size:11px; color:var(--text3); margin-bottom:6px; display:block; }
+  .bp-item {
+    padding: 10px 14px; border-radius: 9px;
+    background: var(--surface2); border: 1px solid var(--border);
+    font-size: 13px; color: var(--text2); line-height: 1.5;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .bp-item::before { content: '→'; color: var(--accent2); flex-shrink: 0; font-family: 'DM Mono', monospace; }
 
-  /* RESULT / AMPEL */
-  .ampel-wrap { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  /* ── RESULT ── */
+  .ai-result-box {
+    padding: 12px 16px; border-radius: 10px; font-size: 13px; line-height: 1.6;
+    margin-bottom: 16px; border: 1px solid;
+  }
+  .ai-result-box.green { background: var(--green-bg); border-color: rgba(34,197,94,0.3); color: var(--green); }
+  .ai-result-box.yellow { background: var(--yellow-bg); border-color: rgba(234,179,8,0.3); color: var(--yellow); }
+  .ai-result-box.red { background: var(--red-bg); border-color: rgba(239,68,68,0.3); color: var(--red); }
+  .ampel-wrap { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+  @media (max-width: 480px) { .ampel-wrap { grid-template-columns: repeat(2,1fr); } }
   .ampel-btn {
-    flex: 1; min-width: 140px; padding: 14px; border-radius: 12px; border: 2px solid var(--border);
-    cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: all 0.15s;
-    font-family: 'DM Sans', sans-serif;
+    padding: 12px 8px; border-radius: 10px; cursor: pointer; text-align: center;
+    border: 1.5px solid var(--border); background: var(--surface2); transition: all 0.15s; user-select: none;
   }
-  .ampel-btn.green.selected { border-color: var(--green); background: var(--green-bg); }
-  .ampel-btn.yellow.selected { border-color: var(--yellow); background: var(--yellow-bg); }
-  .ampel-btn.red.selected { border-color: var(--red); background: var(--red-bg); }
-  .ampel-btn.deferred.selected { border-color: var(--text3); background: rgba(92,100,144,0.12); }
   .ampel-btn:hover { border-color: var(--border2); }
-  .ampel-icon { font-size: 22px; }
-  .ampel-label { font-size: 13px; font-weight: 600; }
-  .ampel-btn.green .ampel-label { color: var(--green); }
-  .ampel-btn.yellow .ampel-label { color: var(--yellow); }
-  .ampel-btn.red .ampel-label { color: var(--red); }
-  .ampel-btn.deferred .ampel-label { color: var(--text2); }
-  .ai-result-box { padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.5; border: 1px solid; margin-top: 12px; }
-  .ai-result-box.green { background: var(--green-bg); border-color: rgba(34,197,94,0.3); color: #86efac; }
-  .ai-result-box.yellow { background: var(--yellow-bg); border-color: rgba(234,179,8,0.3); color: #fde68a; }
-  .ai-result-box.red { background: var(--red-bg); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
-  .override-note { margin-top: 10px; }
-  .override-note textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; resize: vertical; min-height: 80px; }
-  .override-note textarea:focus { border-color: var(--accent); }
-
-  /* REJECTION CONSEQUENCE */
-  .consequence-box { padding: 14px 16px; border-radius: 10px; background: var(--red-bg); border: 1px solid rgba(239,68,68,0.3); font-size: 13px; line-height: 1.6; }
-  .consequence-box h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--red); margin-bottom: 8px; }
-  .consequence-item { color: var(--text2); margin-bottom: 4px; }
-
-  /* NOTES */
-  .notes-area { width: 100%; background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 12px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; resize: vertical; min-height: 80px; }
-  .notes-area:focus { border-color: var(--accent); }
-
-  /* BOTTOM BAR */
-  .bottom-bar {
-    position: sticky; bottom: 0;
-    background: var(--bg); border-top: 1px solid var(--border);
-    padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  .ampel-btn.selected.green { border-color: var(--green); background: var(--green-bg); }
+  .ampel-btn.selected.yellow { border-color: var(--yellow); background: var(--yellow-bg); }
+  .ampel-btn.selected.red { border-color: var(--red); background: var(--red-bg); }
+  .ampel-btn.selected.deferred { border-color: var(--border2); background: var(--surface3); }
+  .ampel-icon { font-size: 20px; margin-bottom: 5px; }
+  .ampel-label { font-size: 11px; color: var(--text2); font-weight: 500; }
+  .consequence-box {
+    margin-top: 14px; padding: 13px 15px; border-radius: 10px;
+    background: var(--red-bg); border: 1px solid rgba(239,68,68,0.25);
   }
-  .bottom-info { font-size: 13px; color: var(--text3); }
-  .bottom-actions { display: flex; gap: 10px; }
-  .btn-next { padding: 10px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; background: var(--accent); color: #fff; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s; }
-  .btn-next:hover { background: var(--accent3); }
-  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+  .consequence-box h4 { font-size: 13px; color: var(--red); margin-bottom: 8px; }
+  .consequence-item { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .notes-area {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 11px 13px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    resize: vertical; min-height: 80px; outline: none; transition: border-color 0.15s;
+  }
+  .notes-area:focus { border-color: var(--accent); }
+  .notes-area::placeholder { color: var(--text3); }
+  .override-note { padding: 13px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border); margin-top: 14px; }
 
-  /* COMPLETION SCREEN */
-  .completion-screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 57px); padding: 40px; text-align: center; }
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: var(--bg); border-top: 1px solid var(--border);
+    padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .bb-left { display: flex; align-items: center; gap: 10px; }
+  .bb-btn {
+    padding: 9px 18px; border-radius: 9px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .bb-btn-primary { background: var(--accent); color: #fff; }
+  .bb-btn-primary:hover { background: var(--accent3); }
+  .bb-btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+  .bb-btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+  .bb-btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+  .bb-step-dots { display: flex; gap: 5px; }
+  .bb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--surface3); transition: background 0.2s; }
+  .bb-dot.done { background: var(--accent3); opacity: 0.5; }
+  .bb-dot.active { background: var(--accent2); }
+
+  /* ── COMPLETION SCREEN ── */
+  .completion-screen {
+    display: none; min-height: calc(100vh - 56px);
+    align-items: center; justify-content: center; padding: 40px 20px;
+  }
   .completion-screen.active { display: flex; }
-  .completion-icon { font-size: 64px; margin-bottom: 24px; }
-  .completion-title { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
-  .completion-sub { font-size: 16px; color: var(--text2); margin-bottom: 32px; max-width: 480px; line-height: 1.6; }
-  .completion-stats { display: flex; gap: 24px; justify-content: center; margin-bottom: 36px; flex-wrap: wrap; }
-  .completion-stat { text-align: center; }
-  .completion-stat-num { font-size: 32px; font-weight: 700; font-family: 'DM Mono', monospace; }
+  .completion-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 40px; max-width: 500px; width: 100%; text-align: center;
+  }
+  .completion-icon { font-size: 48px; margin-bottom: 16px; }
+  .completion-title { font-size: 24px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .completion-sub { font-size: 14px; color: var(--text2); margin-bottom: 28px; }
+  .completion-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
+  .completion-stat { background: var(--surface2); border-radius: 10px; padding: 14px 8px; }
+  .completion-stat-num { font-size: 28px; font-weight: 700; font-family: 'DM Mono', monospace; line-height: 1; margin-bottom: 4px; }
   .completion-stat-num.green { color: var(--green); }
   .completion-stat-num.yellow { color: var(--yellow); }
   .completion-stat-num.red { color: var(--red); }
-  .completion-stat-label { font-size: 13px; color: var(--text3); margin-top: 4px; }
-  .btn-large { padding: 14px 40px; border-radius: 12px; font-size: 16px; font-weight: 600; background: var(--accent); color: #fff; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-  .btn-large:hover { background: var(--accent3); }
+  .completion-stat-label { font-size: 11px; color: var(--text3); }
 
-  /* ANIMATIONS */
-  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-  .fade-up { animation: fadeUp 0.3s ease forwards; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-left">
-    <div class="logo">TRUST-AI</div>
-    <div class="sep">/</div>
-    <span class="uc-badge" id="ucBadge">Use Case 1 von 8</span>
+  <button class="topbar-menu-btn" id="menuBtn" onclick="toggleMobileMenu()">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
+  </button>
+  <a href="trust-ai-screen7.html" class="topbar-logo" style="text-decoration:none;color:inherit;cursor:pointer;">TRUST-AI</a>
+  <div class="topbar-sep"></div>
+  <div class="topbar-uc">
+    <div class="topbar-uc-name" id="topbarUcName">–</div>
+    <div class="topbar-uc-meta" id="topbarUcMeta">–</div>
   </div>
-  <div class="progress-wrap">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width:0%"></div>
-    </div>
-    <div class="progress-label" id="progressLabel">0 von 8 bewertet</div>
-  </div>
-  <div>
-    <button class="btn-sm btn-ghost" onclick="window.location.href='trust-ai-screen4.html'">← Zurück</button>
+  <div class="topbar-right">
+    <span class="topbar-step-pill" id="topbarStepPill">Schritt 1/4</span>
+    <button class="topbar-btn topbar-btn-ghost" onclick="deferCurrentUC()">Zurückstellen</button>
   </div>
 </div>
 
-<!-- MAIN LAYOUT -->
-<div id="mainLayout" style="display:grid; grid-template-columns: 320px 1fr;">
+<!-- LAYOUT -->
+<div class="layout" id="mainLayout">
+
   <!-- SIDEBAR -->
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <div class="sidebar-title">Use Cases</div>
     <div class="uc-list" id="ucList"></div>
+    <div class="sidebar-progress">
+      <div class="sp-label" id="spLabel">0 von 0 bewertet</div>
+      <div class="sp-bar"><div class="sp-fill" id="spFill" style="width:0%"></div></div>
+    </div>
   </div>
 
-  <!-- MAIN CONTENT -->
-  <div style="padding: 32px 32px 100px; max-width: 800px;" id="mainContent">
+  <!-- MAIN -->
+  <div class="main" id="mainContent">
+
     <!-- UC HEADER -->
-    <div class="uc-header fade-up" id="ucHeader">
-      <div class="uc-meta" id="ucMeta"></div>
-      <div class="uc-title" id="ucTitle"></div>
-      <div style="margin-top:10px;" class="uc-desc" id="ucDesc"></div>
+    <div class="uc-header-card" id="ucHeaderCard">
+      <div class="uc-header-tags" id="ucMeta"></div>
+      <div class="uc-header-title" id="ucTitle"></div>
+      <div class="uc-header-desc" id="ucDesc"></div>
     </div>
 
-    <!-- SECTIONS -->
-    <div id="questionsSection"></div>
-    <div id="flagsSection"></div>
-    <div id="hitlSection"></div>
-    <div id="measuresSection"></div>
-    <div id="bpSection"></div>
-    <div id="resultSection"></div>
-    <div id="notesSection"></div>
+    <!-- WIZARD HEADER -->
+    <div class="wizard-header">
+      <div class="wizard-steps" id="wizardSteps"></div>
+      <div class="wizard-step-label" id="wizardStepLabel"></div>
+    </div>
+
+    <!-- DYNAMIC STEP CONTENT -->
+    <div id="stepContent"></div>
+
+  </div>
+</div>
+
+<!-- COMPLETION -->
+<div class="completion-screen" id="completionScreen">
+  <div class="completion-card">
+    <div class="completion-icon">✅</div>
+    <div class="completion-title">Alle Use Cases bewertet</div>
+    <div class="completion-sub">Dein KI-Manifest ist bereit zur Erstellung.</div>
+    <div class="completion-stats" id="completionStats"></div>
+    <button class="bb-btn bb-btn-primary" style="width:100%;" onclick="goToManifest()">Manifest erstellen →</button>
   </div>
 </div>
 
 <!-- BOTTOM BAR -->
 <div class="bottom-bar" id="bottomBar">
-  <div class="bottom-info" id="bottomInfo"></div>
-  <div class="bottom-actions">
-    <button class="btn-sm btn-ghost" id="btnDefer" onclick="deferCurrentUC()">Zurückstellen</button>
-    <button class="btn-next" id="btnNext" onclick="nextUC()" disabled>Weiter →</button>
+  <div class="bb-left">
+    <button class="bb-btn bb-btn-ghost" id="btnBack" onclick="prevStep()">← Zurück</button>
+    <div class="bb-step-dots" id="bbDots"></div>
   </div>
-</div>
-
-<!-- COMPLETION SCREEN -->
-<div class="completion-screen" id="completionScreen">
-  <div class="completion-icon">🎯</div>
-  <div class="completion-title">Alle Use Cases bewertet</div>
-  <div class="completion-sub">Alle Use Cases in deiner Shortlist wurden bewertet. Du kannst jetzt das KI-Manifest erstellen.</div>
-  <div class="completion-stats" id="completionStats"></div>
-  <button class="btn-large" onclick="goToManifest()">Manifest erstellen →</button>
+  <button class="bb-btn bb-btn-primary" id="btnNext" onclick="nextStep()">Weiter →</button>
 </div>
 
 <script>
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
 // DATA
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
 
 const ALL_UCS = {
   "UC-01": { title:"Erstellung von Projektstatusberichten", category:"Kommunikation & Reporting", desc:"Die KI aggregiert Daten aus PM-Systemen und erstellt strukturierte Statusberichte vollautomatisch.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Hoch – 2–4 Stunden pro Woche", quality:"Inkonsistente Formatierung je nach Verfasser" } },
   "UC-02": { title:"Zusammenfassung von Meetings", category:"Dokumentation & Wissen", desc:"KI transkribiert und fasst Meetinginhalte, Entscheidungen und Action Items automatisch zusammen.", hitl_default:"level_1", ethical:true, ethicalNote:"Aufzeichnung von Personen – Einwilligung und Transparenz erforderlich.", regulated:false, consequence:{ effort:"Mittel – 30–60 Min. pro Meeting", quality:"Qualität hängt stark vom Protokollführer ab" } },
-  "UC-03": { title:"Erstellung von Präsentationen", category:"Kommunikation & Reporting", desc:"Aus einem Briefing erzeugt die KI eine vollständige Präsentation mit Struktur, Texten und Visualisierungsvorschlägen.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel – 3–6 Stunden", quality:"Gering – kreative Arbeit" } },
-  "UC-04": { title:"Erstellung von Projektdokumentation", category:"Dokumentation & Wissen", desc:"Die KI unterstützt bei der Erstellung und Pflege von Projektdokumenten – von der Strukturierung bis zur Formulierung.", hitl_default:"level_1", ethical:false, regulated:true, regulatedNote:"In regulierten Industrien können KI-generierte Dokumente auditpflichtig sein.", consequence:{ effort:"Hoch – einer der zeitintensivsten Bereiche", quality:"Lückenhaftigkeit und Inkonsistenz" } },
-  "UC-05": { title:"Formulierung von Stakeholder-Kommunikation", category:"Kommunikation & Reporting", desc:"Aus Stichpunkten erstellt die KI zielgruppengerechte Kommunikation für unterschiedliche Stakeholder-Gruppen.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Niedrig – Komfort, kein Kernprozess", quality:"Gering bei erfahrenen PMs" } },
-  "UC-06": { title:"Live-Zusammenfassung während Meetings", category:"Meeting-Unterstützung (Live)", desc:"Während des Meetings läuft die KI-Zusammenfassung live mit – alle Teilnehmenden sehen einen aktualisierten Überblick.", hitl_default:"level_2", ethical:true, ethicalNote:"Echtzeit-Aufzeichnung aller Personen – erhöhte Anforderungen.", regulated:false, consequence:{ effort:"Niedrig – kein wesentlicher Mehraufwand", quality:"Gering – nice to have" } },
-  "UC-07": { title:"Vorschläge für nächste Fragen im Meeting", category:"Meeting-Unterstützung (Live)", desc:"Basierend auf dem Gesprächsverlauf generiert die KI Vorschläge für Folgefragen an den Moderator.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Keine – rein additiv", quality:"Gering" } },
-  "UC-08": { title:"Hinweise auf offene Punkte oder Unklarheiten", category:"Meeting-Unterstützung (Live)", desc:"Die KI warnt den Moderator diskret, wenn wichtige Punkte im Meeting nicht abgeschlossen wurden.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Niedrig – offene Punkte werden in Nachbereitung aufgedeckt", quality:"Mittel – offene Punkte sind häufiger Qualitätsverlust" } },
-  "UC-09": { title:"Coaching des Moderators während Meetings", category:"Meeting-Unterstützung (Live)", desc:"Die KI analysiert Redezeiten, Beteiligung und Zeitverlauf und gibt dem Moderator diskrete Hinweise.", hitl_default:"level_1", ethical:true, ethicalNote:"Analyse von Redeverhalten einzelner Personen – potenziell sensibel.", regulated:false, consequence:{ effort:"Keine", quality:"Niedrig" } },
-  "UC-10": { title:"Erstellung von Projektplänen", category:"Planung & Steuerung", desc:"Aus einer Projektbeschreibung generiert die KI einen ersten Projektplan-Entwurf als Diskussionsgrundlage.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel – Planungsvorbereitung kostet Zeit", quality:"Gering – erfahrene PMs erstellen gute Pläne manuell" } },
-  "UC-11": { title:"Schätzung von Aufwänden", category:"Planung & Steuerung", desc:"KI liefert Schätzvorschläge auf Basis historischer Daten, Benchmarks und Projektbeschreibung.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel", quality:"Mittel – Fehlschätzungen sind häufiger Risikofaktor" } },
-  "UC-12": { title:"Optimierung von Zeitplänen", category:"Planung & Steuerung", desc:"Bei Verzögerungen berechnet die KI Alternativen und zeigt Auswirkungen auf den Gesamtplan.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel – manuelle Neuplanung ist zeitaufwändig", quality:"Mittel – Abhängigkeiten werden manuell leicht übersehen" } },
-  "UC-13": { title:"Simulation von Projektszenarien", category:"Planung & Steuerung", desc:"Der PM kann verschiedene Szenarien (Ressourcenausfall, Scope-Änderung) durchspielen und erhält Auswirkungseinschätzungen.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel – Szenarioanalysen sind manuell sehr aufwändig", quality:"Hoch – ohne Simulation werden Risiken zu spät erkannt" } },
-  "UC-14": { title:"Unterstützung bei Stage-Gate-Bewertungen", category:"Planung & Steuerung", desc:"Vor einem Stage-Gate-Review aggregiert die KI alle relevanten Projektdaten und prüft Erfüllung der Gate-Kriterien.", hitl_default:"level_1", ethical:true, ethicalNote:"Stage-Gate-Entscheidungen haben direkte Konsequenzen – Verantwortungsdiffusion ist ein ethisches Risiko.", regulated:true, regulatedNote:"In regulierten Industrien sind Gate-Entscheidungen oft auditpflichtig.", consequence:{ effort:"Mittel – Vorbereitung von Gate-Reviews ist aufwändig", quality:"Mittel – Vollständigkeit und Konsistenz leiden" } },
-  "UC-15": { title:"Bewertung von Risiken", category:"Risiko & Entscheidung", desc:"Die KI analysiert das Projekt auf typische Risikofaktoren und generiert eine priorisierte Risikoliste.", hitl_default:"level_1", ethical:false, regulated:true, regulatedNote:"In sicherheitskritischen Projekten müssen KI-Ergebnisse mit normierten Methoden validiert werden.", consequence:{ effort:"Hoch – strukturierte Risikoanalysen sind zeitaufwändig", quality:"Hoch – ohne Systematik werden Risiken übersehen" } },
-  "UC-16": { title:"Erstellung von Entscheidungsvorlagen", category:"Risiko & Entscheidung", desc:"Aus Rohinformationen erstellt die KI eine strukturierte Entscheidungsvorlage mit Optionenvergleich und Empfehlung.", hitl_default:"level_1", ethical:true, ethicalNote:"Verantwortungsdiffusion: KI-Empfehlungen senken kritische Auseinandersetzung mit Alternativen.", regulated:false, consequence:{ effort:"Mittel", quality:"Gering – erfahrene PMs erstellen gute Vorlagen manuell" } },
-  "UC-17": { title:"Analyse von Projektperformance", category:"Risiko & Entscheidung", desc:"Regelmäßige Analyse der Projektperformance durch KI – Erkennung von Trends, Frühwarnung bei Abweichungen.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Hoch – manuelle Analyse ist sehr zeitaufwändig", quality:"Hoch – Muster werden ohne KI oft zu spät erkannt" } },
-  "UC-18": { title:"Erstellung von Testfällen", category:"Qualität & Testing", desc:"Aus Anforderungsdokumenten erstellt die KI systematisch Testfälle und deckt Randfälle auf.", hitl_default:"level_1", ethical:false, regulated:true, regulatedNote:"In regulierten Industrien sind Testprozesse normiert – KI-generierte Testfälle müssen validiert werden.", consequence:{ effort:"Hoch – Testfallentwicklung ist sehr zeitaufwändig", quality:"Mittel – KI deckt systematisch Randfälle auf" } },
-  "UC-20": { title:"Identifikation von Qualitätsproblemen", category:"Qualität & Testing", desc:"KI clustert Defekte, erkennt Fehlermuster, priorisiert nach Kritikalität und identifiziert systemische Probleme.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Mittel", quality:"Hoch – frühe Erkennung verhindert späte Eskalationen" } },
-  "UC-21": { title:"Beantwortung von Projektfragen", category:"Dokumentation & Wissen", desc:"Teammitglieder stellen Fragen und erhalten sofort Antworten aus der Projektdokumentation.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Hoch – Fragen an PM binden erheblich Kapazität", quality:"Mittel – Wissenstransfer leidet ohne strukturierte Abfragemöglichkeit" } },
-  "UC-22": { title:"Durchsuchung von Projektdokumentation", category:"Dokumentation & Wissen", desc:"Statt klassischer Volltextsuche versteht die KI den Suchkontext und liefert relevante Dokumente und Zusammenhänge.", hitl_default:"level_3", ethical:false, regulated:false, consequence:{ effort:"Mittel – Suche in großen Dokumentenbeständen ist mühsam", quality:"Niedrig – Informationen sind vorhanden, nur schwerer zugänglich" } },
-  "UC-24": { title:"Onboarding neuer Projektmitglieder", category:"Dokumentation & Wissen", desc:"Neue Projektmitglieder erhalten über eine KI-Schnittstelle einen strukturierten Einstieg in das Projekt.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Hoch – Onboarding ohne KI bindet erfahrene Teammitglieder stark", quality:"Hoch – schlechtes Onboarding verzögert Produktivität" } },
-  "UC-25": { title:"Unterstützung im Vendor- und Vertragsmanagement", category:"Risiko & Entscheidung", desc:"KI analysiert Verträge, identifiziert kritische Klauseln und unterstützt bei der Lieferantenbewertung.", hitl_default:"level_1", ethical:false, regulated:true, regulatedNote:"Vertragsanalyse durch KI ersetzt keine Rechtsberatung.", consequence:{ effort:"Mittel – Vertragsdurchsicht bindet PM-Kapazität", quality:"Mittel – kritische Klauseln werden manuell eher übersehen" } },
-  "UC-26": { title:"Budgetüberwachung und Kostenprognose", category:"Planung & Steuerung", desc:"KI überwacht den Budgetverbrauch, erkennt Abweichungen frühzeitig und erstellt Kostenprognosen.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Hoch – manuelle Budgetverfolgung ist sehr aufwändig", quality:"Hoch – späte Erkennung von Budgetabweichungen ist häufiger Risikofaktor" } }
+  "UC-03": { title:"Erstellung von Präsentationen", category:"Kommunikation & Reporting", desc:"Aus einem Briefing erzeugt die KI eine vollständige Präsentation.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel – 3–6 Stunden", quality:"Gering – kreative Arbeit" } },
+  "UC-04": { title:"Erstellung von Projektdokumentation", category:"Dokumentation & Wissen", desc:"Die KI unterstützt bei der Erstellung und Pflege von Projektdokumenten.", hitl_default:"level_1", ethical:false, regulated:true, regulatedNote:"In regulierten Industrien können KI-generierte Dokumente auditpflichtig sein.", consequence:{ effort:"Hoch – einer der zeitintensivsten Bereiche", quality:"Lückenhaftigkeit und Inkonsistenz" } },
+  "UC-05": { title:"Formulierung von Stakeholder-Kommunikation", category:"Kommunikation & Reporting", desc:"Aus Stichpunkten erstellt die KI zielgruppengerechte Kommunikation.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Niedrig – Komfort, kein Kernprozess", quality:"Gering bei erfahrenen PMs" } },
+  "UC-06": { title:"Live-Zusammenfassung während Meetings", category:"Meeting-Unterstützung (Live)", desc:"Während des Meetings läuft die KI-Zusammenfassung live mit.", hitl_default:"level_2", ethical:true, ethicalNote:"Echtzeit-Aufzeichnung aller Personen – erhöhte Anforderungen.", regulated:false, consequence:{ effort:"Niedrig", quality:"Gering – nice to have" } },
+  "UC-07": { title:"Vorschläge für nächste Fragen im Meeting", category:"Meeting-Unterstützung (Live)", desc:"Basierend auf dem Gesprächsverlauf generiert die KI Vorschläge für Folgefragen.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Keine – rein additiv", quality:"Gering" } },
+  "UC-08": { title:"Hinweise auf offene Punkte oder Unklarheiten", category:"Meeting-Unterstützung (Live)", desc:"Die KI warnt den Moderator diskret, wenn wichtige Punkte nicht abgeschlossen wurden.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Niedrig", quality:"Mittel" } },
+  "UC-09": { title:"Coaching des Moderators während Meetings", category:"Meeting-Unterstützung (Live)", desc:"Die KI analysiert Redezeiten und Beteiligung und gibt dem Moderator diskrete Hinweise.", hitl_default:"level_1", ethical:true, ethicalNote:"Analyse von Redeverhalten einzelner Personen – potenziell sensibel.", regulated:false, consequence:{ effort:"Keine", quality:"Niedrig" } },
+  "UC-10": { title:"Erstellung von Projektplänen", category:"Planung & Steuerung", desc:"Aus einer Projektbeschreibung generiert die KI einen ersten Projektplan-Entwurf.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel", quality:"Gering" } },
+  "UC-11": { title:"Schätzung von Aufwänden", category:"Planung & Steuerung", desc:"KI liefert Schätzvorschläge auf Basis historischer Daten und Benchmarks.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel", quality:"Mittel" } },
+  "UC-12": { title:"Optimierung von Zeitplänen", category:"Planung & Steuerung", desc:"Bei Verzögerungen berechnet die KI Alternativen und zeigt Auswirkungen auf den Gesamtplan.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel", quality:"Mittel" } },
+  "UC-13": { title:"Simulation von Projektszenarien", category:"Planung & Steuerung", desc:"Der PM kann verschiedene Szenarien durchspielen und erhält Auswirkungseinschätzungen.", hitl_default:"level_1", ethical:false, regulated:false, consequence:{ effort:"Mittel", quality:"Hoch" } },
+  "UC-14": { title:"Unterstützung bei Stage-Gate-Bewertungen", category:"Planung & Steuerung", desc:"Vor einem Stage-Gate-Review aggregiert die KI alle relevanten Projektdaten.", hitl_default:"level_1", ethical:true, regulated:true, regulatedNote:"In regulierten Industrien sind Gate-Entscheidungen oft auditpflichtig.", consequence:{ effort:"Mittel", quality:"Mittel" } },
+  "UC-15": { title:"Bewertung von Risiken", category:"Risiko & Entscheidung", desc:"Die KI analysiert das Projekt auf typische Risikofaktoren und generiert eine priorisierte Risikoliste.", hitl_default:"level_1", ethical:false, regulated:true, regulatedNote:"In sicherheitskritischen Projekten müssen KI-Ergebnisse mit normierten Methoden validiert werden.", consequence:{ effort:"Hoch", quality:"Hoch" } },
+  "UC-16": { title:"Erstellung von Entscheidungsvorlagen", category:"Risiko & Entscheidung", desc:"Aus Rohinformationen erstellt die KI eine strukturierte Entscheidungsvorlage.", hitl_default:"level_1", ethical:true, regulated:false, consequence:{ effort:"Mittel", quality:"Gering" } },
+  "UC-17": { title:"Analyse von Projektperformance", category:"Risiko & Entscheidung", desc:"Regelmäßige Analyse der Projektperformance durch KI.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Hoch", quality:"Hoch" } },
+  "UC-18": { title:"Erstellung von Testfällen", category:"Qualität & Testing", desc:"Aus Anforderungsdokumenten erstellt die KI systematisch Testfälle.", hitl_default:"level_1", ethical:false, regulated:true, regulatedNote:"In regulierten Industrien sind Testprozesse normiert.", consequence:{ effort:"Hoch", quality:"Mittel" } },
+  "UC-20": { title:"Identifikation von Qualitätsproblemen", category:"Qualität & Testing", desc:"KI clustert Defekte, erkennt Fehlermuster und priorisiert nach Kritikalität.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Mittel", quality:"Hoch" } },
+  "UC-21": { title:"Beantwortung von Projektfragen", category:"Dokumentation & Wissen", desc:"Teammitglieder stellen Fragen und erhalten sofort Antworten aus der Projektdokumentation.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Hoch", quality:"Mittel" } },
+  "UC-22": { title:"Durchsuchung von Projektdokumentation", category:"Dokumentation & Wissen", desc:"KI versteht den Suchkontext und liefert relevante Dokumente.", hitl_default:"level_3", ethical:false, regulated:false, consequence:{ effort:"Mittel", quality:"Niedrig" } },
+  "UC-24": { title:"Onboarding neuer Projektmitglieder", category:"Dokumentation & Wissen", desc:"Neue Projektmitglieder erhalten über eine KI-Schnittstelle einen strukturierten Einstieg.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Hoch", quality:"Hoch" } },
+  "UC-25": { title:"Unterstützung im Vendor- und Vertragsmanagement", category:"Risiko & Entscheidung", desc:"KI analysiert Verträge und identifiziert kritische Klauseln.", hitl_default:"level_1", ethical:false, regulated:true, regulatedNote:"Vertragsanalyse durch KI ersetzt keine Rechtsberatung.", consequence:{ effort:"Mittel", quality:"Mittel" } },
+  "UC-26": { title:"Budgetüberwachung und Kostenprognose", category:"Planung & Steuerung", desc:"KI überwacht den Budgetverbrauch und erstellt Kostenprognosen.", hitl_default:"level_2", ethical:false, regulated:false, consequence:{ effort:"Hoch", quality:"Hoch" } }
 };
 
 const MEASURES = [
-  { id:"human_reviews_every_result", label:"Mensch prüft jedes KI-Ergebnis", cat:"hitl" },
-  { id:"human_decides_final", label:"Mensch entscheidet final – lege fest, wer konkret die Verantwortung trägt und dokumentiere diese Person namentlich.", cat:"hitl" },
-  { id:"human_gives_approval", label:"Mensch gibt Ergebnis frei", cat:"hitl" },
-  { id:"human_spot_checks", label:"Mensch prüft stichprobenartig", cat:"hitl" },
-  { id:"human_monitors_usage", label:"Mensch überwacht die Nutzung", cat:"hitl" },
-  { id:"human_can_intervene", label:"Mensch kann jederzeit eingreifen", cat:"hitl" },
-  { id:"define_tasks", label:"KI nur für definierte Aufgaben", cat:"org" },
-  { id:"use_verified_data", label:"Nur geprüfte Daten verwenden", cat:"org" },
-  { id:"define_rules", label:"Klare Nutzungsregeln definieren", cat:"org" },
-  { id:"train_users", label:"Nutzer schulen", cat:"org" },
-  { id:"limit_scope", label:"Einsatzbereich begrenzen", cat:"org" },
-  { id:"define_responsibilities", label:"Verantwortlichkeiten definieren", cat:"org" },
-  { id:"define_data_classification", label:"Datenklassifizierung durchführen", cat:"tech" },
-  { id:"check_avv", label:"AVV mit Tool-Anbieter prüfen", cat:"legal" },
-  { id:"check_tool_approval", label:"Tool-Freigabe bestätigen", cat:"legal" },
-  { id:"no_confidential_data_in_prompt", label:"Keine vertraulichen Daten im Prompt", cat:"tech" },
-  { id:"no_personal_data", label:"Personenbezogene Daten ausschließen", cat:"tech" },
-  { id:"define_confidentiality_rules", label:"Vertraulichkeitsregeln definieren", cat:"org" },
-  { id:"versioning", label:"Versionierung sicherstellen", cat:"tech" },
-  { id:"plausibility_check", label:"Plausibilitätsprüfung", cat:"org" },
-  { id:"expert_review", label:"Review durch Fachexperten", cat:"org" },
-  { id:"document_usage", label:"Nutzung dokumentieren", cat:"org" },
-  { id:"audit_log", label:"Audit-Log führen", cat:"tech" },
-  { id:"regular_review", label:"Regelmäßige Qualitätsprüfung", cat:"org" },
-  { id:"define_escalation", label:"Eskalationswege definieren", cat:"org" }
+  { id:"human_reviews_every_result", label:"Mensch prüft jedes KI-Ergebnis", cat:"hitl", flags:[] },
+  { id:"human_decides_final", label:"Mensch entscheidet final", cat:"hitl", flags:[] },
+  { id:"human_gives_approval", label:"Mensch gibt Ergebnis frei", cat:"hitl", flags:[] },
+  { id:"human_spot_checks", label:"Mensch prüft stichprobenartig", cat:"hitl", flags:[] },
+  { id:"human_monitors_usage", label:"Mensch überwacht die Nutzung", cat:"hitl", flags:[] },
+  { id:"human_can_intervene", label:"Mensch kann jederzeit eingreifen", cat:"hitl", flags:[] },
+  { id:"define_tasks", label:"KI nur für definierte Aufgaben", cat:"org", flags:[] },
+  { id:"use_verified_data", label:"Nur geprüfte Daten verwenden", cat:"org", flags:[] },
+  { id:"define_rules", label:"Klare Nutzungsregeln definieren", cat:"org", flags:[] },
+  { id:"train_users", label:"Nutzer schulen", cat:"org", flags:[] },
+  { id:"limit_scope", label:"Einsatzbereich begrenzen", cat:"org", flags:[] },
+  { id:"define_responsibilities", label:"Verantwortlichkeiten definieren", cat:"org", flags:[] },
+  { id:"plausibility_check", label:"Plausibilitätsprüfung", cat:"org", flags:[] },
+  { id:"expert_review", label:"Review durch Fachexperten", cat:"org", flags:[] },
+  { id:"document_usage", label:"Nutzung dokumentieren", cat:"org", flags:[] },
+  { id:"regular_review", label:"Regelmäßige Qualitätsprüfung", cat:"org", flags:[] },
+  { id:"define_escalation", label:"Eskalationswege definieren", cat:"org", flags:[] },
+  { id:"define_data_classification", label:"Datenklassifizierung durchführen", cat:"tech", flags:["flag_personal_data","flag_customer_data","flag_confidential_data"] },
+  { id:"no_confidential_data_in_prompt", label:"Keine vertraulichen Daten im Prompt", cat:"tech", flags:["flag_confidential_data","flag_customer_data"] },
+  { id:"no_personal_data", label:"Personenbezogene Daten ausschließen", cat:"tech", flags:["flag_personal_data"] },
+  { id:"versioning", label:"Versionierung sicherstellen", cat:"tech", flags:[] },
+  { id:"audit_log", label:"Audit-Log führen", cat:"tech", flags:["flag_regulated_finance","flag_regulated_pharma","flag_regulated_medical"] },
+  { id:"check_avv", label:"AVV mit Tool-Anbieter prüfen", cat:"legal", flags:["flag_personal_data","flag_customer_data","flag_avv_unclear","flag_no_avv"] },
+  { id:"check_tool_approval", label:"Tool-Freigabe bestätigen", cat:"legal", flags:["flag_tool_not_approved","flag_approval_unclear"] },
+  { id:"define_confidentiality_rules", label:"Vertraulichkeitsregeln definieren", cat:"legal", flags:["flag_confidential_data"] }
 ];
 
-// Best practices per use case (abbreviated)
-const UC_BEST_PRACTICES = {
-  "UC-01": ["Vorlage für den Bericht vorab definieren und als Prompt-Basis nutzen.", "KI-Output immer durch den PM auf inhaltliche Korrektheit prüfen, bevor er versendet wird.", "Klaren Freigabeprozess definieren: KI generiert, Mensch gibt frei."],
-  "UC-02": ["Aufnahme erst starten, wenn alle Teilnehmenden anwesend und informiert wurden.", "Vertrauliche Punkte (z.B. Personalthemen) vor der Aufnahme besprechen.", "Zusammenfassung vor Verteilung durch den Moderator prüfen und freigeben.", "Externe Teilnehmende explizit auf die Aufzeichnung hinweisen."],
-  "UC-03": ["Keine vertraulichen Kundendaten ungefiltert in den Prompt.", "Corporate Design und Vorlagen vorab als Kontext mitgeben.", "KI-generierten Text immer auf fachliche Korrektheit prüfen."],
-  "UC-04": ["Versionierung auch bei KI-Unterstützung sicherstellen.", "Klare Kennzeichnung, welche Teile KI-generiert sind.", "In regulierten Industrien: Freigabeprozesse nicht durch KI-Geschwindigkeit umgehen."],
-  "UC-05": ["Den Ton und die Zielgruppe im Prompt präzise beschreiben.", "Keine vertraulichen internen Informationen einbauen.", "Kritische Kommunikation (Eskalationen, bad news) immer persönlich finalisieren."],
-  "UC-06": ["Alle Teilnehmenden zu Beginn über die Live-Funktion informieren.", "Zusammenfassung nur auf projekt-internen Screens anzeigen."],
-  "UC-07": ["Vorschläge als Inspiration nutzen, nicht unreflektiert übernehmen.", "KI-Vorschläge nur für den Moderator sichtbar – nicht für alle Teilnehmenden."],
-  "UC-08": ["Hinweise nur an den Moderator, nicht an alle Teilnehmenden.", "Am Ende des Meetings immer manuell die offene-Punkte-Liste prüfen."],
-  "UC-09": ["Hinweise nur für den Moderator sichtbar, nie für Teilnehmende.", "Daten über Redeverhalten nicht speichern oder auswerten.", "Funktion nur in internen Meetings nutzen."],
-  "UC-10": ["KI-Plan immer als ersten Entwurf behandeln – nie als finalen Plan.", "Team frühzeitig einbinden, um den Plan zu validieren.", "Branchenspezifische Normen explizit in den Prompt aufnehmen."],
-  "UC-11": ["Schätzungen immer als Bandbreite kommunizieren, nicht als Punktwert.", "KI-Schätzungen mit Team-Erfahrung kombinieren (Delphi-Methode)."],
-  "UC-12": ["Optimierungsvorschläge immer mit dem Team besprechen.", "Nicht nur Zeit optimieren – Qualität und Teambelastung mitgeben."],
-  "UC-13": ["Szenarien immer mit dem Steering Committee abstimmen.", "Simulationsergebnisse als Wahrscheinlichkeiten kommunizieren, nicht als Fakten."],
-  "UC-14": ["KI liefert Zusammenfassung – Entscheidung trifft immer ein Mensch.", "Im Protokoll festhalten, dass KI-Unterstützung genutzt wurde.", "In regulierten Industrien: Freigabeprozess und Dokumentationspflicht vorab klären."],
-  "UC-15": ["Risikoliste immer mit dem Team und Fachexperten validieren.", "In regulierten oder sicherheitskritischen Industrien: normierte Methoden haben Vorrang."],
-  "UC-16": ["KI-Empfehlung immer als einen Input unter mehreren behandeln.", "Kennzeichnung in der Vorlage: 'KI-Vorschlag, nicht finale Empfehlung des PM'.", "Entscheidungsverantwortung immer namentlich benennen."],
-  "UC-17": ["Datenqualität vor Analyse sicherstellen – KI verstärkt Fehler in Eingangsdaten.", "Analyseergebnisse im Team besprechen, nicht als objektive Wahrheit kommunizieren."],
-  "UC-18": ["Testfälle immer durch einen Tester fachlich reviewen lassen.", "KI ist gut für Vollständigkeit – Priorisierung bleibt beim Menschen."],
-  "UC-20": ["Qualitätsdaten konsistent erfassen.", "KI-Priorisierung von Defekten immer durch Testverantwortlichen validieren.", "Muster und Cluster als Hinweise nutzen, nicht als finale Entscheidung."],
-  "UC-21": ["Zugriff auf Projektdokumentation klar eingrenzen.", "Antworten als 'basierend auf Projektdokumentation, Stand X' kennzeichnen.", "Für kritische Fragen immer auf PM oder Fachverantwortlichen verweisen."],
-  "UC-22": ["Klare Berechtigungsstruktur für die Dokumentenbasis definieren.", "Ergebnisse immer durch Klick auf das Originaldokument verifizieren."],
-  "UC-24": ["Onboarding-Inhalte aktuell halten.", "KI-Onboarding durch ein Kickoff-Gespräch mit dem PM ergänzen.", "Vertrauliche Informationen aus der Onboarding-Wissensbasis heraushalten."],
-  "UC-25": ["KI-Vertragsanalyse ersetzt nie die juristische Prüfung – immer als erste Orientierung.", "Hochvertrauliche Vertragsdetails nicht in externe KI-Tools eingeben.", "Interne Rechtsabteilung bei kritischen Verträgen einbinden."],
-  "UC-26": ["Finanzdaten vor KI-Analyse auf Vollständigkeit prüfen.", "Prognosen als Szenarien kommunizieren – nicht als sichere Vorhersagen.", "Kostendaten sind oft vertraulich: Datenschutz und Zugriffsrechte klären."]
-};
-
-// Suggested measures per UC
 const UC_SUGGESTED_MEASURES = {
   "UC-01": ["define_tasks","use_verified_data","human_reviews_every_result","human_decides_final","plausibility_check","document_usage"],
   "UC-02": ["define_tasks","human_reviews_every_result","human_decides_final","define_data_classification","check_avv"],
@@ -456,126 +478,46 @@ const UC_SUGGESTED_MEASURES = {
   "UC-26": ["use_verified_data","plausibility_check","human_monitors_usage","human_decides_final","define_data_classification"]
 };
 
-const QUESTIONS = [
-  {
-    id: "q_tool_available",
-    section: "Stack & Freigabe",
-    text: "Ist ein zugelassenes Tool für diesen Use Case vorhanden?",
-    type: "single",
-    options: [
-      { value:"yes", label:"Ja, ein freigegebenes Tool ist vorhanden" },
-      { value:"yes_not_approved", label:"Tool vorhanden, aber noch nicht freigegeben", flag:"flag_tool_not_approved" },
-      { value:"no", label:"Kein Tool vorhanden", flag:"flag_no_tool" }
-    ]
-  },
-  {
-    id: "q_use_case_approved",
-    section: "Stack & Freigabe",
-    text: "Ist dieser Use Case im Unternehmen für euer Projekt zugelassen?",
-    type: "single",
-    options: [
-      { value:"yes", label:"Ja, explizit freigegeben" },
-      { value:"unclear", label:"Unklar – keine klare Aussage dazu", flag:"flag_approval_unclear" },
-      { value:"no", label:"Nein, nicht freigegeben", flag:"flag_not_approved" }
-    ]
-  },
-  {
-    id: "q_data_types",
-    section: "Daten & Vertraulichkeit",
-    text: "Welche Art von Daten fließen in diesen Use Case ein?",
-    type: "multi",
-    options: [
-      { value:"internal_project", label:"Interne Projektdaten (Pläne, Status, Aufgaben)" },
-      { value:"personal_data", label:"Personenbezogene Daten (Namen, Rollen, Leistung)", flag:"flag_personal_data" },
-      { value:"customer_data", label:"Kundendaten oder Kundenprojektdaten", flag:"flag_customer_data" },
-      { value:"strategic_data", label:"Strategische oder vertrauliche Unternehmensdaten", flag:"flag_confidential_data" },
-      { value:"public", label:"Nur öffentliche Daten" }
-    ]
-  },
-  {
-    id: "q_avv",
-    section: "Daten & Vertraulichkeit",
-    text: "Gibt es eine AVV mit dem Tool-Anbieter (sofern personenbezogene Daten fließen)?",
-    type: "single",
-    options: [
-      { value:"yes", label:"Ja, AVV liegt vor" },
-      { value:"unclear", label:"Unklar – muss geprüft werden", flag:"flag_avv_unclear" },
-      { value:"no", label:"Nein, keine AVV vorhanden", flag:"flag_no_avv" },
-      { value:"na", label:"Nicht zutreffend (keine personenbezogenen Daten)" }
-    ]
-  },
-  {
-    id: "q_decision_criticality",
-    section: "Verantwortung & Kontrolle",
-    text: "Wie kritisch sind die Entscheidungen, die auf KI-Ergebnissen basieren?",
-    type: "single",
-    options: [
-      { value:"low", label:"Niedrig – Fehler sind leicht korrigierbar" },
-      { value:"medium", label:"Mittel – Fehler verursachen Aufwand oder Verzögerungen" },
-      { value:"high", label:"Hoch – Fehler haben erhebliche Konsequenzen" },
-      { value:"critical", label:"Kritisch – Fehler können Projekterfolg oder Sicherheit gefährden" }
-    ]
-  },
-  {
-    id: "q_decisions_about_persons",
-    section: "Ethik & Verantwortung",
-    text: "Beeinflusst die KI-Ausgabe Einschätzungen oder Entscheidungen über einzelne Personen?",
-    hint: "z.B. Leistungsbewertung, Ressourcenzuweisung, Aufgabenverteilung",
-    type: "single",
-    options: [
-      { value:"no", label:"Nein" },
-      { value:"indirect", label:"Indirekt – Personen sind betroffen, aber nicht Gegenstand der Analyse", flag:"flag_ethics_persons_indirect" },
-      { value:"yes", label:"Ja – KI beeinflusst direkt Entscheidungen über Personen", flag:"flag_ethics_persons" }
-    ]
-  },
-  {
-    id: "q_transparency",
-    section: "Ethik & Verantwortung",
-    text: "Wissen alle relevanten Beteiligten, dass KI in diesem Bereich eingesetzt wird?",
-    type: "single",
-    options: [
-      { value:"yes", label:"Ja, alle sind informiert" },
-      { value:"planned", label:"Nein, muss noch kommuniziert werden" },
-      { value:"no", label:"Nein, und das ist bewusst so", flag:"flag_transparency" }
-    ]
-  },
-  {
-    id: "q_regulated_industry",
-    section: "Ethik & Verantwortung",
-    text: "Gibt es in eurem Projektkontext regulatorische Anforderungen?",
-    type: "multi",
-    options: [
-      { value:"none", label:"Nein, keine spezifischen Anforderungen" },
-      { value:"gdpr", label:"DSGVO / Datenschutz", flag:"flag_gdpr" },
-      { value:"pharma", label:"Pharma / Life Sciences (GxP, FDA)", flag:"flag_regulated_pharma" },
-      { value:"finance", label:"Finanzdienstleistungen (MiFID, BaFin)", flag:"flag_regulated_finance" },
-      { value:"energy", label:"Energie / kritische Infrastruktur", flag:"flag_regulated_energy" },
-      { value:"defense", label:"Verteidigung / Rüstung", flag:"flag_regulated_defense" },
-      { value:"medical_devices", label:"Medizinprodukte (MDR, FDA)", flag:"flag_regulated_medical" },
-      { value:"automotive", label:"Automotive / funktionale Sicherheit", flag:"flag_regulated_automotive" }
-    ]
-  },
-  {
-    id: "q_responsible_person",
-    section: "Verantwortung & Kontrolle",
-    text: "Wer ist verantwortlich für diesen Use Case im Projekt?",
-    type: "text",
-    placeholder: "Name oder Rolle (z.B. Projektleiter, Testverantwortlicher)"
-  }
-];
+const UC_BEST_PRACTICES = {
+  "UC-01": ["Vorlage für den Bericht vorab definieren und als Prompt-Basis nutzen.","KI-Output immer durch den PM auf inhaltliche Korrektheit prüfen, bevor er versendet wird.","Klaren Freigabeprozess definieren: KI generiert, Mensch gibt frei."],
+  "UC-02": ["Aufnahme erst starten, wenn alle Teilnehmenden informiert wurden.","Vertrauliche Punkte vor der Aufnahme besprechen.","Zusammenfassung vor Verteilung durch den Moderator prüfen.","Externe Teilnehmende explizit auf die Aufzeichnung hinweisen."],
+  "UC-03": ["Keine vertraulichen Kundendaten ungefiltert in den Prompt.","Corporate Design und Vorlagen als Kontext mitgeben.","KI-generierten Text immer auf fachliche Korrektheit prüfen."],
+  "UC-04": ["Versionierung auch bei KI-Unterstützung sicherstellen.","Klare Kennzeichnung, welche Teile KI-generiert sind.","In regulierten Industrien: Freigabeprozesse nicht durch KI-Geschwindigkeit umgehen."],
+  "UC-05": ["Den Ton und die Zielgruppe im Prompt präzise beschreiben.","Keine vertraulichen internen Informationen einbauen.","Kritische Kommunikation immer persönlich finalisieren."],
+  "UC-06": ["Alle Teilnehmenden zu Beginn über die Live-Funktion informieren.","Zusammenfassung nur auf projekt-internen Screens anzeigen."],
+  "UC-07": ["Vorschläge als Inspiration nutzen, nicht unreflektiert übernehmen.","KI-Vorschläge nur für den Moderator sichtbar."],
+  "UC-08": ["Hinweise nur an den Moderator, nicht an alle Teilnehmenden.","Am Ende des Meetings immer manuell die offene-Punkte-Liste prüfen."],
+  "UC-09": ["Hinweise nur für den Moderator sichtbar, nie für Teilnehmende.","Daten über Redeverhalten nicht speichern oder auswerten.","Funktion nur in internen Meetings nutzen."],
+  "UC-10": ["KI-Plan immer als ersten Entwurf behandeln – nie als finalen Plan.","Team frühzeitig einbinden, um den Plan zu validieren."],
+  "UC-11": ["Schätzungen immer als Bandbreite kommunizieren, nicht als Punktwert.","KI-Schätzungen mit Team-Erfahrung kombinieren."],
+  "UC-12": ["Optimierungsvorschläge immer mit dem Team besprechen.","Nicht nur Zeit optimieren – Qualität und Teambelastung mitgeben."],
+  "UC-13": ["Szenarien immer mit dem Steering Committee abstimmen.","Simulationsergebnisse als Wahrscheinlichkeiten kommunizieren."],
+  "UC-14": ["KI liefert Zusammenfassung – Entscheidung trifft immer ein Mensch.","Im Protokoll festhalten, dass KI-Unterstützung genutzt wurde.","In regulierten Industrien: Freigabeprozess vorab klären."],
+  "UC-15": ["Risikoliste immer mit dem Team und Fachexperten validieren.","In regulierten Industrien: normierte Methoden haben Vorrang."],
+  "UC-16": ["KI-Empfehlung immer als einen Input unter mehreren behandeln.","Kennzeichnung in der Vorlage: 'KI-Vorschlag, nicht finale Empfehlung'.","Entscheidungsverantwortung immer namentlich benennen."],
+  "UC-17": ["Datenqualität vor Analyse sicherstellen.","Analyseergebnisse im Team besprechen, nicht als objektive Wahrheit kommunizieren."],
+  "UC-18": ["Testfälle immer durch einen Tester fachlich reviewen lassen.","KI ist gut für Vollständigkeit – Priorisierung bleibt beim Menschen."],
+  "UC-20": ["Qualitätsdaten konsistent erfassen.","KI-Priorisierung von Defekten immer durch Testverantwortlichen validieren."],
+  "UC-21": ["Zugriff auf Projektdokumentation klar eingrenzen.","Für kritische Fragen immer auf PM oder Fachverantwortlichen verweisen."],
+  "UC-22": ["Klare Berechtigungsstruktur für die Dokumentenbasis definieren.","Ergebnisse immer durch Klick auf das Originaldokument verifizieren."],
+  "UC-24": ["Onboarding-Inhalte aktuell halten.","KI-Onboarding durch ein Kickoff-Gespräch mit dem PM ergänzen."],
+  "UC-25": ["KI-Vertragsanalyse ersetzt nie die juristische Prüfung.","Hochvertrauliche Vertragsdetails nicht in externe KI-Tools eingeben."],
+  "UC-26": ["Finanzdaten vor KI-Analyse auf Vollständigkeit prüfen.","Prognosen als Szenarien kommunizieren – nicht als sichere Vorhersagen.","Kostendaten sind oft vertraulich: Datenschutz und Zugriffsrechte klären."]
+};
 
 const FLAGS = {
-  flag_tool_not_approved: { severity:"yellow", msg:"Das vorhandene Tool ist noch nicht freigegeben. Klären, bevor der Use Case umgesetzt wird.", action:"Tool zur 'Auf dem Radar'-Liste hinzufügen und Freigabeprozess anstoßen." },
+  flag_tool_not_approved: { severity:"yellow", msg:"Das vorhandene Tool ist noch nicht freigegeben.", action:"Tool zur 'Auf dem Radar'-Liste hinzufügen und Freigabeprozess anstoßen." },
+  flag_data_readiness: { severity:'yellow', msg:'Hoher Aufwand für Daten-Readiness', action:'KI-Readiness der Daten vorab klären und als Projektaufwand einplanen.' },
   flag_no_tool: { severity:"red", msg:"Kein Tool für diesen Use Case vorhanden.", action:"Use Case als 'aktuell nicht umsetzbar' markieren." },
-  flag_approval_unclear: { severity:"yellow", msg:"Freigabe ist unklar – Use Case darf erst eingesetzt werden, wenn Klarheit besteht.", action:"Klärung mit IT/Compliance/Management herbeiführen." },
+  flag_approval_unclear: { severity:"yellow", msg:"Freigabe ist unklar – erst einsetzen, wenn Klarheit besteht.", action:"Klärung mit IT/Compliance/Management herbeiführen." },
   flag_not_approved: { severity:"red", msg:"Dieser Use Case ist im Unternehmen nicht freigegeben.", action:"Use Case kann in diesem Projekt nicht umgesetzt werden." },
   flag_personal_data: { severity:"yellow", msg:"Personenbezogene Daten sind betroffen – Datenschutz prüfen.", action:"AVV prüfen, Datenklassifizierung vornehmen." },
-  flag_customer_data: { severity:"yellow", msg:"Kundendaten sind betroffen – vertragliche und datenschutzrechtliche Zulässigkeit prüfen.", action:"Kundenvertrag und Datenschutz prüfen." },
+  flag_customer_data: { severity:"yellow", msg:"Kundendaten sind betroffen – datenschutzrechtliche Zulässigkeit prüfen.", action:"Kundenvertrag und Datenschutz prüfen." },
   flag_confidential_data: { severity:"yellow", msg:"Vertrauliche Daten sollen in KI-Tools fließen – ist das erlaubt?", action:"Unternehmensrichtlinie prüfen." },
   flag_avv_unclear: { severity:"yellow", msg:"Keine Klarheit über AVV mit Tool-Anbieter.", action:"IT/Datenschutz klären lassen, bevor personenbezogene Daten verwendet werden." },
   flag_no_avv: { severity:"red", msg:"Keine AVV vorhanden – personenbezogene Daten dürfen nicht verarbeitet werden.", action:"Use Case erst umsetzbar, wenn AVV vorliegt." },
   flag_ethics_persons: { severity:"yellow", msg:"KI beeinflusst Entscheidungen über Personen – besondere Sorgfalt erforderlich.", action:"Transparenz sicherstellen, Betroffene informieren, Widerspruchsmöglichkeit prüfen." },
-  flag_ethics_persons_indirect: { severity:"yellow", msg:"Personen sind indirekt von KI-Ergebnissen betroffen.", action:"Kommunikation und Transparenz gegenüber Betroffenen sicherstellen." },
+  flag_ethics_persons_indirect: { severity:"yellow", msg:"Personen sind indirekt von KI-Ergebnissen betroffen.", action:"Kommunikation und Transparenz sicherstellen." },
   flag_transparency: { severity:"red", msg:"Bewusste Intransparenz über KI-Nutzung ist ethisch problematisch.", action:"Kommunikationsplan entwickeln oder Nutzung überdenken." },
   flag_gdpr: { severity:"yellow", msg:"DSGVO-Anforderungen sind relevant.", action:"Datenschutzbeauftragten einbinden, Verarbeitungsverzeichnis prüfen." },
   flag_regulated_pharma: { severity:"yellow", msg:"GxP-reguliertes Umfeld: KI-Nutzung muss validiert und dokumentiert werden.", action:"Validierungsanforderungen und SOPs prüfen." },
@@ -586,56 +528,241 @@ const FLAGS = {
   flag_regulated_automotive: { severity:"yellow", msg:"Funktionale Sicherheit: ISO 26262 Anforderungen prüfen.", action:"Safety Engineer einbinden." }
 };
 
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
+// WIZARD STEP DEFINITIONS
+// ════════════════════════════════════════════════
+// Steps are defined here. Each step can have a condition function to determine visibility.
+// The active steps are computed dynamically based on currentAnswers.
+
+const STEP_DEFS = [
+  {
+    id: 'stack',
+    label: 'Stack & Freigabe',
+    alwaysShow: true,
+    questions: [
+      {
+        id: "q_tool_available", text: "Ist ein zugelassenes Tool für diesen Use Case vorhanden?", type: "single",
+        options: [
+          { value:"yes", label:"Ja, ein freigegebenes Tool ist vorhanden" },
+          { value:"yes_not_approved", label:"Tool vorhanden, aber noch nicht freigegeben", flag:"flag_tool_not_approved" },
+          { value:"no", label:"Kein Tool vorhanden", flag:"flag_no_tool" }
+        ]
+      },
+      {
+        id: "q_use_case_approved", text: "Ist dieser Use Case im Unternehmen für euer Projekt zugelassen?", type: "single",
+        options: [
+          { value:"yes", label:"Ja, explizit freigegeben" },
+          { value:"unclear", label:"Unklar – keine klare Aussage dazu", flag:"flag_approval_unclear" },
+          { value:"no", label:"Nein, nicht freigegeben", flag:"flag_not_approved" }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'data',
+    label: 'Daten & Vertraulichkeit',
+    alwaysShow: true,
+    questions: [
+      {
+        id: "q_data_types", text: "Welche Art von Daten fließen in diesen Use Case ein?", type: "multi",
+        options: [
+          { value:"internal_project", label:"Interne Projektdaten (Pläne, Status, Aufgaben)" },
+          { value:"personal_data", label:"Personenbezogene Daten (Namen, Rollen, Leistung)", flag:"flag_personal_data" },
+          { value:"customer_data", label:"Kundendaten oder Kundenprojektdaten", flag:"flag_customer_data" },
+          { value:"strategic_data", label:"Strategische oder vertrauliche Unternehmensdaten", flag:"flag_confidential_data" },
+          { value:"public", label:"Nur öffentliche Daten" }
+        ]
+      },
+      {
+        id: "q_data_available", text: "Sind die benötigten Daten vollständig und aktuell verfügbar?", type: "single",
+        options: [
+          { value:"yes", label:"Ja, vollständig und aktuell" },
+          { value:"partial", label:"Teilweise – Lücken vorhanden" },
+          { value:"no", label:"Nein, Daten fehlen oder sind veraltet" }
+        ]
+      },
+      {
+        id: "q_data_management",
+        text: "Wie hoch ist der Aufwand für KI-Readiness der Daten (Bereinigung, Aufbereitung, Zugang)?",
+        hint: "Bezieht sich auf Zeit und Kosten, die nötig sind, um Daten KI-tauglich zu machen.",
+        type: "single",
+        options: [
+          { value: "low",    label: "Gering – Daten sind direkt nutzbar" },
+          { value: "medium", label: "Mittel – etwas Aufbereitung nötig" },
+          { value: "high",   label: "Hoch – erheblicher Aufwand für Bereinigung oder Zugang", flag: "flag_data_readiness" },
+          { value: "unknown", label: "Unbekannt – noch nicht bewertet" }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'data_privacy',
+    label: 'Datenschutz',
+    // Only show if personal_data or customer_data selected
+    condition: () => {
+      const dt = currentAnswers['q_data_types'] || [];
+      return dt.includes('personal_data') || dt.includes('customer_data');
+    },
+    questions: [
+      {
+        id: "q_avv", text: "Gibt es eine AVV mit dem Tool-Anbieter?",
+        hint: "Erforderlich, weil personenbezogene oder Kundendaten verarbeitet werden.",
+        type: "single",
+        options: [
+          { value:"yes", label:"Ja, AVV liegt vor" },
+          { value:"unclear", label:"Unklar – muss geprüft werden", flag:"flag_avv_unclear" },
+          { value:"no", label:"Nein, keine AVV vorhanden", flag:"flag_no_avv" }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'responsibility',
+    label: 'Verantwortung',
+    alwaysShow: true,
+    questions: [
+      {
+        id: "q_decision_criticality", text: "Wie kritisch sind die Entscheidungen, die auf KI-Ergebnissen basieren?", type: "single",
+        options: [
+          { value:"low", label:"Niedrig – Fehler sind leicht korrigierbar" },
+          { value:"medium", label:"Mittel – Fehler verursachen Aufwand oder Verzögerungen" },
+          { value:"high", label:"Hoch – Fehler haben erhebliche Konsequenzen" },
+          { value:"critical", label:"Kritisch – Fehler können Projekterfolg oder Sicherheit gefährden" }
+        ]
+      },
+      {
+        id: "q_responsible_person", text: "Wer ist verantwortlich für diesen Use Case im Projekt?",
+        type: "text", placeholder: "Name oder Rolle (z.B. Projektleiter, Testverantwortlicher)"
+      }
+    ]
+  },
+  {
+    id: 'ethics',
+    label: 'Ethik & Regulierung',
+    alwaysShow: true,
+    questions: [
+      {
+        id: "q_decisions_about_persons",
+        text: "Beeinflusst die KI-Ausgabe Einschätzungen oder Entscheidungen über einzelne Personen?",
+        hint: "z.B. Leistungsbewertung, Ressourcenzuweisung, Aufgabenverteilung",
+        // Only relevant if personal_data involved – but ask always as it's ethical, not just data-related
+        type: "single",
+        options: [
+          { value:"no", label:"Nein" },
+          { value:"indirect", label:"Indirekt – Personen sind betroffen, aber nicht Gegenstand der Analyse", flag:"flag_ethics_persons_indirect" },
+          { value:"yes", label:"Ja – KI beeinflusst direkt Entscheidungen über Personen", flag:"flag_ethics_persons" }
+        ],
+        // Hide if no personal data involved
+        condition: () => {
+          const dt = currentAnswers['q_data_types'] || [];
+          return dt.includes('personal_data') || dt.includes('customer_data') || dt.length === 0;
+        }
+      },
+      {
+        id: "q_transparency", text: "Wissen alle relevanten Beteiligten, dass KI in diesem Bereich eingesetzt wird?", type: "single",
+        options: [
+          { value:"yes", label:"Ja, alle sind informiert" },
+          { value:"planned", label:"Nein, muss noch kommuniziert werden" },
+          { value:"no", label:"Nein, und das ist bewusst so", flag:"flag_transparency" }
+        ]
+      },
+      {
+        id: "q_regulated_industry", text: "Gibt es in eurem Projektkontext regulatorische Anforderungen?", type: "multi",
+        options: [
+          { value:"none", label:"Nein, keine spezifischen Anforderungen" },
+          { value:"gdpr", label:"DSGVO / Datenschutz", flag:"flag_gdpr" },
+          { value:"pharma", label:"Pharma / Life Sciences (GxP, FDA)", flag:"flag_regulated_pharma" },
+          { value:"finance", label:"Finanzdienstleistungen (MiFID, BaFin)", flag:"flag_regulated_finance" },
+          { value:"energy", label:"Energie / kritische Infrastruktur", flag:"flag_regulated_energy" },
+          { value:"defense", label:"Verteidigung / Rüstung", flag:"flag_regulated_defense" },
+          { value:"medical_devices", label:"Medizinprodukte (MDR, FDA)", flag:"flag_regulated_medical" },
+          { value:"automotive", label:"Automotive / funktionale Sicherheit", flag:"flag_regulated_automotive" }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'compliance',
+    label: 'Compliance-Details',
+    // Only show if a regulated industry was selected (not "none")
+    condition: () => {
+      const ri = currentAnswers['q_regulated_industry'] || [];
+      return ri.length > 0 && !ri.includes('none');
+    },
+    questions: [
+      {
+        id: "q_compliance_documentation",
+        text: "Ist der KI-Einsatz in diesem Kontext dokumentations- und nachweispflichtig?",
+        type: "single",
+        options: [
+          { value:"yes", label:"Ja – Audit-Trail und Dokumentation erforderlich" },
+          { value:"partial", label:"Teilweise – bestimmte Aspekte müssen dokumentiert werden" },
+          { value:"no", label:"Nein – keine formale Dokumentationspflicht" },
+          { value:"unclear", label:"Unklar – muss mit Compliance geklärt werden" }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'result',
+    label: 'HITL & Ergebnis',
+    alwaysShow: true,
+    isResultStep: true
+  }
+];
+
+// ════════════════════════════════════════════════
 // STATE
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
 
 let shortlist = [];
 let currentIdx = 0;
-let assessments = {}; // ucId -> assessment object
+let assessments = {};
+let currentAnswers = {};
+let currentFlags = [];
+let currentHITL = null;
+let currentMeasures = new Set();
+let currentAmpel = null;
+let currentNotes = '';
+let currentWizardStep = 0; // index into activeSteps
+
+function getActiveSteps() {
+  return STEP_DEFS.filter(s => {
+    if (s.alwaysShow) return true;
+    if (s.isResultStep) return true;
+    if (s.condition) return s.condition();
+    return false;
+  });
+}
 
 function loadData() {
   try {
     const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
-    const sl = proj.shortlist || [];
-    if (sl.length === 0) {
-      // demo data
+    shortlist = proj.shortlist || [];
+    if (!shortlist.length) {
       shortlist = [
         { use_case_id:"UC-02", priority:1, status:"pending", sofort:false },
         { use_case_id:"UC-01", priority:2, status:"pending", sofort:false },
         { use_case_id:"UC-15", priority:3, status:"pending", sofort:false },
         { use_case_id:"UC-10", priority:4, status:"pending", sofort:true },
-        { use_case_id:"UC-04", priority:5, status:"pending", sofort:false },
+        { use_case_id:"UC-04", priority:5, status:"pending", sofort:false }
       ];
-    } else {
-      shortlist = sl;
     }
-    // Load existing assessments
     assessments = proj.assessments_map || {};
   } catch(e) {
     shortlist = [
       { use_case_id:"UC-02", priority:1, status:"pending", sofort:false },
       { use_case_id:"UC-01", priority:2, status:"pending", sofort:false },
-      { use_case_id:"UC-15", priority:3, status:"pending", sofort:false },
+      { use_case_id:"UC-15", priority:3, status:"pending", sofort:false }
     ];
     assessments = {};
   }
-  // Sort: sofort first, then by priority
   shortlist.sort((a,b) => {
     if (a.sofort && !b.sofort) return -1;
     if (!a.sofort && b.sofort) return 1;
     return (a.priority||0) - (b.priority||0);
   });
 }
-
-// Per-UC assessment state
-let currentAnswers = {};
-let currentFlags = [];
-let currentHITL = null;
-let currentMeasures = new Set();
-let currentAmpel = null;
-let currentAmpelOverride = false;
-let currentNotes = '';
 
 function resetCurrentState() {
   const ucId = shortlist[currentIdx].use_case_id;
@@ -645,9 +772,8 @@ function resetCurrentState() {
   currentHITL = uc ? uc.hitl_default : 'level_1';
   currentMeasures = new Set(UC_SUGGESTED_MEASURES[ucId] || []);
   currentAmpel = null;
-  currentAmpelOverride = false;
   currentNotes = '';
-  // If we have a saved assessment, restore it
+  currentWizardStep = 0;
   if (assessments[ucId]) {
     const a = assessments[ucId];
     currentAnswers = a.answers || {};
@@ -657,16 +783,80 @@ function resetCurrentState() {
     currentAmpel = a.result || null;
     currentNotes = a.notes || '';
   }
+  computeFlags();
+  updateMeasuresFromFlags();
 }
 
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
+// FLAG & MEASURE LOGIC
+// ════════════════════════════════════════════════
+
+function computeFlags() {
+  const newFlags = new Set();
+  STEP_DEFS.forEach(step => {
+    if (!step.questions) return;
+    step.questions.forEach(q => {
+      if (q.type === 'single') {
+        const val = currentAnswers[q.id];
+        const opt = (q.options || []).find(o => o.value === val);
+        if (opt?.flag) newFlags.add(opt.flag);
+      } else if (q.type === 'multi') {
+        const arr = currentAnswers[q.id] || [];
+        arr.forEach(v => {
+          const opt = (q.options || []).find(o => o.value === v);
+          if (opt?.flag) newFlags.add(opt.flag);
+        });
+      }
+    });
+  });
+  currentFlags = [...newFlags];
+}
+
+function updateMeasuresFromFlags() {
+  // Auto-add required measures based on flags (they become required, can't be deselected)
+  const ucId = shortlist[currentIdx].use_case_id;
+  const suggested = new Set(UC_SUGGESTED_MEASURES[ucId] || []);
+  MEASURES.forEach(m => {
+    if (m.flags && m.flags.some(f => currentFlags.includes(f))) {
+      currentMeasures.add(m.id);
+    }
+  });
+}
+
+function isRequiredMeasure(m) {
+  return m.flags && m.flags.some(f => currentFlags.includes(f));
+}
+
+function computeSuggestedResult() {
+  const redFlags = currentFlags.filter(f => FLAGS[f]?.severity === 'red');
+  const yellowFlags = currentFlags.filter(f => FLAGS[f]?.severity === 'yellow');
+  if (redFlags.length > 0) return 'red';
+  if (yellowFlags.length > 0) return 'yellow';
+  const answeredCount = Object.keys(currentAnswers).length;
+  if (answeredCount >= 3) return 'green';
+  return null;
+}
+
+// ════════════════════════════════════════════════
 // RENDER
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
 
 function render() {
+  renderTopbar();
   renderSidebar();
-  renderProgress();
-  renderCurrentUC();
+  renderWizardHeader();
+  renderStepContent();
+  renderBottomBar();
+}
+
+function renderTopbar() {
+  const ucId = shortlist[currentIdx].use_case_id;
+  const uc = ALL_UCS[ucId];
+  document.getElementById('topbarUcName').textContent = uc ? uc.title : ucId;
+  const total = shortlist.length;
+  document.getElementById('topbarUcMeta').textContent = `UC ${currentIdx + 1} von ${total}`;
+  const activeSteps = getActiveSteps();
+  document.getElementById('topbarStepPill').textContent = `Schritt ${currentWizardStep + 1}/${activeSteps.length}`;
 }
 
 function renderSidebar() {
@@ -675,189 +865,179 @@ function renderSidebar() {
     const uc = ALL_UCS[item.use_case_id];
     const a = assessments[item.use_case_id];
     const resultClass = a ? `done-${a.result}` : '';
-    const sofortClass = item.sofort ? 'sofort-item' : '';
-    return `<div class="uc-list-item ${resultClass} ${sofortClass} ${i===currentIdx?'active':''}" onclick="jumpToUC(${i})">
+    return `<div class="uc-list-item ${resultClass} ${item.sofort?'sofort-item':''} ${i===currentIdx?'active':''}" onclick="jumpToUC(${i})">
       <div class="uc-list-dot"></div>
       <div class="uc-list-name">${uc ? uc.title : item.use_case_id}</div>
       <div class="uc-list-num">${i+1}</div>
     </div>`;
   }).join('');
-}
-
-function renderProgress() {
   const done = Object.keys(assessments).length;
   const total = shortlist.length;
   const pct = total > 0 ? Math.round(done/total*100) : 0;
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = `${done} von ${total} bewertet`;
-  document.getElementById('ucBadge').textContent = `Use Case ${currentIdx+1} von ${total}`;
+  document.getElementById('spFill').style.width = pct + '%';
+  document.getElementById('spLabel').textContent = `${done} von ${total} bewertet`;
 }
 
-function renderCurrentUC() {
+function renderWizardHeader() {
+  const activeSteps = getActiveSteps();
+  const stepsHtml = activeSteps.map((s, i) =>
+    `<div class="wstep ${i < currentWizardStep ? 'done' : i === currentWizardStep ? 'active' : ''}"></div>`
+  ).join('');
+  document.getElementById('wizardSteps').innerHTML = stepsHtml;
+  const cur = activeSteps[currentWizardStep];
+  document.getElementById('wizardStepLabel').innerHTML =
+    `<strong>${cur?.label || ''}</strong> · Schritt ${currentWizardStep+1} von ${activeSteps.length}`;
+}
+
+function renderUCHeader() {
+  const ucId = shortlist[currentIdx].use_case_id;
   const item = shortlist[currentIdx];
-  const ucId = item.use_case_id;
   const uc = ALL_UCS[ucId];
   if (!uc) return;
-
-  // Header
-  const metaEl = document.getElementById('ucMeta');
-  metaEl.innerHTML = `<span class="tag tag-cat">${uc.category}</span>` +
+  document.getElementById('ucMeta').innerHTML =
+    `<span class="tag tag-cat">${uc.category}</span>` +
     (item.sofort ? `<span class="tag tag-sofort">⚡ Sofort</span>` : '') +
     (uc.ethical ? `<span class="tag tag-eth">⚠ Ethik</span>` : '') +
     (uc.regulated ? `<span class="tag tag-reg">§ Reguliert</span>` : '');
   document.getElementById('ucTitle').textContent = uc.title;
   document.getElementById('ucDesc').textContent = uc.desc;
-
-  // Questions
-  renderQuestions(ucId);
-  // Flags (computed from answers)
-  renderFlags();
-  // HITL
-  renderHITL(uc);
-  // Measures
-  renderMeasures(ucId);
-  // Best Practices
-  renderBP(ucId);
-  // Result
-  renderResult(uc, ucId);
-  // Notes
-  renderNotes();
-  // Update next button
-  updateNextBtn();
 }
 
-function renderQuestions(ucId) {
-  const sec = document.getElementById('questionsSection');
-  let html = `<div class="section">
-    <div class="section-title">Bewertungsfragen</div>`;
-  QUESTIONS.forEach(q => {
-    html += `<div class="q-card">
-      <div class="q-text">${q.text}</div>
-      ${q.hint ? `<div class="q-hint">${q.hint}</div>` : ''}`;
-    if (q.type === 'single') {
-      html += `<div class="q-options">` + q.options.map(o => {
-        const sel = currentAnswers[q.id] === o.value;
-        return `<div class="q-opt${sel?' selected':''}" onclick="selectSingle('${q.id}','${o.value}',${o.flag?`'${o.flag}'`:'null'})">
-          <div class="radio-circle${sel?' checked':''}"></div>${o.label}
-        </div>`;
-      }).join('') + `</div>`;
-    } else if (q.type === 'multi') {
-      const arr = currentAnswers[q.id] || [];
-      html += `<div class="q-options">` + q.options.map(o => {
-        const sel = arr.includes(o.value);
-        return `<div class="q-opt q-opt-multi${sel?' selected':''}" onclick="toggleMulti('${q.id}','${o.value}',${o.flag?`'${o.flag}'`:'null'})">
-          <div class="check-box${sel?' checked':''}"></div>${o.label}
-        </div>`;
-      }).join('') + `</div>`;
-    } else if (q.type === 'text') {
-      const val = currentAnswers[q.id] || '';
-      html += `<input type="text" class="q-input" placeholder="${q.placeholder||''}" value="${val}" 
-        oninput="updateText('${q.id}',this.value)">`;
-    }
+function renderStepContent() {
+  const activeSteps = getActiveSteps();
+  const step = activeSteps[currentWizardStep];
+  if (!step) return;
+  const el = document.getElementById('stepContent');
+
+  if (step.isResultStep) {
+    el.innerHTML = renderResultStep();
+  } else {
+    let html = `<div class="section-card"><div class="section-title">${step.label}</div>`;
+    const visibleQs = (step.questions || []).filter(q => !q.condition || q.condition());
+    visibleQs.forEach(q => { html += renderQuestion(q); });
     html += `</div>`;
-  });
-  html += `</div>`;
-  sec.innerHTML = html;
+
+    // Flags (if any computed)
+    if (currentFlags.length > 0) {
+      html += `<div class="section-card"><div class="section-title">⚑ Hinweise & Flags</div><div class="flag-list">`;
+      currentFlags.forEach(fid => {
+        const f = FLAGS[fid]; if (!f) return;
+        const icon = f.severity === 'red' ? '🔴' : '🟡';
+        html += `<div class="flag-item ${f.severity}"><div class="flag-icon">${icon}</div><div><div class="flag-msg">${f.msg}</div><div class="flag-action">→ ${f.action}</div></div></div>`;
+      });
+      html += `</div></div>`;
+    }
+    el.innerHTML = html;
+  }
 }
 
-function renderFlags() {
-  const sec = document.getElementById('flagsSection');
-  if (currentFlags.length === 0) { sec.innerHTML = ''; return; }
-  let html = `<div class="section"><div class="section-title">⚑ Hinweise & Flags</div><div class="flag-list">`;
-  currentFlags.forEach(fid => {
-    const f = FLAGS[fid];
-    if (!f) return;
-    const icon = f.severity === 'red' ? '🔴' : '🟡';
-    html += `<div class="flag-item ${f.severity}">
-      <div class="flag-icon">${icon}</div>
-      <div>
-        <div class="flag-msg">${f.msg}</div>
-        <div class="flag-action">→ ${f.action}</div>
-      </div>
-    </div>`;
-  });
+function renderQuestion(q) {
+  let html = `<div class="q-block"><div class="q-text">${q.text}</div>`;
+  if (q.hint) html += `<div class="q-hint">${q.hint}</div>`;
+  html += `<div class="q-options">`;
+  if (q.type === 'single') {
+    html += q.options.map(o => {
+      const sel = currentAnswers[q.id] === o.value;
+      return `<div class="q-opt${sel?' selected':''}" onclick="selectSingle('${q.id}','${o.value}',${o.flag?`'${o.flag}'`:'null'})">
+        <div class="radio-circle${sel?' checked':''}"></div>${o.label}
+      </div>`;
+    }).join('');
+  } else if (q.type === 'multi') {
+    html += q.options.map(o => {
+      const arr = currentAnswers[q.id] || [];
+      const sel = arr.includes(o.value);
+      return `<div class="q-opt${sel?' selected':''}" onclick="toggleMulti('${q.id}','${o.value}',${o.flag?`'${o.flag}'`:'null'})">
+        <div class="check-box${sel?' checked':''}"></div>${o.label}
+      </div>`;
+    }).join('');
+  } else if (q.type === 'text') {
+    const val = currentAnswers[q.id] || '';
+    html += `</div><input type="text" class="q-input" placeholder="${q.placeholder||''}" value="${val}" oninput="updateText('${q.id}',this.value)">`;
+    return html + `</div>`;
+  }
   html += `</div></div>`;
-  sec.innerHTML = html;
+  return html;
 }
 
-function renderHITL(uc) {
-  const sec = document.getElementById('hitlSection');
+function renderResultStep() {
+  const ucId = shortlist[currentIdx].use_case_id;
+  const uc = ALL_UCS[ucId];
+  const suggested = computeSuggestedResult();
   const levels = [
     { id:'level_1', icon:'🛡️', label:'Volle Kontrolle', desc:'Mensch prüft jedes Ergebnis und entscheidet.' },
     { id:'level_2', icon:'👁️', label:'Überwachte Autonomie', desc:'Mensch überwacht, prüft stichprobenartig.' },
     { id:'level_3', icon:'🤖', label:'Kontrollierte Automatisierung', desc:'KI handelt eigenständig in Grenzen.' }
   ];
-  sec.innerHTML = `<div class="section">
-    <div class="section-title">Human-in-the-Loop (HITL)</div>
-    ${uc ? `<div class="hitl-hint" style="margin-bottom:12px;">💡 Empfehlung für diesen Use Case: <strong>${levels.find(l=>l.id===uc.hitl_default)?.label || uc.hitl_default}</strong></div>` : ''}
-    <div class="hitl-options">
-      ${levels.map(l => `<div class="hitl-opt ${currentHITL===l.id?'selected '+l.id:''}" onclick="selectHITL('${l.id}')">
-        <div class="hitl-icon">${l.icon}</div>
-        <div class="hitl-label">${l.label}</div>
-        <div class="hitl-desc">${l.desc}</div>
-      </div>`).join('')}
+
+  // Compute flag-required + suggested measures
+  const ucSuggested = new Set(UC_SUGGESTED_MEASURES[ucId] || []);
+  const flagRequired = new Set(MEASURES.filter(m => isRequiredMeasure(m)).map(m => m.id));
+
+  let html = '';
+
+  // HITL
+  html += `<div class="section-card"><div class="section-title">Human-in-the-Loop (HITL)</div>
+    <div class="hitl-grid">
+      ${levels.map(l => {
+        const isRec = uc && uc.hitl_default === l.id;
+        const isSel = currentHITL === l.id;
+        return `<div class="hitl-opt ${isSel ? 'selected '+l.id : ''} ${isRec ? 'recommended' : ''}" onclick="selectHITL('${l.id}')">
+          <div class="hitl-icon">${l.icon}</div>
+          <div class="hitl-label">${l.label}</div>
+          <div class="hitl-desc">${l.desc}</div>
+        </div>`;
+      }).join('')}
     </div>
   </div>`;
-}
 
-function renderMeasures(ucId) {
-  const suggested = new Set(UC_SUGGESTED_MEASURES[ucId] || []);
-  const sec = document.getElementById('measuresSection');
+  // Measures – grouped, with required/suggested highlighting
   const catLabels = { hitl:'Human-in-the-Loop', org:'Organisatorisch', tech:'Technisch', legal:'Rechtlich' };
   const cats = ['hitl','org','tech','legal'];
-  let html = `<div class="section"><div class="section-title">Maßnahmen</div>`;
+  // Only show legal cat if there are flag-required or suggested measures in it
+  html += `<div class="section-card"><div class="section-title">Maßnahmen</div>`;
   cats.forEach(cat => {
     const ms = MEASURES.filter(m => m.cat === cat);
-    if (!ms.length) return;
-    html += `<div style="margin-bottom:14px;">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:600;">${catLabels[cat]}</div>
-      <div class="measures-grid">`;
-    ms.forEach(m => {
+    // Filter: show measure if it's required by flags, suggested for UC, or in currentMeasures
+    const relevantMs = ms.filter(m => flagRequired.has(m.id) || ucSuggested.has(m.id) || currentMeasures.has(m.id));
+    // For legal/tech: only show if relevant
+    const showAll = cat === 'hitl' || cat === 'org';
+    const displayMs = showAll ? ms : relevantMs;
+    if (!displayMs.length) return;
+    html += `<div class="measures-cat-label">${catLabels[cat]}</div><div class="measures-grid">`;
+    displayMs.forEach(m => {
       const isSel = currentMeasures.has(m.id);
-      const isSug = suggested.has(m.id);
-      html += `<div class="measure-item${isSel?' selected':''}${isSug?' suggested':''}" onclick="toggleMeasure('${m.id}')">
+      const isReq = flagRequired.has(m.id);
+      const isSug = ucSuggested.has(m.id) && !isReq;
+      html += `<div class="measure-item${isSel?' selected':''}${isReq?' required':''}" onclick="${isReq?'':` toggleMeasure('${m.id}') `}">
         <div class="check-box${isSel?' checked':''}"></div>
-        <div>
-          <div class="measure-name">${m.label}</div>
-          <div class="measure-cat">${isSug ? '⭐ Empfohlen' : ''}</div>
-        </div>
+        <div class="measure-name">${m.label}</div>
+        ${isReq ? `<span class="measure-badge" title="Aufgrund von Flags erforderlich">!</span>` : isSug ? `<span class="measure-badge" title="Empfohlen für diesen Use Case">⭐</span>` : ''}
       </div>`;
     });
-    html += `</div></div>`;
+    html += `</div>`;
   });
   html += `</div>`;
-  sec.innerHTML = html;
-}
 
-function renderBP(ucId) {
-  const bps = UC_BEST_PRACTICES[ucId] || [];
-  const sec = document.getElementById('bpSection');
-  if (!bps.length) { sec.innerHTML = ''; return; }
-  sec.innerHTML = `<div class="section"><div class="section-title">Best Practices für diesen Use Case</div>
-    <div class="bp-list">
-      ${bps.map(bp => `<div class="bp-item">${bp}</div>`).join('')}
+  // Best Practices – filtered by relevance (flags + UC)
+  const allBPs = UC_BEST_PRACTICES[ucId] || [];
+  if (allBPs.length) {
+    html += `<div class="section-card"><div class="section-title">Best Practices</div><div class="bp-list">`;
+    allBPs.forEach(bp => { html += `<div class="bp-item">${bp}</div>`; });
+    html += `</div>
+    <div class="bp-custom-wrap">
+      <div class="bp-custom-label">Projektspezifischer Hinweis <span style="color:var(--text3);font-weight:400;">(optional)</span></div>
+      <textarea class="bp-custom-input" id="bp-custom-${ucId}" placeholder="Eigene Ergänzungen, Einschränkungen oder Hinweise für euer Projekt…" oninput="saveBpCustom('${ucId}',this.value)">${currentBpCustom[ucId]||''}</textarea>
     </div>
-  </div>`;
-}
-
-function renderResult(uc, ucId) {
-  const sec = document.getElementById('resultSection');
-  // Auto-compute suggested result
-  const suggested = computeSuggestedResult();
-  const redFlags = currentFlags.filter(f => FLAGS[f]?.severity === 'red');
-  const yellowFlags = currentFlags.filter(f => FLAGS[f]?.severity === 'yellow');
-
-  let aiText = '';
-  if (suggested === 'red') {
-    aiText = `🔴 Rote Flags vorhanden (${redFlags.length}). Dieser Use Case sollte erst nach Klärung aller offenen Punkte umgesetzt werden oder abgelehnt werden.`;
-  } else if (suggested === 'yellow') {
-    aiText = `🟡 Gelbe Hinweise vorhanden (${yellowFlags.length}). Einsatz möglich, aber mit Auflagen. Offene Punkte müssen vor dem Einsatz geklärt werden.`;
-  } else if (suggested === 'green') {
-    aiText = `🟢 Keine kritischen Flags. Der Use Case kann unter den gewählten Bedingungen umgesetzt werden.`;
+    </div>`;
   }
 
-  sec.innerHTML = `<div class="section">
-    <div class="section-title">Bewertungsergebnis</div>
+  // Result
+  let aiText = '';
+  if (suggested === 'red') aiText = `🔴 Rote Flags vorhanden. Dieser Use Case sollte erst nach Klärung aller offenen Punkte umgesetzt werden.`;
+  else if (suggested === 'yellow') aiText = `🟡 Gelbe Hinweise vorhanden. Einsatz möglich, aber mit Auflagen.`;
+  else if (suggested === 'green') aiText = `🟢 Keine kritischen Flags. Der Use Case kann umgesetzt werden.`;
+
+  html += `<div class="section-card"><div class="section-title">Bewertungsergebnis</div>
     ${aiText ? `<div class="ai-result-box ${suggested}" style="margin-bottom:16px;">${aiText}</div>` : ''}
     <div class="ampel-wrap">
       ${['green','yellow','red','deferred'].map(c => {
@@ -871,133 +1051,177 @@ function renderResult(uc, ucId) {
     </div>
     ${currentAmpel && currentAmpel !== suggested ? `<div class="override-note" style="margin-top:14px;">
       <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">Du weichst von der Empfehlung ab. Bitte begründe kurz:</div>
-      <textarea placeholder="Begründung für abweichende Bewertung..." onchange="currentNotes = this.value + '\\n' + currentNotes">${''}</textarea>
+      <textarea class="notes-area" placeholder="Begründung..." oninput="currentNotes=this.value">${''}</textarea>
     </div>` : ''}
-    ${currentAmpel === 'red' && uc.consequence ? `<div class="consequence-box" style="margin-top:16px;">
+    ${currentAmpel === 'red' && uc.consequence ? `<div class="consequence-box" style="margin-top:14px;">
       <h4>⚠ Konsequenz bei Ablehnung</h4>
       <div class="consequence-item">Aufwand-Impact: ${uc.consequence.effort}</div>
       <div class="consequence-item">Qualitäts-Impact: ${uc.consequence.quality}</div>
     </div>` : ''}
   </div>`;
-}
 
-function renderNotes() {
-  document.getElementById('notesSection').innerHTML = `<div class="section">
-    <div class="section-title">Notizen</div>
-    <textarea class="notes-area" placeholder="Optionale Notizen zu diesem Use Case..." oninput="currentNotes=this.value">${currentNotes}</textarea>
+  html += `<div class="section-card"><div class="section-title">Notizen</div>
+    <textarea class="notes-area" placeholder="Optionale Notizen..." oninput="currentNotes=this.value">${currentNotes}</textarea>
   </div>`;
+
+  return html;
 }
 
-// ────────────────────────────────────────────────
+function renderBottomBar() {
+  const activeSteps = getActiveSteps();
+  const isFirst = currentWizardStep === 0;
+  const isLast = currentWizardStep === activeSteps.length - 1;
+  document.getElementById('btnBack').disabled = isFirst;
+  const btnNext = document.getElementById('btnNext');
+  if (isLast) {
+    btnNext.textContent = currentIdx >= shortlist.length - 1 ? 'Abschließen ✓' : 'Nächster Use Case →';
+    btnNext.disabled = currentAmpel === null;
+  } else {
+    btnNext.textContent = 'Weiter →';
+    btnNext.disabled = false;
+  }
+  const dots = activeSteps.map((s, i) =>
+    `<div class="bb-dot ${i < currentWizardStep ? 'done' : i === currentWizardStep ? 'active' : ''}"></div>`
+  ).join('');
+  document.getElementById('bbDots').innerHTML = dots;
+}
+
+// ════════════════════════════════════════════════
 // INTERACTIONS
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
 
-function computeFlags() {
-  const newFlags = new Set();
-  QUESTIONS.forEach(q => {
-    if (q.type === 'single') {
-      const val = currentAnswers[q.id];
-      const opt = q.options.find(o => o.value === val);
-      if (opt?.flag) newFlags.add(opt.flag);
-    } else if (q.type === 'multi') {
-      const arr = currentAnswers[q.id] || [];
-      arr.forEach(v => {
-        const opt = q.options.find(o => o.value === v);
-        if (opt?.flag) newFlags.add(opt.flag);
-      });
-    }
-  });
-  currentFlags = [...newFlags];
-}
-
-function computeSuggestedResult() {
-  const redFlags = currentFlags.filter(f => FLAGS[f]?.severity === 'red');
-  const yellowFlags = currentFlags.filter(f => FLAGS[f]?.severity === 'yellow');
-  if (redFlags.length > 0) return 'red';
-  if (yellowFlags.length > 0) return 'yellow';
-  // All answered and no flags?
-  const answeredCount = Object.keys(currentAnswers).length;
-  if (answeredCount >= 5) return 'green';
-  return null;
-}
-
-function selectSingle(qid, val, flagId) {
+function selectSingle(qid, val) {
   currentAnswers[qid] = val;
   computeFlags();
-  rerenderAfterAnswer();
+  updateMeasuresFromFlags();
+  rerender();
 }
 
-function toggleMulti(qid, val, flagId) {
+function toggleMulti(qid, val) {
   if (!currentAnswers[qid]) currentAnswers[qid] = [];
   const arr = currentAnswers[qid];
   const idx = arr.indexOf(val);
-  if (idx >= 0) arr.splice(idx, 1);
-  else arr.push(val);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push(val);
+  // Handle exclusive "none"
+  if (val === 'none' && idx < 0) currentAnswers[qid] = ['none'];
+  else if (val !== 'none') currentAnswers[qid] = arr.filter(v => v !== 'none');
   computeFlags();
-  rerenderAfterAnswer();
+  updateMeasuresFromFlags();
+  rerender();
 }
 
 function updateText(qid, val) {
   currentAnswers[qid] = val;
-  updateNextBtn();
+  renderBottomBar();
 }
 
 function selectHITL(level) {
   currentHITL = level;
-  renderHITL(ALL_UCS[shortlist[currentIdx].use_case_id]);
-  updateNextBtn();
+  rerender();
 }
 
 function toggleMeasure(id) {
+  if (isRequiredMeasure(MEASURES.find(m => m.id === id))) return;
   if (currentMeasures.has(id)) currentMeasures.delete(id);
   else currentMeasures.add(id);
-  renderMeasures(shortlist[currentIdx].use_case_id);
+  rerender();
 }
 
 function selectAmpel(val) {
   currentAmpel = val;
-  const ucId = shortlist[currentIdx].use_case_id;
-  renderResult(ALL_UCS[ucId], ucId);
-  updateNextBtn();
+  rerender();
 }
 
-function rerenderAfterAnswer() {
-  const ucId = shortlist[currentIdx].use_case_id;
-  renderQuestions(ucId);
-  renderFlags();
-  renderResult(ALL_UCS[ucId], ucId);
-  updateNextBtn();
+function rerender() {
+  renderWizardHeader();
+  renderStepContent();
+  renderBottomBar();
+  renderTopbar();
 }
 
-function updateNextBtn() {
-  const btn = document.getElementById('btnNext');
-  // Require at minimum: some answers + ampel set
-  const hasAnswers = Object.keys(currentAnswers).length >= 3;
-  const hasAmpel = currentAmpel !== null;
-  btn.disabled = !(hasAnswers && hasAmpel);
+function nextStep() {
+  const activeSteps = getActiveSteps();
+  if (currentWizardStep < activeSteps.length - 1) {
+    currentWizardStep++;
+    rerender();
+    window.scrollTo(0, 0);
+  } else {
+    saveCurrentAssessment();
+    if (currentIdx >= shortlist.length - 1) {
+      showCompletion();
+    } else {
+      currentIdx++;
+      resetCurrentState();
+      renderUCHeader();
+      render();
+      window.scrollTo(0, 0);
+    }
+  }
+}
 
-  const total = shortlist.length;
-  const isLast = currentIdx >= total - 1;
-  btn.textContent = isLast ? 'Abschließen ✓' : 'Weiter →';
+function prevStep() {
+  if (currentWizardStep > 0) {
+    currentWizardStep--;
+    rerender();
+    window.scrollTo(0, 0);
+  }
+}
+
+function jumpToUC(idx) {
+  if (idx === currentIdx) {
+    // Close mobile menu if open
+    document.getElementById('sidebar').classList.remove('mobile-open');
+    return;
+  }
+  saveCurrentAssessment();
+  currentIdx = idx;
+  resetCurrentState();
+  renderUCHeader();
+  render();
+  window.scrollTo(0, 0);
+  document.getElementById('sidebar').classList.remove('mobile-open');
+}
+
+function deferCurrentUC() {
+  const ucId = shortlist[currentIdx].use_case_id;
+  assessments[ucId] = {
+    use_case_id: ucId, answers: { ...currentAnswers }, flags: [...currentFlags],
+    result: 'deferred', hitl_level: currentHITL,
+    selected_measures: [...currentMeasures], notes: 'Zurückgestellt',
+    assessed_at: new Date().toISOString()
+  };
+  const slItem = shortlist.find(s => s.use_case_id === ucId);
+  if (slItem) slItem.status = 'deferred';
+  persistAssessments();
+  if (currentIdx < shortlist.length - 1) {
+    currentIdx++;
+    resetCurrentState();
+    renderUCHeader();
+    render();
+    window.scrollTo(0, 0);
+  } else {
+    showCompletion();
+  }
+}
+
+function toggleMobileMenu() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
 }
 
 function saveCurrentAssessment() {
   const ucId = shortlist[currentIdx].use_case_id;
   assessments[ucId] = {
-    use_case_id: ucId,
-    answers: { ...currentAnswers },
-    flags: [...currentFlags],
+    use_case_id: ucId, answers: { ...currentAnswers }, flags: [...currentFlags],
     result: currentAmpel || computeSuggestedResult() || 'yellow',
-    hitl_level: currentHITL,
-    selected_measures: [...currentMeasures],
-    notes: currentNotes,
-    assessed_at: new Date().toISOString()
+    hitl_level: currentHITL, selected_measures: [...currentMeasures],
+    notes: currentNotes, assessed_at: new Date().toISOString()
   };
-  // Also update shortlist status
   const slItem = shortlist.find(s => s.use_case_id === ucId);
   if (slItem) slItem.status = assessments[ucId].result;
+  persistAssessments();
+}
 
-  // Persist
+function persistAssessments() {
   try {
     const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
     proj.assessments_map = assessments;
@@ -1007,171 +1231,33 @@ function saveCurrentAssessment() {
   } catch(e) {}
 }
 
-function nextUC() {
-  saveCurrentAssessment();
-  const total = shortlist.length;
-  if (currentIdx >= total - 1) {
-    showCompletion();
-    return;
-  }
-  currentIdx++;
-  resetCurrentState();
-  render();
-  window.scrollTo(0, 0);
-}
-
-function jumpToUC(idx) {
-  if (idx === currentIdx) return;
-  saveCurrentAssessment();
-  currentIdx = idx;
-  resetCurrentState();
-  render();
-  window.scrollTo(0, 0);
-}
-
-function deferCurrentUC() {
-  const ucId = shortlist[currentIdx].use_case_id;
-  assessments[ucId] = {
-    use_case_id: ucId,
-    answers: { ...currentAnswers },
-    flags: [...currentFlags],
-    result: 'deferred',
-    hitl_level: currentHITL,
-    selected_measures: [...currentMeasures],
-    notes: 'Zurückgestellt – noch ausstehend',
-    assessed_at: new Date().toISOString()
-  };
-  const slItem = shortlist.find(s => s.use_case_id === ucId);
-  if (slItem) slItem.status = 'deferred';
-  saveCurrentAssessment();
-  const total = shortlist.length;
-  if (currentIdx < total - 1) {
-    currentIdx++;
-    resetCurrentState();
-    render();
-    window.scrollTo(0, 0);
-  } else {
-    showCompletion();
-  }
-}
-
 function showCompletion() {
   document.getElementById('mainLayout').style.display = 'none';
   document.getElementById('bottomBar').style.display = 'none';
-  const cs = document.getElementById('completionScreen');
-  cs.classList.add('active');
-
+  document.getElementById('completionScreen').classList.add('active');
   const counts = { green:0, yellow:0, red:0, deferred:0 };
   Object.values(assessments).forEach(a => { if (counts[a.result] !== undefined) counts[a.result]++; });
-
   document.getElementById('completionStats').innerHTML = `
     <div class="completion-stat"><div class="completion-stat-num green">${counts.green}</div><div class="completion-stat-label">Freigegeben</div></div>
     <div class="completion-stat"><div class="completion-stat-num yellow">${counts.yellow}</div><div class="completion-stat-label">Mit Auflagen</div></div>
     <div class="completion-stat"><div class="completion-stat-num red">${counts.red}</div><div class="completion-stat-label">Abgelehnt</div></div>
     <div class="completion-stat"><div class="completion-stat-num" style="color:var(--text2)">${counts.deferred}</div><div class="completion-stat-label">Zurückgestellt</div></div>`;
-
-  // Save final
   try {
     const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
-    proj.assessments_map = assessments;
-    proj.shortlist = shortlist;
-    proj.status = 'manifest';
+    proj.assessments_map = assessments; proj.shortlist = shortlist; proj.status = 'manifest';
     localStorage.setItem('trust_ai_project', JSON.stringify(proj));
   } catch(e) {}
 }
 
-function goToManifest() {
-  window.location.href = 'trust-ai-screen6.html';
-}
+function goToManifest() { window.location.href = 'trust-ai-screen6.html'; }
 
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
 // INIT
-// ────────────────────────────────────────────────
-
+// ════════════════════════════════════════════════
 loadData();
 resetCurrentState();
+renderUCHeader();
 render();
-</script>
-<script>
-// ── Theme Toggle ──
-(function(){
-  const t = localStorage.getItem('trust_ai_theme');
-  if (t) applyTheme5(t);
-  else if (!window.matchMedia('(prefers-color-scheme:dark)').matches) applyTheme5('light');
-})();
-function applyTheme5(t) {
-  if (t === 'light') {
-    document.documentElement.style.setProperty('--bg','#F6F7FA');
-    document.documentElement.style.setProperty('--surface','#FFFFFF');
-    document.documentElement.style.setProperty('--surface2','#F0F2F8');
-    document.documentElement.style.setProperty('--surface3','#E8EBF4');
-    document.documentElement.style.setProperty('--border','#D8DCF0');
-    document.documentElement.style.setProperty('--border2','#B8BEDA');
-    document.documentElement.style.setProperty('--text','#111827');
-    document.documentElement.style.setProperty('--text2','#374151');
-    document.documentElement.style.setProperty('--text3','#6B7280');
-  } else {
-    document.documentElement.style.removeProperty('--bg');
-    document.documentElement.style.removeProperty('--surface');
-    document.documentElement.style.removeProperty('--surface2');
-    document.documentElement.style.removeProperty('--surface3');
-    document.documentElement.style.removeProperty('--border');
-    document.documentElement.style.removeProperty('--border2');
-    document.documentElement.style.removeProperty('--text');
-    document.documentElement.style.removeProperty('--text2');
-    document.documentElement.style.removeProperty('--text3');
-  }
-  const btn = document.getElementById('theme-toggle');
-  if (btn) btn.textContent = t === 'light' ? '🌙' : '☀️';
-  localStorage.setItem('trust_ai_theme', t);
-}
-function toggleTheme() {
-  const stored = localStorage.getItem('trust_ai_theme') || 'dark';
-  applyTheme5(stored === 'dark' ? 'light' : 'dark');
-}
-
-// ── C4: AVV-Frage ausblenden wenn kein Tool ──
-function checkAvvVisibility() {
-  // Prüfe ob ein Tool ausgewählt wurde
-  const project = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
-  const hasTools = project.tool_inventory && project.tool_inventory.length > 0;
-  const avvQuestions = document.querySelectorAll('[data-question-id*="avv"], [data-question-id*="AVV"]');
-  avvQuestions.forEach(q => {
-    q.closest('.q-card') && (q.closest('.q-card').style.display = hasTools ? '' : 'none');
-  });
-}
-
-// ── C1: Flags auf Entscheidungsseite anzeigen ──
-function renderDecisionFlags(flags) {
-  const container = document.getElementById('decisionFlagsSummary');
-  if (!container || !flags || !flags.length) return;
-  const flagLabels = {
-    'no_tool': { label: 'Kein Tool vorhanden', color: 'red', icon: '🔧' },
-    'no_avv': { label: 'Kein AVV abgeschlossen', color: 'red', icon: '📋' },
-    'ethical_flag': { label: 'Ethisches Risiko identifiziert', color: 'yellow', icon: '⚠️' },
-    'regulated_industry': { label: 'Regulierte Branche – erhöhte Anforderungen', color: 'yellow', icon: '§' },
-    'sensitive_data': { label: 'Sensible Daten involviert', color: 'red', icon: '🔒' },
-    'data_not_ready': { label: 'Daten nicht KI-bereit – Aufwand erforderlich', color: 'yellow', icon: '📊' }
-  };
-  let html = '<div class="dfs-title">⚑ Gesammelte Hinweise für diese Bewertung</div>';
-  flags.forEach(f => {
-    const fl = flagLabels[f] || { label: f, color: 'blue', icon: 'ℹ️' };
-    html += `<div class="dfs-flag"><div class="dfs-flag-dot" style="background:var(--${fl.color})"></div>${fl.icon} <span>${fl.label}</span></div>`;
-  });
-  container.innerHTML = html;
-  container.style.display = 'block';
-}
-
-// ── C10: Datenmanagement-Frage Sichtbarkeit ──
-document.addEventListener('DOMContentLoaded', () => {
-  checkAvvVisibility();
-  // UC-22 spezifisches Tool-Feld
-  const ucId = window._currentUcId;
-  if (ucId === 'UC-22') {
-    const toolSection = document.getElementById('uc22-tool-field');
-    if (toolSection) toolSection.style.display = 'block';
-  }
-});
 </script>
 </body>
 </html>

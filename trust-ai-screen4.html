@@ -274,7 +274,7 @@ nav {
 <body>
 
 <nav>
-  <a href="trust-ai-screen3.html" class="nav-logo">
+  <a href="trust-ai-screen7.html" class="nav-logo">
     <div class="nav-logo-mark">
       <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
     </div>
@@ -444,6 +444,7 @@ const CAT_KEY = {
 let project = null;
 let sofortItems = [];
 let shortlistItems = [];
+let deferredItems = [];
 let prioAnswers = {};
 let aiApplied = false;
 
@@ -478,6 +479,7 @@ function init() {
     if (!uc) continue;
     if (r.decision === 'up') sofortItems.push(uc);
     else if (r.decision === 'right') shortlistItems.push(uc);
+    else if (r.decision === 'left' || r.decision === 'down') deferredItems.push(uc);
   }
 
   const total = sofortItems.length + shortlistItems.length;
@@ -502,6 +504,7 @@ function renderStats() {
   if (sofortItems.length) html += `<div class="stat-chip sofort"><div class="stat-dot"></div>${sofortItems.length} ⚡ Sofort</div>`;
   if (shortlistItems.length) html += `<div class="stat-chip shortlist"><div class="stat-dot"></div>${shortlistItems.length} Shortlist</div>`;
   html += `<div class="stat-chip total"><div class="stat-dot"></div>${total} gesamt</div>`;
+  if (deferredItems.length) html += `<div class="stat-chip" style="background:var(--surface2,#f1f3f9);border-color:var(--border);color:var(--text3,#9299b0);"><div class="stat-dot"></div>${deferredItems.length} zurückgestellt</div>`;
   row.innerHTML = html;
 
   // B2: Warnung wenn zu viele auf der Shortlist
