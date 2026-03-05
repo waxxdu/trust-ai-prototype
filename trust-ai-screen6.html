@@ -230,7 +230,7 @@
   <div class="section fade-up fade-up-d3" id="secRed" style="display:none;">
     <div class="section-header">
       <div class="section-icon">🔴</div>
-      <div class="section-title">Abgelehnte Use Cases</div>
+      <div class="section-title">Nicht empfohlene Use Cases</div>
       <div class="section-count" id="cntRed"></div>
     </div>
     <div class="uc-grid" id="gridRed"></div>
@@ -260,10 +260,10 @@
   <div class="section">
     <div class="section-header">
       <div class="section-icon">📋</div>
-      <div class="section-title">Entscheidungsprotokoll</div>
+      <div class="section-title">Bewertungsübersicht</div>
     </div>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;">
-      <div style="font-size:13px;color:var(--text2);line-height:1.8;" id="decisionLog"></div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;" id="assessmentLog"></div>
       <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);">
         Dieses Dokument wurde mit TRUST-AI erstellt. · <span id="logDate"></span>
       </div>
@@ -432,8 +432,8 @@ function render() {
   document.getElementById('heroStats').innerHTML = [
     { cls:'green', num:counts.green, lbl:'Freigegeben' },
     { cls:'yellow', num:counts.yellow, lbl:'Mit Auflagen' },
-    { cls:'red', num:counts.red, lbl:'Abgelehnt' },
-    { cls:'grey', num:counts.deferred, lbl:'Zurückgestellt' }
+    { cls:'red', num:counts.red, lbl:'Nicht empfohlen' },
+    { cls:'grey', num:counts.deferred, lbl:'Auf dem Radar' }
   ].filter(s => s.num > 0).map(s => `
     <div class="stat-pill ${s.cls}">
       <div class="stat-num">${s.num}</div>
@@ -449,7 +449,7 @@ function render() {
   renderUCGrid('green', counts, '🟢');
   renderUCGrid('yellow', counts, '🟡');
   renderUCGrid('red', counts, '🔴');
-  renderUCGrid('deferred', counts, '⏸️');
+  renderUCGrid('deferred', counts, '📡');  // Auf dem Radar - separate Section
 
   // Global measures
   const globalM = computeGlobalMeasures();
@@ -458,12 +458,33 @@ function render() {
     `<div class="measure-chip"><div class="measure-chip-dot"></div>${MEASURE_LABELS[m] || m}</div>`
   ).join('');
 
+  // D1+D6: Flags & Best Practices Überblick
+  const allFlags = [];
+  Object.values(assessments).forEach(a => {
+    if (a.result !== 'deferred' && a.flags) {
+      a.flags.forEach(f => { if (!allFlags.includes(f)) allFlags.push(f); });
+    }
+  });
+  const flagLbls = {'no_tool':'Kein freigegebenes Tool vorhanden','no_avv':'AVV fehlt','ethical_flag':'Ethisches Risiko identifiziert','regulated_industry':'Regulierungsanforderungen beachten','sensitive_data':'Sensible Daten im Einsatz','data_not_ready':'Daten noch nicht KI-bereit'};
+  const fEl = document.getElementById('manifestFlagsSummary');
+  if (fEl) {
+    if (allFlags.length) {
+      fEl.innerHTML = '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:10px;">⚑ Projektweite Hinweise</div>' +
+        allFlags.map(f=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);">${flagLbls[f]||f}</div>`).join('');
+      fEl.style.display='block';
+    }
+  }
+
+  // D6: Deferred Count
+  const dCount = document.getElementById('deferredCount');
+  if (dCount) dCount.textContent = counts.deferred > 0 ? `${counts.deferred} Use Case${counts.deferred>1?'s':''} auf dem Radar` : '';
+
   // Decision log
   const logLines = shortlist.map((s, i) => {
     const a = assessments[s.use_case_id];
     const uc = ALL_UCS[s.use_case_id];
     if (!a || !uc) return '';
-    const ampelLabels = { green:'Freigegeben', yellow:'Bedingt freigegeben', red:'Abgelehnt', deferred:'Zurückgestellt' };
+    const ampelLabels = { green:'Freigegeben', yellow:'Bedingt freigegeben', red:'Nicht empfohlen', deferred:'Auf dem Radar' };
     return `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
       <span style="color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;width:24px;flex-shrink:0;">${i+1}</span>
       <span style="flex:1;font-size:13px;">${uc.title}</span>
@@ -471,7 +492,7 @@ function render() {
       <span style="font-size:12px;font-weight:600;">${AMPEL_ICONS[a.result]} ${ampelLabels[a.result]}</span>
     </div>`;
   }).join('');
-  document.getElementById('decisionLog').innerHTML = logLines;
+  document.getElementById('assessmentLog').innerHTML = logLines;
 
   document.getElementById('exportInfo').textContent = `${Object.keys(assessments).length} Use Cases bewertet · ${now}`;
 }
@@ -532,7 +553,7 @@ function updateSummary(val) { summaryText = val; }
 function copyEmail() {
   const counts = { green:0, yellow:0, red:0, deferred:0 };
   Object.values(assessments).forEach(a => { if (counts[a.result]!==undefined) counts[a.result]++; });
-  const body = `Hallo,\n\nihm Anhang findet ihr das KI-Manifest für das Projekt "${project.name || 'Projekt'}".\n\nKurzzusammenfassung:\n- Freigegebene Use Cases: ${counts.green}\n- Bedingt freigegebene Use Cases: ${counts.yellow}\n- Abgelehnte Use Cases: ${counts.red}\n\nBitte nehmt das Manifest zur Kenntnis und gebt mir Rückmeldung, falls Fragen bestehen.\n\nViele Grüße\n${project.pm_email || ''}`;
+  const body = `Hallo,\n\nihm Anhang findet ihr das KI-Manifest für das Projekt "${project.name || 'Projekt'}".\n\nKurzzusammenfassung:\n- Freigegebene Use Cases: ${counts.green}\n- Bedingt freigegebene Use Cases: ${counts.yellow}\n- Nicht empfohlene Use Cases: ${counts.red}\n\nBitte nehmt das Manifest zur Kenntnis und gebt mir Rückmeldung, falls Fragen bestehen.\n\nViele Grüße\n${project.pm_email || ''}`;
   const mailtoLink = `mailto:?subject=KI-Manifest: ${encodeURIComponent(project.name || 'Projekt')}&body=${encodeURIComponent(body)}`;
   window.open(mailtoLink);
 }
@@ -625,7 +646,7 @@ function exportPDF() {
   const statItems = [
     { num:counts.green, lbl:'Freigegeben', col:colors.green },
     { num:counts.yellow, lbl:'Mit Auflagen', col:colors.yellow },
-    { num:counts.red, lbl:'Abgelehnt', col:colors.red },
+    { num:counts.red, lbl:'Nicht empfohlen', col:colors.red },
   ];
   let sx = margin+12;
   statItems.forEach(s => {
@@ -778,7 +799,7 @@ function exportPDF() {
   text('6. ENTSCHEIDUNGSPROTOKOLL', margin, y, { size:11, color:colors.text3, weight:'bold' });
   y += 8;
 
-  const ampelLabels2 = { green:'Freigegeben', yellow:'Bedingt freigegeben', red:'Abgelehnt', deferred:'Zurückgestellt' };
+  const ampelLabels2 = { green:'Freigegeben', yellow:'Bedingt freigegeben', red:'Nicht empfohlen', deferred:'Auf dem Radar' };
   shortlist.forEach((s, i) => {
     const a = assessments[s.use_case_id];
     const uc = ALL_UCS[s.use_case_id];
@@ -812,6 +833,74 @@ function exportPDF() {
 
 loadData();
 render();
+
+// ── Theme Toggle ──
+(function(){
+  const t = localStorage.getItem('trust_ai_theme');
+  if (t) applyTheme6(t);
+  else if (!window.matchMedia('(prefers-color-scheme:dark)').matches) applyTheme6('light');
+})();
+function applyTheme6(t) {
+  if (t === 'light') {
+    document.documentElement.style.setProperty('--bg','#F6F7FA');
+    document.documentElement.style.setProperty('--surface','#FFFFFF');
+    document.documentElement.style.setProperty('--surface2','#F0F2F8');
+    document.documentElement.style.setProperty('--surface3','#E8EBF4');
+    document.documentElement.style.setProperty('--border','#D8DCF0');
+    document.documentElement.style.setProperty('--border2','#B8BEDA');
+    document.documentElement.style.setProperty('--text','#111827');
+    document.documentElement.style.setProperty('--text2','#374151');
+    document.documentElement.style.setProperty('--text3','#6B7280');
+  } else {
+    ['--bg','--surface','--surface2','--surface3','--border','--border2','--text','--text2','--text3'].forEach(v=>document.documentElement.style.removeProperty(v));
+  }
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = t === 'light' ? '🌙' : '☀️';
+  localStorage.setItem('trust_ai_theme', t);
+}
+function toggleTheme() {
+  const stored = localStorage.getItem('trust_ai_theme') || 'dark';
+  applyTheme6(stored === 'dark' ? 'light' : 'dark');
+}
+
+// ── D7: KI Policy-Text generieren ──
+function generatePolicyText() {
+  const ucs = Object.entries(assessments)
+    .filter(([_,a]) => a.result === 'green' || a.result === 'yellow')
+    .map(([id,a]) => ALL_UCS[id]?.title || id);
+
+  const toolNames = (project.tool_inventory || []).map(t=>t.name).join(', ') || 'die freigegebenen KI-Tools';
+
+  return `Nutzungsrahmen für KI im Projekt "${project.name || 'Projekt'}"
+
+In diesem Projekt ist der Einsatz von KI-Unterstützung für folgende Bereiche freigegeben:
+${ucs.map(t=>`• ${t}`).join('\n')}
+
+Zugelassene Tools: ${toolNames}
+
+Verbindliche Spielregeln:
+• Jede KI-Ausgabe wird durch eine verantwortliche Person geprüft, bevor sie verwendet wird.
+• Personenbezogene Daten werden nicht ohne vorherige Prüfung in externe KI-Tools eingegeben.
+• Bei Unsicherheiten gilt: erst rückfragen, dann KI nutzen.
+• KI ersetzt keine Entscheidung – sie bereitet sie vor.
+
+Dieser Nutzungsrahmen gilt für alle Projektmitglieder und wurde am ${new Date().toLocaleDateString('de-DE')} erstellt.`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const policyBtn = document.getElementById('policyTextBtn');
+  const policyOut = document.getElementById('policyTextOutput');
+  if (policyBtn) {
+    policyBtn.addEventListener('click', () => {
+      if (policyOut) {
+        policyOut.value = generatePolicyText();
+        policyOut.style.display = 'block';
+        policyOut.focus();
+        policyOut.select();
+      }
+    });
+  }
+});
 </script>
 </body>
 </html>

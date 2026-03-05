@@ -43,19 +43,27 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0D0F17;
-    --surface: #151823;
-    --surface-2: #1C2030;
-    --surface-3: #222638;
-    --border: #262B3E;
-    --border-hover: #333A54;
-    --text-primary: #EDF0FF;
-    --text-secondary: #8B92B0;
-    --text-tertiary: #555D7A;
+  :root:not([data-theme="light"]) {
+    --bg: #0D0F17; --surface: #151823; --surface-2: #1C2030; --surface-3: #222638;
+    --border: #262B3E; --border-hover: #333A54;
+    --text-primary: #EDF0FF; --text-secondary: #8B92B0; --text-tertiary: #555D7A;
     --nav-bg: rgba(13,15,23,0.90);
     --shadow-card: 0 4px 32px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
   }
+}
+[data-theme="dark"] {
+  --bg: #0D0F17; --surface: #151823; --surface-2: #1C2030; --surface-3: #222638;
+  --border: #262B3E; --border-hover: #333A54;
+  --text-primary: #EDF0FF; --text-secondary: #8B92B0; --text-tertiary: #555D7A;
+  --nav-bg: rgba(13,15,23,0.90);
+  --shadow-card: 0 4px 32px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+}
+[data-theme="light"] {
+  --bg: #F6F7FA; --surface: #FFFFFF; --surface-2: #FAFBFE; --surface-3: #EFF1F8;
+  --border: #E4E7F2; --border-hover: #CAD0E2;
+  --text-primary: #111827; --text-secondary: #4B5568; --text-tertiary: #8A92A8;
+  --nav-bg: rgba(246,247,250,0.90);
+  --shadow-card: 0 4px 32px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
 }
 
 html, body { height: 100%; overflow: hidden; }
@@ -333,7 +341,8 @@ nav {
     <span class="nav-logo-text">TRUST<span>-AI</span></span>
   </a>
   <div class="nav-right">
-    <button onclick="window.location.href='trust-ai-screen1.html'" style="background:transparent;border:1px solid var(--border);color:var(--text-secondary);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">← Zurück</button>
+    <button onclick="window.location.href='trust-ai-trust-ai-screen7.html'" style="background:transparent;border:1px solid var(--border);color:var(--text-secondary);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">← Zurück</button>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus" style="background:transparent;border:1px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;">☀️</button>
     <div class="progress-dots">
       <div class="progress-dot done"></div>
       <div class="progress-dot done"></div>
@@ -403,6 +412,16 @@ nav {
   </div>
   <div class="done-title">Discovery abgeschlossen!</div>
   <div class="done-sub">Du hast alle Use Cases gesichtet.<br/>Hier ist deine Zusammenfassung:</div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:-16px;font-size:11px;color:var(--text-secondary);font-family:'DM Mono',monospace;letter-spacing:0.03em;">
+    <span style="opacity:0.5">Longlist</span>
+    <span style="color:var(--green);font-weight:600;">✓ Discovery</span>
+    <span>→</span>
+    <span style="color:var(--yellow);">Shortlist</span>
+    <span>→</span>
+    <span>Priorisierung</span>
+    <span>→</span>
+    <span>Bewertung</span>
+  </div>
   <div class="done-stats">
     <div class="done-stat stat-now">
       <div class="done-stat-num" id="stat-now">0</div>
@@ -644,7 +663,6 @@ function showDone() {
 }
 
 function goToShortlist() {
-  // Save to single project slot too
   try {
     const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
     proj.swipe_results = swipeResults;
@@ -653,6 +671,11 @@ function goToShortlist() {
   } catch(e){}
   window.location.href = 'trust-ai-screen4.html';
 }
+
+// Theme
+(function(){ const t=localStorage.getItem('trust_ai_theme'); if(t) applyTheme(t); else if(window.matchMedia('(prefers-color-scheme:dark)').matches) applyTheme('dark'); })();
+function applyTheme(t){ document.documentElement.setAttribute('data-theme',t); const b=document.getElementById('theme-toggle'); if(b)b.textContent=t==='dark'?'🌙':'☀️'; localStorage.setItem('trust_ai_theme',t); }
+function toggleTheme(){ const c=document.documentElement.getAttribute('data-theme')||'light'; applyTheme(c==='dark'?'light':'dark'); }
 </script>
 </body>
 </html>
