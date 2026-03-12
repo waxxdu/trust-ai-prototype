@@ -335,6 +335,7 @@ nav {
   <div class="section-label" id="shortlistSection">
     <span class="section-label-text">Shortlist</span>
     <div class="section-label-line"></div>
+    <button id="aiCompactBtn" onclick="openPrioModal()" style="display:none;flex-shrink:0;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--accent);background:var(--accent-subtle,rgba(99,102,241,0.08));color:var(--accent);font-family:'DM Sans',sans-serif;white-space:nowrap;">✨ KI-Vorschlag</button>
   </div>
   <div class="list-container">
     <div class="sortable-list" id="shortlistSortable"></div>
@@ -711,7 +712,11 @@ function aiScore(uc) {
 
 function openPrioModal() { document.getElementById('prioModal').classList.add('open'); }
 function closePrioModal() { document.getElementById('prioModal').classList.remove('open'); }
-function dismissAiBanner() { document.getElementById('aiBanner').style.display='none'; }
+function dismissAiBanner() {
+  document.getElementById('aiBanner').style.display='none';
+  const compact = document.getElementById('aiCompactBtn');
+  if (compact) compact.style.display='inline-flex';
+}
 
 function selectOpt(btn) {
   btn.closest('.option-grid').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));

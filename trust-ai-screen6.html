@@ -406,16 +406,16 @@ function generateSummary() {
   const dateStr = new Date().toLocaleDateString('de-DE', { day:'2-digit', month:'long', year:'numeric' });
   const ethicCount = shortlist.filter(s => ALL_UCS[s.use_case_id]?.ethical && assessments[s.use_case_id]?.result !== 'red').length;
 
-  let txt = `Dieses KI-Manifest dokumentiert den geplanten Einsatz von KI-Technologien in „${projName}". Es wurde auf Basis einer strukturierten Bewertung von ${total} Use Cases erstellt und gilt als verbindliche Grundlage für die projektinterne KI-Governance.\n\n`;
+  let txt = `Dieses KI-Manifest schafft die Grundlage für einen strukturierten und verantwortungsvollen KI-Einsatz in „${projName}". Es basiert auf einer systematischen Bewertung von ${total} Use Cases und gibt dem Projektteam klare Orientierung, wo KI konkret Nutzen stiftet und was dabei zu beachten ist.\n\n`;
 
-  if (counts.green > 0) txt += `${counts.green} Use Case${counts.green>1?'s':''} wurde${counts.green>1?'n':''} vollständig freigegeben und kann${counts.green>1?'n':''} ohne Einschränkungen eingesetzt werden. `;
-  if (counts.yellow > 0) txt += `${counts.yellow} Use Case${counts.yellow>1?'s sind':' ist'} bedingt freigegeben – hier gelten spezifische Auflagen und offene Punkte müssen vor dem Einsatz geklärt werden. `;
-  if (counts.red > 0) txt += `${counts.red} Use Case${counts.red>1?'s sind':' ist'} derzeit nicht empfohlen und sollte${counts.red>1?'n':''} in diesem Projektzusammenhang nicht eingesetzt werden – eine spätere Neubewertung ist möglich. `;
-  if (counts.deferred > 0) txt += `${counts.deferred} Use Case${counts.deferred>1?'s wurden':' wurde'} zurückgestellt und wird${counts.deferred>1?'n':''} zu einem späteren Zeitpunkt neu bewertet.`;
+  if (counts.green > 0) txt += `${counts.green} Use Case${counts.green>1?'s wurden':' wurde'} vollständig freigegeben – hier kann das Team KI-Unterstützung direkt und ohne Einschränkungen nutzen. `;
+  if (counts.yellow > 0) txt += `${counts.yellow} Use Case${counts.yellow>1?'s sind':' ist'} bedingt freigegeben – der Einsatz ist möglich, sobald die dokumentierten Auflagen erfüllt sind. `;
+  if (counts.red > 0) txt += `${counts.red} Use Case${counts.red>1?'s wurden':' wurde'} für diesen Projektzusammenhang zurückgestellt – eine Neubewertung ist jederzeit möglich, sobald sich die Rahmenbedingungen ändern. `;
+  if (counts.deferred > 0) txt += `${counts.deferred} weitere${counts.deferred>1?'':''} Use Case${counts.deferred>1?'s stehen':' steht'} auf dem Radar und wird${counts.deferred>1?'n':''} zu einem späteren Zeitpunkt bewertet.`;
 
-  txt += `\n\nFür alle freigegebenen Use Cases gilt: Der Mensch behält die finale Entscheidungsverantwortung. KI-Ergebnisse werden als Vorschläge behandelt und vor der Nutzung durch eine verantwortliche Person geprüft.`;
+  txt += `\n\nGrundsatz für alle freigegebenen Use Cases: Der Mensch behält die finale Entscheidungsverantwortung. KI liefert Vorschläge und Unterstützung – die Beurteilung und Freigabe liegt immer bei einer verantwortlichen Person.`;
 
-  if (ethicCount > 0) txt += ` Bei ${ethicCount} Use Case${ethicCount>1?'s':''} mit ethischen Implikationen sind besondere Maßnahmen zur Transparenz und zum Datenschutz zu beachten.`;
+  if (ethicCount > 0) txt += ` Bei ${ethicCount} Use Case${ethicCount>1?'s':''} mit ethischen Bezügen sind zusätzliche Maßnahmen zur Transparenz und zum Datenschutz definiert.`;
 
   return txt;
 }

@@ -336,6 +336,11 @@
   </button>
   <a href="trust-ai-screen7.html" class="topbar-logo" style="text-decoration:none;color:inherit;cursor:pointer;">TRUST-AI</a>
   <div class="topbar-sep"></div>
+  <a href="trust-ai-screen4.html" style="font-size:12px;color:var(--text3);text-decoration:none;flex-shrink:0;display:flex;align-items:center;gap:4px;" title="Zurück zur Shortlist">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <span style="display:none;" class="topbar-back-label">Shortlist</span>
+  </a>
+  <div class="topbar-sep"></div>
   <div class="topbar-uc">
     <div class="topbar-uc-name" id="topbarUcName">–</div>
     <div class="topbar-uc-meta" id="topbarUcMeta">–</div>
@@ -491,11 +496,11 @@ const UC_SUGGESTED_MEASURES = {
 
 const UC_BEST_PRACTICES = {
   "UC-01": ["Vorlage für den Bericht vorab definieren und als Prompt-Basis nutzen.","KI-Output immer durch den PM auf inhaltliche Korrektheit prüfen, bevor er versendet wird.","Klaren Freigabeprozess definieren: KI generiert, Mensch gibt frei."],
-  "UC-02": ["Aufnahme erst starten, wenn alle Teilnehmenden informiert wurden.","Vertrauliche Punkte vor der Aufnahme besprechen.","Zusammenfassung vor Verteilung durch den Moderator prüfen.","Externe Teilnehmende explizit auf die Aufzeichnung hinweisen."],
+  "UC-02": ["Aufnahme erst starten, wenn alle Teilnehmenden informiert wurden.","Vertrauliche Punkte vor der Aufnahme besprechen.","Zusammenfassung vor Verteilung durch den Moderator prüfen.","Externe Teilnehmende explizit auf die Aufzeichnung hinweisen.","Teamkultur beachten: Mitarbeitende könnten sich durch KI-Transkription weniger frei äußern – aktiv ansprechen und psychologische Sicherheit im Team stärken."],
   "UC-03": ["Keine vertraulichen Kundendaten ungefiltert in den Prompt.","Corporate Design und Vorlagen als Kontext mitgeben.","KI-generierten Text immer auf fachliche Korrektheit prüfen."],
   "UC-04": ["Versionierung auch bei KI-Unterstützung sicherstellen.","Klare Kennzeichnung, welche Teile KI-generiert sind.","In regulierten Industrien: Freigabeprozesse nicht durch KI-Geschwindigkeit umgehen."],
   "UC-05": ["Den Ton und die Zielgruppe im Prompt präzise beschreiben.","Keine vertraulichen internen Informationen einbauen.","Kritische Kommunikation immer persönlich finalisieren."],
-  "UC-06": ["Alle Teilnehmenden zu Beginn über die Live-Funktion informieren.","Zusammenfassung nur auf projekt-internen Screens anzeigen."],
+  "UC-06": ["Alle Teilnehmenden zu Beginn über die Live-Funktion informieren.","Zusammenfassung nur auf projekt-internen Screens anzeigen.","Teamkultur beachten: Live-KI kann dazu führen, dass Teilnehmende vorsichtiger sprechen – Offenheit aktiv fördern und KI-Einsatz als unterstützendes Tool kommunizieren."],
   "UC-07": ["Vorschläge als Inspiration nutzen, nicht unreflektiert übernehmen.","KI-Vorschläge nur für den Moderator sichtbar."],
   "UC-08": ["Hinweise nur an den Moderator, nicht an alle Teilnehmenden.","Am Ende des Meetings immer manuell die offene-Punkte-Liste prüfen."],
   "UC-09": ["Hinweise nur für den Moderator sichtbar, nie für Teilnehmende.","Daten über Redeverhalten nicht speichern oder auswerten.","Funktion nur in internen Meetings nutzen."],
@@ -778,6 +783,26 @@ function loadData() {
   });
 }
 
+// Map screen1 industry chip values → screen5 q_regulated_industry values
+const INDUSTRY_TO_REGULATION = {
+  pharma: 'pharma',
+  finance: 'finance',
+  energy: 'energy',
+  medical: 'medical_devices',
+  automotive: 'automotive',
+  defense: 'defense',
+  public: 'gdpr'
+};
+
+function getIndustryPrefill() {
+  try {
+    const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    const industries = proj.industry || [];
+    if (industries.includes('none') || !industries.length) return [];
+    return industries.map(i => INDUSTRY_TO_REGULATION[i]).filter(Boolean);
+  } catch(e) { return []; }
+}
+
 function resetCurrentState() {
   const ucId = shortlist[currentIdx].use_case_id;
   const uc = ALL_UCS[ucId];
@@ -788,6 +813,13 @@ function resetCurrentState() {
   currentAmpel = null;
   currentNotes = '';
   currentWizardStep = 0;
+
+  // Pre-fill regulated industry from project setup (Screen 1)
+  const industryPrefill = getIndustryPrefill();
+  if (industryPrefill.length) {
+    currentAnswers['q_regulated_industry'] = industryPrefill;
+  }
+
   if (assessments[ucId]) {
     const a = assessments[ucId];
     currentAnswers = a.answers || {};
