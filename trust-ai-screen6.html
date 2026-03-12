@@ -176,6 +176,7 @@
     <span style="font-size:13px;color:var(--text2);" id="projName">Manifest</span>
   </div>
   <div class="topbar-actions">
+    <button id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;">☀️</button>
     <button class="btn btn-ghost" onclick="window.location.href='trust-ai-screen5.html'">← Bewertung</button>
     <button class="btn btn-ghost" onclick="window.location.href='trust-ai-screen7.html'">Dashboard →</button>
   </div>
@@ -236,14 +237,15 @@
     <div class="uc-grid" id="gridRed"></div>
   </div>
 
-  <!-- DEFERRED -->
-  <div class="section" id="secDeferred" style="display:none;">
-    <div class="section-header">
-      <div class="section-icon">⏸️</div>
-      <div class="section-title">Zurückgestellte Use Cases</div>
-      <div class="section-count" id="cntDeferred"></div>
+  <!-- DEFERRED (compact note only) -->
+  <div id="secDeferred" style="display:none;margin-bottom:24px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;">
+      <span style="font-size:18px;flex-shrink:0;">⏸️</span>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--text2);" id="deferredNoteTitle">Use Cases zurückgestellt</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px;" id="deferredNoteText">Diese Use Cases sind aktuell nicht Teil des Manifests und können zu einem späteren Zeitpunkt neu bewertet werden.</div>
+      </div>
     </div>
-    <div class="uc-grid" id="gridDeferred"></div>
   </div>
 
   <!-- GLOBAL MEASURES -->
@@ -449,7 +451,15 @@ function render() {
   renderUCGrid('green', counts, '🟢');
   renderUCGrid('yellow', counts, '🟡');
   renderUCGrid('red', counts, '🔴');
-  renderUCGrid('deferred', counts, '📡');  // Auf dem Radar - separate Section
+
+  // Deferred: compact note only
+  const secDeferred = document.getElementById('secDeferred');
+  if (counts.deferred > 0) {
+    secDeferred.style.display = '';
+    document.getElementById('deferredNoteTitle').textContent = `${counts.deferred} Use Case${counts.deferred > 1 ? 's' : ''} zurückgestellt`;
+  } else {
+    secDeferred.style.display = 'none';
+  }
 
   // Global measures
   const globalM = computeGlobalMeasures();
@@ -530,6 +540,14 @@ function renderUCGrid(result, counts, icon) {
   sec.style.display = '';
   if (cnt) cnt.textContent = `${items.length} Use Case${items.length>1?'s':''}`;
 
+  const DATA_TYPE_LABELS = {
+    internal_project: 'Interne Projektdaten',
+    personal_data: 'Personenbezogene Daten',
+    customer_data: 'Kundendaten',
+    strategic_data: 'Vertrauliche Unternehmensdaten',
+    public: 'Öffentliche Daten'
+  };
+
   grid.innerHTML = items.map(s => {
     const a = assessments[s.use_case_id];
     const uc = ALL_UCS[s.use_case_id];
@@ -537,6 +555,8 @@ function renderUCGrid(result, counts, icon) {
     const measures = (a.selected_measures || []).map(m => MEASURE_LABELS[m] || m).join(' · ');
     const hitlClass = HITL_TAGS[a.hitl_level] || 'tag-hitl-1';
     const flagsHtml = (a.flags || []).length ? `<div class="flags-mini">${(a.flags||[]).slice(0,3).map(f=>`<span class="flag-chip ${f.includes('red')||f.includes('no_')||f.includes('not_approved')||f.includes('transparency')||f.includes('defense')?'red':'yellow'}">⚑ ${f.replace('flag_','').replace(/_/g,' ')}</span>`).join('')}</div>` : '';
+    const dataTypes = (a.answers?.q_data_types || []);
+    const dataTypesHtml = dataTypes.length ? `<div class="uc-measures"><strong>Datenarten</strong>${dataTypes.map(d => DATA_TYPE_LABELS[d] || d).join(' · ')}</div>` : '';
 
     return `<div class="uc-card ${result}">
       <div class="uc-card-top">
@@ -551,6 +571,7 @@ function renderUCGrid(result, counts, icon) {
         ${uc.regulated ? `<span class="tag tag-reg">§ Reguliert</span>` : ''}
         ${a.responsible_person ? `<span class="tag" style="background:var(--surface2);color:var(--text2);">👤 ${a.responsible_person}</span>` : ''}
       </div>
+      ${dataTypesHtml}
       ${measures ? `<div class="uc-measures"><strong>Maßnahmen</strong>${measures}</div>` : ''}
       ${flagsHtml}
       ${a.notes ? `<div class="uc-notes">${a.notes}</div>` : ''}
@@ -713,8 +734,7 @@ function exportPDF() {
   const sections = [
     { result:'green', label:'1. ZUGELASSENE USE CASES', color:colors.green },
     { result:'yellow', label:'2. BEDINGT ZUGELASSENE USE CASES', color:colors.yellow },
-    { result:'red', label:'3. ABGELEHNTE USE CASES', color:colors.red },
-    { result:'deferred', label:'4. ZURÜCKGESTELLTE USE CASES', color:colors.text3 }
+    { result:'red', label:'3. NICHT EMPFOHLENE USE CASES', color:colors.red }
   ];
 
   sections.forEach(sec => {
@@ -734,52 +754,57 @@ function exportPDF() {
       const a = assessments[s.use_case_id];
       const uc = ALL_UCS[s.use_case_id];
       if (!a || !uc) return;
-      checkY(30);
 
-      // Card
-      const cardH = 6 + (a.selected_measures?.length ? 14 : 0) + (a.notes ? 8 : 0) + 10;
+      // Pre-calculate text wrapping for accurate card height
+      doc.setFontSize(10); doc.setFont('helvetica','bold');
+      const titleLines2 = doc.splitTextToSize(uc.title, contentW-8);
+      const mText = (a.selected_measures||[]).map(m=>MEASURE_LABELS[m]||m).join(' · ');
+      doc.setFontSize(8); doc.setFont('helvetica','normal');
+      const mLines = mText ? doc.splitTextToSize(mText, contentW-32) : [];
+      const noteLines = a.notes ? doc.splitTextToSize(a.notes, contentW-8) : [];
+      const cardH = 4 + titleLines2.length*5 + 7 + (mLines.length ? 3 + mLines.length*4.5 : 0) + (noteLines.length ? 3 + noteLines.length*4.5 : 0) + 4;
+
+      checkY(cardH);
       fillRect(margin, y, contentW, cardH, [22,26,42]);
 
       // Title
-      doc.setFontSize(11);
+      doc.setFontSize(10);
       doc.setTextColor(...colors.text);
       doc.setFont('helvetica','bold');
-      doc.text(uc.title, margin+4, y+6);
+      let cardY = y + 8;
+      titleLines2.forEach(tl => { doc.text(tl, margin+4, cardY); cardY += 5; });
 
       // Meta row
       let mx = margin+4;
-      const metaY = y+11;
-      doc.setFontSize(8);
+      doc.setFontSize(7.5);
       doc.setFont('helvetica','normal');
-
       const hitlLabels = { level_1:'Volle Kontrolle', level_2:'Überwachte Autonomie', level_3:'Kontrollierte Automatisierung' };
       const tags = [uc.category, hitlLabels[a.hitl_level]||a.hitl_level];
       if (a.responsible_person) tags.push('Verantw.: '+a.responsible_person);
       tags.forEach(t => {
         const tw = doc.getTextWidth(t) + 4;
-        fillRect(mx, metaY-3.5, tw, 5, [40,46,80]);
-        doc.setTextColor(...colors.text2);
-        doc.text(t, mx+2, metaY);
-        mx += tw + 3;
+        if (mx + tw < W - margin) {
+          fillRect(mx, cardY-3, tw, 5, [40,46,80]);
+          doc.setTextColor(...colors.text2);
+          doc.text(t, mx+2, cardY);
+          mx += tw + 3;
+        }
       });
+      cardY += 6;
 
-      let cardY = metaY + 5;
-      if (a.selected_measures?.length) {
+      if (mLines.length) {
         doc.setTextColor(...colors.text3);
         doc.setFontSize(7.5);
-        doc.text('Maßnahmen:', margin+4, cardY+4);
-        const mText = (a.selected_measures||[]).map(m=>MEASURE_LABELS[m]||m).join(' · ');
-        const mLines = doc.splitTextToSize(mText, contentW-12);
+        doc.text('Maßnahmen:', margin+4, cardY);
         doc.setTextColor(...colors.text2);
-        mLines.forEach(l => { doc.text(l, margin+4+22, cardY+4); cardY += 4.5; });
+        mLines.forEach(l => { doc.text(l, margin+26, cardY); cardY += 4.5; });
         cardY += 1;
       }
-      if (a.notes) {
+      if (noteLines.length) {
         doc.setFontSize(8);
         doc.setTextColor(...colors.text3);
         doc.setFont('helvetica','italic');
-        doc.text(a.notes, margin+4, cardY+4, { maxWidth: contentW-8 });
-        cardY += 6;
+        noteLines.forEach(l => { doc.text(l, margin+4, cardY); cardY += 4.5; });
       }
       y += cardH + 4;
     });

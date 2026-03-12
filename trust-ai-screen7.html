@@ -158,7 +158,10 @@
     <div style="font-size:17px;font-weight:700;letter-spacing:-0.02em;">TRUST-AI</div>
     <div style="font-size:10px;color:var(--text2,#8b92b0);letter-spacing:0.04em;margin-top:-1px;">KI-Manifest Generator</div>
   </div>
-  <button class="btn btn-primary" onclick="newProject()">+ Neues Projekt</button>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus" style="background:var(--surface,#1a1d27);border:1px solid var(--border,#2e3350);border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;">☀️</button>
+    <button class="btn btn-primary" onclick="newProject()">+ Neues Projekt</button>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -513,6 +516,35 @@ function closeDelete() {
 // Override render to add sort + kebab
 const _origRender = render;
 // Patch already done in HTML
+
+// ─── Theme ──────────────────────────────────────────────────────────────────
+(function(){
+  const t = localStorage.getItem('trust_ai_theme');
+  if (t) applyTheme7(t);
+  else if (!window.matchMedia('(prefers-color-scheme:dark)').matches) applyTheme7('light');
+})();
+function applyTheme7(t) {
+  if (t === 'light') {
+    document.documentElement.style.setProperty('--bg','#F6F7FA');
+    document.documentElement.style.setProperty('--surface','#FFFFFF');
+    document.documentElement.style.setProperty('--surface2','#F0F2F8');
+    document.documentElement.style.setProperty('--surface3','#E8EBF4');
+    document.documentElement.style.setProperty('--border','#D8DCF0');
+    document.documentElement.style.setProperty('--border2','#B8BEDA');
+    document.documentElement.style.setProperty('--text','#111827');
+    document.documentElement.style.setProperty('--text2','#374151');
+    document.documentElement.style.setProperty('--text3','#6B7280');
+  } else {
+    ['--bg','--surface','--surface2','--surface3','--border','--border2','--text','--text2','--text3'].forEach(v=>document.documentElement.style.removeProperty(v));
+  }
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = t === 'light' ? '🌙' : '☀️';
+  localStorage.setItem('trust_ai_theme', t);
+}
+function toggleTheme() {
+  const stored = localStorage.getItem('trust_ai_theme') || 'dark';
+  applyTheme7(stored === 'dark' ? 'light' : 'dark');
+}
 </script>
 
 <!-- Edit Modal -->

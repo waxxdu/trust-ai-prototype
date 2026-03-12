@@ -234,6 +234,16 @@
     display: flex; align-items: flex-start; gap: 8px;
   }
   .bp-item::before { content: '→'; color: var(--accent2); flex-shrink: 0; font-family: 'DM Mono', monospace; }
+  .bp-custom-wrap { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .bp-custom-label { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 8px; }
+  .bp-custom-input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 13px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    resize: vertical; min-height: 72px; outline: none; transition: border-color 0.15s;
+  }
+  .bp-custom-input:focus { border-color: var(--accent); }
+  .bp-custom-input::placeholder { color: var(--text3); }
 
   /* ── RESULT ── */
   .ai-result-box {
@@ -332,6 +342,7 @@
   </div>
   <div class="topbar-right">
     <span class="topbar-step-pill" id="topbarStepPill">Schritt 1/4</span>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;padding:0;flex-shrink:0;">☀️</button>
     <button class="topbar-btn topbar-btn-ghost" onclick="deferCurrentUC()">Zurückstellen</button>
   </div>
 </div>
@@ -598,9 +609,11 @@ const STEP_DEFS = [
   {
     id: 'data_privacy',
     label: 'Datenschutz',
-    // Only show if personal_data or customer_data selected
+    // Only show if personal_data or customer_data selected AND a tool is available
     condition: () => {
       const dt = currentAnswers['q_data_types'] || [];
+      const toolAnswer = currentAnswers['q_tool_available'];
+      if (toolAnswer === 'no') return false; // no tool → AVV irrelevant
       return dt.includes('personal_data') || dt.includes('customer_data');
     },
     questions: [
@@ -725,6 +738,7 @@ let currentMeasures = new Set();
 let currentAmpel = null;
 let currentNotes = '';
 let currentWizardStep = 0; // index into activeSteps
+let currentBpCustom = {}; // projektspezifische Best-Practice-Notizen je UC
 
 function getActiveSteps() {
   return STEP_DEFS.filter(s => {
@@ -782,6 +796,7 @@ function resetCurrentState() {
     currentMeasures = new Set(a.selected_measures || []);
     currentAmpel = a.result || null;
     currentNotes = a.notes || '';
+    if (a.bp_custom) currentBpCustom[ucId] = a.bp_custom;
   }
   computeFlags();
   updateMeasuresFromFlags();
@@ -1208,13 +1223,18 @@ function toggleMobileMenu() {
   document.getElementById('sidebar').classList.toggle('mobile-open');
 }
 
+function saveBpCustom(ucId, value) {
+  currentBpCustom[ucId] = value;
+}
+
 function saveCurrentAssessment() {
   const ucId = shortlist[currentIdx].use_case_id;
   assessments[ucId] = {
     use_case_id: ucId, answers: { ...currentAnswers }, flags: [...currentFlags],
     result: currentAmpel || computeSuggestedResult() || 'yellow',
     hitl_level: currentHITL, selected_measures: [...currentMeasures],
-    notes: currentNotes, assessed_at: new Date().toISOString()
+    notes: currentNotes, bp_custom: currentBpCustom[ucId] || '',
+    assessed_at: new Date().toISOString()
   };
   const slItem = shortlist.find(s => s.use_case_id === ucId);
   if (slItem) slItem.status = assessments[ucId].result;
@@ -1252,9 +1272,49 @@ function showCompletion() {
 function goToManifest() { window.location.href = 'trust-ai-screen6.html'; }
 
 // ════════════════════════════════════════════════
+// RESUME: start at first unassessed UC
+// ════════════════════════════════════════════════
+function findStartIndex() {
+  const firstUnassessed = shortlist.findIndex(s => !assessments[s.use_case_id]);
+  return firstUnassessed >= 0 ? firstUnassessed : Math.max(0, shortlist.length - 1);
+}
+
+// ════════════════════════════════════════════════
+// THEME
+// ════════════════════════════════════════════════
+(function(){
+  const t = localStorage.getItem('trust_ai_theme');
+  if (t) applyTheme5(t);
+  else if (!window.matchMedia('(prefers-color-scheme:dark)').matches) applyTheme5('light');
+})();
+function applyTheme5(t) {
+  if (t === 'light') {
+    document.documentElement.style.setProperty('--bg','#F6F7FA');
+    document.documentElement.style.setProperty('--surface','#FFFFFF');
+    document.documentElement.style.setProperty('--surface2','#F0F2F8');
+    document.documentElement.style.setProperty('--surface3','#E8EBF4');
+    document.documentElement.style.setProperty('--border','#D8DCF0');
+    document.documentElement.style.setProperty('--border2','#B8BEDA');
+    document.documentElement.style.setProperty('--text','#111827');
+    document.documentElement.style.setProperty('--text2','#374151');
+    document.documentElement.style.setProperty('--text3','#6B7280');
+  } else {
+    ['--bg','--surface','--surface2','--surface3','--border','--border2','--text','--text2','--text3'].forEach(v=>document.documentElement.style.removeProperty(v));
+  }
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = t === 'light' ? '🌙' : '☀️';
+  localStorage.setItem('trust_ai_theme', t);
+}
+function toggleTheme() {
+  const stored = localStorage.getItem('trust_ai_theme') || 'dark';
+  applyTheme5(stored === 'dark' ? 'light' : 'dark');
+}
+
+// ════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════
 loadData();
+currentIdx = findStartIndex();
 resetCurrentState();
 renderUCHeader();
 render();
