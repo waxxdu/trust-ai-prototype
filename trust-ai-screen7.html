@@ -221,12 +221,17 @@ function loadProjects() {
   let projects = [];
   try { projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]'); } catch(e) {}
 
-  // Also include current single project if exists
+  // Merge current single project – update existing entry or prepend if new
   try {
     const p = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
-    if (p.name && !projects.find(x => x.id === p.id)) {
-      p.id = p.id || 'current';
-      projects.unshift(p);
+    if (p.name && p.id) {
+      const existingIdx = projects.findIndex(x => x.id === p.id);
+      if (existingIdx >= 0) {
+        // Overwrite with the freshest version (has latest status, assessments, etc.)
+        projects[existingIdx] = { ...projects[existingIdx], ...p };
+      } else {
+        projects.unshift(p);
+      }
     }
   } catch(e) {}
 
@@ -404,11 +409,15 @@ function render() {
 // ────────────────────────────────────────────────
 
 function openProject(id, screen) {
-  // Load project into current slot if not already there
   try {
+    // Merge freshest data: projects array + single project cache
     const projects = JSON.parse(localStorage.getItem('trust_ai_projects')||'[]');
-    const p = projects.find(x=>x.id===id);
-    if (p) localStorage.setItem('trust_ai_project', JSON.stringify(p));
+    const listProj = projects.find(x=>x.id===id);
+    const singleProj = JSON.parse(localStorage.getItem('trust_ai_project')||'{}');
+    const fresh = (singleProj.id === id)
+      ? { ...(listProj||{}), ...singleProj }
+      : listProj;
+    if (fresh) localStorage.setItem('trust_ai_project', JSON.stringify(fresh));
   } catch(e){}
   window.location.href = screen;
 }

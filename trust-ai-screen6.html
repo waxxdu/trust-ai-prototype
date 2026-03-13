@@ -8,30 +8,40 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+  /* ── Color Tokens (theme-invariant) ── */
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --surface3: #2a2f45;
-    --border: #2e3350;
-    --border2: #3d4468;
-    --text: #e8eaf6;
-    --text2: #9ba3c7;
-    --text3: #5c6490;
-    --accent: #6366f1;
-    --accent2: #818cf8;
-    --accent3: #4f46e5;
-    --green: #22c55e;
-    --green-bg: rgba(34,197,94,0.1);
-    --green-border: rgba(34,197,94,0.25);
-    --yellow: #eab308;
-    --yellow-bg: rgba(234,179,8,0.1);
-    --yellow-border: rgba(234,179,8,0.25);
-    --red: #ef4444;
-    --red-bg: rgba(239,68,68,0.1);
-    --red-border: rgba(239,68,68,0.25);
-    --orange: #f97316;
-    --orange-bg: rgba(249,115,22,0.1);
+    --accent: #6366f1; --accent2: #818cf8; --accent3: #4f46e5;
+    --green: #22c55e; --yellow: #eab308; --red: #ef4444; --orange: #f97316;
+  }
+  /* ── Light mode (default) ── */
+  :root, [data-theme="light"] {
+    --bg: #F6F7FA; --surface: #FFFFFF; --surface2: #F0F2F8; --surface3: #E8EBF4;
+    --border: #D8DCF0; --border2: #B8BEDA;
+    --text: #111827; --text1: #111827; --text2: #374151; --text3: #6B7280;
+    --green-bg: rgba(34,197,94,0.10); --green-border: rgba(34,197,94,0.25);
+    --yellow-bg: rgba(234,179,8,0.10); --yellow-border: rgba(234,179,8,0.25);
+    --red-bg: rgba(239,68,68,0.10); --red-border: rgba(239,68,68,0.25);
+    --orange-bg: rgba(249,115,22,0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --surface3: #2a2f45;
+      --border: #2e3350; --border2: #3d4468;
+      --text: #e8eaf6; --text1: #e8eaf6; --text2: #9ba3c7; --text3: #5c6490;
+      --green-bg: rgba(34,197,94,0.10); --green-border: rgba(34,197,94,0.25);
+      --yellow-bg: rgba(234,179,8,0.10); --yellow-border: rgba(234,179,8,0.25);
+      --red-bg: rgba(239,68,68,0.10); --red-border: rgba(239,68,68,0.25);
+      --orange-bg: rgba(249,115,22,0.10);
+    }
+  }
+  [data-theme="dark"] {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --surface3: #2a2f45;
+    --border: #2e3350; --border2: #3d4468;
+    --text: #e8eaf6; --text1: #e8eaf6; --text2: #9ba3c7; --text3: #5c6490;
+    --green-bg: rgba(34,197,94,0.10); --green-border: rgba(34,197,94,0.25);
+    --yellow-bg: rgba(234,179,8,0.10); --yellow-border: rgba(234,179,8,0.25);
+    --red-bg: rgba(239,68,68,0.10); --red-border: rgba(239,68,68,0.25);
+    --orange-bg: rgba(249,115,22,0.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
@@ -762,7 +772,12 @@ function exportPDF() {
       doc.setFontSize(8); doc.setFont('helvetica','normal');
       const mLines = mText ? doc.splitTextToSize(mText, contentW-32) : [];
       const noteLines = a.notes ? doc.splitTextToSize(a.notes, contentW-8) : [];
-      const cardH = 4 + titleLines2.length*5 + 7 + (mLines.length ? 3 + mLines.length*4.5 : 0) + (noteLines.length ? 3 + noteLines.length*4.5 : 0) + 4;
+      const dataTypes = (a.answers?.q_data_types || []);
+      const DATA_TYPE_LABELS_PDF = { internal_project:'Interne Projektdaten', personal_data:'Personenbezogene Daten', customer_data:'Kundendaten', strategic_data:'Vertrauliche Unternehmensdaten', public:'Öffentliche Daten' };
+      const dtText = dataTypes.map(d => DATA_TYPE_LABELS_PDF[d] || d).join(' · ');
+      doc.setFontSize(8); doc.setFont('helvetica','normal');
+      const dtLines = dtText ? doc.splitTextToSize(dtText, contentW-32) : [];
+      const cardH = 6 + titleLines2.length*5 + 8 + (dtLines.length ? 3 + dtLines.length*4.5 : 0) + (mLines.length ? 3 + mLines.length*4.5 : 0) + (noteLines.length ? 3 + noteLines.length*4.5 : 0) + 6;
 
       checkY(cardH);
       fillRect(margin, y, contentW, cardH, [22,26,42]);
@@ -791,6 +806,15 @@ function exportPDF() {
         }
       });
       cardY += 6;
+
+      if (dtLines.length) {
+        doc.setTextColor(...colors.text3);
+        doc.setFontSize(7.5);
+        doc.text('Datenarten:', margin+4, cardY);
+        doc.setTextColor(...colors.text2);
+        dtLines.forEach(dl => { cardY += 4.5; doc.text(dl, margin+32, cardY); });
+        cardY += 5;
+      }
 
       if (mLines.length) {
         doc.setTextColor(...colors.text3);
@@ -883,33 +907,22 @@ function exportPDF() {
 loadData();
 render();
 
-// ── Theme Toggle ──
+// ── Theme ──
 (function(){
-  const t = localStorage.getItem('trust_ai_theme');
-  if (t) applyTheme6(t);
-  else if (!window.matchMedia('(prefers-color-scheme:dark)').matches) applyTheme6('light');
-})();
-function applyTheme6(t) {
-  if (t === 'light') {
-    document.documentElement.style.setProperty('--bg','#F6F7FA');
-    document.documentElement.style.setProperty('--surface','#FFFFFF');
-    document.documentElement.style.setProperty('--surface2','#F0F2F8');
-    document.documentElement.style.setProperty('--surface3','#E8EBF4');
-    document.documentElement.style.setProperty('--border','#D8DCF0');
-    document.documentElement.style.setProperty('--border2','#B8BEDA');
-    document.documentElement.style.setProperty('--text','#111827');
-    document.documentElement.style.setProperty('--text2','#374151');
-    document.documentElement.style.setProperty('--text3','#6B7280');
-  } else {
-    ['--bg','--surface','--surface2','--surface3','--border','--border2','--text','--text2','--text3'].forEach(v=>document.documentElement.style.removeProperty(v));
-  }
+  const saved = localStorage.getItem('trust_ai_theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
   const btn = document.getElementById('theme-toggle');
-  if (btn) btn.textContent = t === 'light' ? '🌙' : '☀️';
-  localStorage.setItem('trust_ai_theme', t);
-}
+  if (btn) btn.textContent = theme === 'dark' ? '🌙' : '☀️';
+})();
 function toggleTheme() {
-  const stored = localStorage.getItem('trust_ai_theme') || 'dark';
-  applyTheme6(stored === 'dark' ? 'light' : 'dark');
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('trust_ai_theme', next);
 }
 
 // ── D7: KI Policy-Text generieren ──
