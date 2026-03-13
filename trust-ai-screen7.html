@@ -474,6 +474,8 @@ function newProject() {
   window.location.href = 'trust-ai-screen1.html';
 }
 
+let currentSort = 'recent';
+
 render();
 
 // ─── Storage Banner ────────────────────────────────────────────────────────
@@ -502,8 +504,6 @@ function setSortOrder(val) {
   currentSort = val;
   render();
 }
-
-let currentSort = 'recent';
 
 // ─── Kebab ─────────────────────────────────────────────────────────────────
 let openKebab = null;
