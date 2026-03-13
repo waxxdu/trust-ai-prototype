@@ -282,10 +282,6 @@ nav {
 }
 .ethics-flag svg { width:13px; height:13px; stroke:var(--yellow); fill:none; stroke-width:2; stroke-linecap:round; flex-shrink:0; }
 
-.card-quality-badge {
-  display:inline-flex; align-items:center; gap:6px;
-  font-size:11px; color:var(--text3); margin-bottom:6px; flex-shrink:0;
-}
 
 .benefit-bar {
   position:fixed; bottom:0; left:0; right:0; z-index:100;
@@ -345,12 +341,8 @@ nav {
 .group-priority .result-group-title { color:var(--green); }
 .group-second .result-group-header { background:var(--accent-subtle); border-color:var(--accent-border); }
 .group-second .result-group-title { color:var(--accent); }
-.group-conditional .result-group-header { background:var(--yellow-subtle); border-color:var(--yellow-border); }
-.group-conditional .result-group-title { color:var(--yellow); }
 .group-optional .result-group-header { background:var(--surface2); }
 .group-deferred .result-group-header { background:var(--surface2); }
-.group-not-rec .result-group-header { background:var(--red-subtle); border-color:var(--red-border); }
-.group-not-rec .result-group-title { color:var(--red); }
 
 .collapsed-groups { margin-bottom:16px; }
 .collapsed-row {
@@ -399,7 +391,7 @@ nav {
     <div class="filter-hero">
       <div class="filter-hero-icon">🎯</div>
       <h1>Use Case Discovery</h1>
-      <p>In 3 schnellen Schritten zur KI-Shortlist.<br/>Das Kano-Modell führt dich durch Tool-Check, Qualitäts-Gate und Nutzen-Rating.</p>
+      <p>In 2 schnellen Schritten zur KI-Shortlist.<br/>Das Kano-Modell führt dich durch Tool-Check und Nutzen-Rating.</p>
     </div>
 
     <div class="kano-steps">
@@ -409,14 +401,8 @@ nav {
         <div class="kano-step-label">Tool-Check</div>
         <div class="kano-step-sub">Muss-Faktor<br/>Tool vorhanden?</div>
       </div>
-      <div class="kano-step ko">
-        <div class="kano-step-num">02</div>
-        <div class="kano-step-icon">✅</div>
-        <div class="kano-step-label">Qualitäts-Gate</div>
-        <div class="kano-step-sub">Muss-Faktor<br/>KI verlässlich?</div>
-      </div>
       <div class="kano-step perf">
-        <div class="kano-step-num">03</div>
+        <div class="kano-step-num">02</div>
         <div class="kano-step-icon">🔥</div>
         <div class="kano-step-label">Nutzen-Rating</div>
         <div class="kano-step-sub">Leistungsfaktor<br/>Wie viel Mehrwert?</div>
@@ -436,9 +422,17 @@ nav {
     </div>
 
     <div class="filter-section">
-      <div class="filter-section-label">Oder nach Kategorie filtern</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+        <div class="filter-section-label" style="margin-bottom:0;">Oder nach Kategorie filtern</div>
+        <button class="cat-chip" id="csv-import-btn" onclick="triggerCSVImport()" style="border-radius:var(--radius-sm); padding:6px 12px; font-size:11px; font-weight:600; gap:5px; flex-shrink:0;">
+          📥 CSV importieren
+        </button>
+        <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVImport(event)"/>
+      </div>
       <div class="cat-chips" id="cat-chips"></div>
     </div>
+
+    <div class="autofill-note" id="csv-import-note" style="display:none;"></div>
 
     <div class="filter-summary">
       <div class="filter-summary-count"><span id="filter-count">24</span> Use Cases ausgewählt</div>
@@ -459,10 +453,10 @@ nav {
       <div class="sweep-step-row">
         <button class="sweep-back-btn" onclick="goToFilter()">← Auswahl</button>
         <div style="flex:1;"></div>
-        <span class="sweep-step-badge">Schritt 1 / 3</span>
+        <span class="sweep-step-badge">Schritt 1 / 2</span>
       </div>
       <div class="sweep-progress-bar" style="margin-bottom:10px;">
-        <div class="sweep-progress-fill" style="width:33%;"></div>
+        <div class="sweep-progress-fill" style="width:50%;"></div>
       </div>
       <div class="sweep-title">🔧 Tool-Check</div>
       <div class="sweep-subtitle">Gibt es für diesen Use Case ein zugelassenes KI-Tool in eurem Projekt?</div>
@@ -473,37 +467,12 @@ nav {
   <div class="sweep-footer">
     <div class="sweep-footer-inner">
       <div class="sweep-remaining" id="s1-remaining"></div>
-      <button class="btn-primary" id="s1-next" onclick="goToSweep2()" disabled>Weiter zum Qualitäts-Gate →</button>
+      <button class="btn-primary" id="s1-next" onclick="goToSweep2()" disabled>Weiter zum Nutzen-Rating →</button>
     </div>
   </div>
 </div>
 
-<!-- ══ Phase 2: Quality Gate ══ -->
-<div id="phase-sweep2" class="page" style="display:none;">
-  <div class="sweep-page">
-    <div class="sweep-header">
-      <div class="sweep-step-row">
-        <button class="sweep-back-btn" onclick="goToSweep1()">← Tool-Check</button>
-        <div style="flex:1;"></div>
-        <span class="sweep-step-badge">Schritt 2 / 3</span>
-      </div>
-      <div class="sweep-progress-bar" style="margin-bottom:10px;">
-        <div class="sweep-progress-fill" style="width:66%;"></div>
-      </div>
-      <div class="sweep-title">✅ Qualitäts-Gate</div>
-      <div class="sweep-subtitle">Kann KI hier verlässliche Ergebnisse liefern, die du inhaltlich verantworten kannst?</div>
-    </div>
-    <div class="sweep-list" id="sweep2-list"></div>
-  </div>
-  <div class="sweep-footer">
-    <div class="sweep-footer-inner">
-      <div class="sweep-remaining" id="s2-remaining"></div>
-      <button class="btn-primary" id="s2-next" onclick="goToSweep3()" disabled>Weiter zum Nutzen-Rating →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ Phase 3: Benefit Rating ══ -->
+<!-- ══ Phase 2: Benefit Rating ══ -->
 <div id="phase-sweep3" style="display:none;">
   <div class="card-phase-wrap">
     <div class="card-phase-header">
@@ -609,7 +578,6 @@ let activeCats = new Set(CATEGORIES.map(c => c.key));
 let activeUCs = [...USE_CASES];
 let toolAnswers = {};    // ucId → 'yes'|'no'|'unsure'
 let autoFilledIds = new Set();
-let qualityAnswers = {}; // ucId → 'yes'|'no'|'unsure'
 let benefitAnswers = {}; // ucId → 'gamechanger'|'helpful'|'nice_to_have'
 let sweep3Queue = [];
 let sweep3Index = 0;
@@ -702,7 +670,7 @@ function updateFilterSummary() {
 
 // ══ Phase navigation ══
 function showPhase(id) {
-  ['phase-filter','phase-sweep1','phase-sweep2','phase-sweep3','phase-results'].forEach(p => {
+  ['phase-filter','phase-sweep1','phase-sweep3','phase-results'].forEach(p => {
     const el = document.getElementById(p);
     if (el) el.style.display = 'none';
   });
@@ -778,8 +746,7 @@ function createSweepRow(uc, sweep, currentVal) {
 }
 
 function setSweepAnswer(sweep, ucId, val, btn) {
-  const answers = sweep === 'tool' ? toolAnswers : qualityAnswers;
-  answers[ucId] = val;
+  toolAnswers[ucId] = val;
   // update button states in this row
   const row = btn.closest('.sweep-row');
   row.querySelectorAll('.sweep-btn').forEach(b => {
@@ -787,8 +754,7 @@ function setSweepAnswer(sweep, ucId, val, btn) {
   });
   const cls = val === 'yes' ? 'selected-yes' : val === 'no' ? 'selected-no' : 'selected-unsure';
   btn.classList.add(cls);
-  if (sweep === 'tool') updateS1Footer();
-  else updateS2Footer();
+  updateS1Footer();
 }
 
 function updateS1Footer() {
@@ -816,43 +782,7 @@ function groupByCat(ucs) {
 
 function goToSweep1() { showPhase('phase-sweep1'); }
 function goToSweep2() {
-  renderSweep2();
-  showPhase('phase-sweep2');
-}
-
-// ══ Sweep 2: Quality Gate ══
-function renderSweep2() {
-  const list = document.getElementById('sweep2-list');
-  list.innerHTML = '';
-  const byCat = groupByCat(activeUCs);
-  byCat.forEach(({ cat, ucs }) => {
-    const heading = document.createElement('div');
-    heading.className = 'sweep-cat-heading';
-    heading.textContent = cat;
-    list.appendChild(heading);
-    ucs.forEach(uc => {
-      const row = createSweepRow(uc, 'quality', qualityAnswers[uc.id] || null);
-      list.appendChild(row);
-    });
-  });
-  updateS2Footer();
-}
-
-function updateS2Footer() {
-  const unanswered = activeUCs.filter(u => !qualityAnswers[u.id]).length;
-  const rem = document.getElementById('s2-remaining');
-  const btn = document.getElementById('s2-next');
-  if (unanswered === 0) {
-    rem.innerHTML = '<span style="color:var(--green);">✓ Alle beantwortet</span>';
-    btn.disabled = false;
-  } else {
-    rem.innerHTML = `Noch <span class="remaining-num">${unanswered}</span> zu beantworten`;
-    btn.disabled = true;
-  }
-}
-
-function goToSweep3() {
-  sweep3Queue = activeUCs.filter(u => qualityAnswers[u.id] !== 'no');
+  sweep3Queue = [...activeUCs];
   sweep3Index = 0;
   sweep3History = [];
   if (sweep3Queue.length === 0) { computeAndShowResults(); return; }
@@ -881,9 +811,6 @@ function createBenefitCard(uc) {
   const div = document.createElement('div');
   div.className = 'swipe-card';
   div.dataset.id = uc.id;
-  const qAnswer = qualityAnswers[uc.id];
-  const qBadge = qAnswer === 'unsure'
-    ? '<div class="card-quality-badge">⚠️ Qualität unsicher – wird als „Bedingt" eingestuft</div>' : '';
   div.innerHTML = `
     <div class="swipe-overlay overlay-nice"><span class="swipe-badge badge-nice">🟡 Nice-to-have</span></div>
     <div class="swipe-overlay overlay-helpful"><span class="swipe-badge badge-helpful">🟠 Hilfreich</span></div>
@@ -895,7 +822,6 @@ function createBenefitCard(uc) {
     <div class="card-divider"></div>
     <div class="card-tools">${uc.typical_tools.map(t=>`<span class="tool-chip">${t}</span>`).join('')}</div>
     ${uc.ethical_flag ? `<div class="ethics-flag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>${uc.ethical_note}</span></div>` : ''}
-    ${qBadge}
   `;
   return div;
 }
@@ -1007,36 +933,29 @@ function s3DragEnd() {
 }
 
 // ══ Kano Logic ══
-function computeKanoStatus(tool, quality, benefit) {
-  if (quality === 'no') return 'not_recommended';
-  if (quality === 'unsure') return 'conditional';
-  // quality === 'yes':
+function computeKanoStatus(tool, benefit) {
   if (tool === 'yes') {
     if (benefit === 'gamechanger' || benefit === 'helpful') return 'priority';
     return 'optional';
   }
-  // tool 'no' or 'unsure'
-  if (benefit === 'gamechanger' || benefit === 'helpful') return 'second_look';
+  // tool === 'no' | 'unsure' (= in Planung)
+  if (benefit === 'gamechanger' || benefit === 'helpful') return 'enablement';
   return 'deferred';
 }
 
 const KANO_GROUPS = [
-  { key:'priority',        icon:'🔥', label:'Priorität: Umsetzen',              color:'var(--green)', cls:'group-priority' },
-  { key:'second_look',     icon:'⭐', label:'Zweiter Blick: Tool beantragen',    color:'var(--accent)', cls:'group-second' },
-  { key:'conditional',     icon:'⚠️', label:'Bedingt – Auflagen nötig',          color:'var(--yellow)', cls:'group-conditional' },
-  { key:'optional',        icon:'🟢', label:'Optional',                          color:'var(--text2)', cls:'group-optional' },
-  { key:'deferred',        icon:'⏸️', label:'Zurückgestellt',                    color:'var(--text3)', cls:'group-deferred' },
-  { key:'not_recommended', icon:'🚫', label:'Nicht empfohlen (Qualitäts-KO)',    color:'var(--red)', cls:'group-not-rec' },
+  { key:'priority',   icon:'🔥', label:'Priorität: Umsetzen',   color:'var(--green)', cls:'group-priority' },
+  { key:'optional',   icon:'🟢', label:'Optional',              color:'var(--text2)', cls:'group-optional' },
+  { key:'enablement', icon:'⭐', label:'Tool/Daten beschaffen', color:'var(--accent)', cls:'group-second' },
+  { key:'deferred',   icon:'⏸️', label:'Zurückgestellt',        color:'var(--text3)', cls:'group-deferred' },
 ];
 
 function computeAndShowResults() {
   const kanoResults = activeUCs.map(uc => {
     const tool    = toolAnswers[uc.id] || 'unsure';
-    const quality = qualityAnswers[uc.id] || 'unsure';
-    const benefit = benefitAnswers[uc.id] || null;
-    const effectiveBenefit = benefit || (quality === 'no' ? null : 'nice_to_have');
-    const status  = computeKanoStatus(tool, quality, effectiveBenefit);
-    return { uc, tool, quality, benefit: effectiveBenefit, status };
+    const benefit = benefitAnswers[uc.id] || 'nice_to_have';
+    const status  = computeKanoStatus(tool, benefit);
+    return { uc, tool, benefit, status };
   });
 
   renderResults(kanoResults);
@@ -1046,14 +965,14 @@ function computeAndShowResults() {
 
 function renderResults(results) {
   // Stats
-  const shortlistCount = results.filter(r => ['priority','second_look','conditional','optional'].includes(r.status)).length;
-  const priorityCount  = results.filter(r => r.status === 'priority').length;
-  const noCount        = results.filter(r => ['deferred','not_recommended'].includes(r.status)).length;
+  const priorityCount   = results.filter(r => r.status === 'priority').length;
+  const enablementCount = results.filter(r => r.status === 'enablement').length;
+  const deferredCount   = results.filter(r => r.status === 'deferred').length;
 
   document.getElementById('results-stats').innerHTML = `
     <div class="results-stat"><div class="results-stat-num" style="color:var(--green)">${priorityCount}</div><div class="results-stat-label">🔥 Priorität</div></div>
-    <div class="results-stat"><div class="results-stat-num" style="color:var(--accent)">${shortlistCount}</div><div class="results-stat-label">✓ Shortlist gesamt</div></div>
-    <div class="results-stat"><div class="results-stat-num" style="color:var(--text3)">${noCount}</div><div class="results-stat-label">⏸ Zurückgestellt</div></div>
+    <div class="results-stat"><div class="results-stat-num" style="color:var(--accent)">${enablementCount}</div><div class="results-stat-label">⭐ Tool beschaffen</div></div>
+    <div class="results-stat"><div class="results-stat-num" style="color:var(--text3)">${deferredCount}</div><div class="results-stat-label">⏸ Zurückgestellt</div></div>
   `;
 
   const grouped = {};
@@ -1069,8 +988,8 @@ function renderResults(results) {
     const items = grouped[grp.key] || [];
     if (items.length === 0) return;
 
-    // Deferred and not_recommended shown collapsed
-    if (grp.key === 'deferred' || grp.key === 'not_recommended') {
+    // Deferred shown collapsed
+    if (grp.key === 'deferred') {
       const row = document.createElement('div');
       row.className = 'collapsed-row';
       row.innerHTML = `<span class="collapsed-row-icon">${grp.icon}</span><span style="flex:1">${grp.label}</span><span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text3)">${items.length} Use Cases</span>`;
@@ -1090,7 +1009,7 @@ function renderResults(results) {
         ${items.map(r => {
           const toolBadge = r.tool === 'yes' ? '<span class="result-item-badge" style="background:var(--green-subtle);color:var(--green);">✅ Tool</span>'
                           : r.tool === 'no' ? '<span class="result-item-badge" style="background:var(--red-subtle);color:var(--red);">❌ Kein Tool</span>'
-                          : '<span class="result-item-badge" style="background:var(--yellow-subtle);color:var(--yellow);">❓ Unsicher</span>';
+                          : '<span class="result-item-badge" style="background:var(--yellow-subtle);color:var(--yellow);">❓ in Planung</span>';
           return `<div class="result-item">
             <span class="result-item-id">${r.uc.id}</span>
             <span class="result-item-title">${r.uc.title}</span>
@@ -1101,11 +1020,12 @@ function renderResults(results) {
     container.appendChild(group);
   });
 
+  const shortlistCount = results.filter(r => ['priority','optional','enablement'].includes(r.status)).length;
   const note = document.getElementById('results-cta-note');
   note.textContent = `${shortlistCount} Use Cases auf der Shortlist – bereit für die Detailbewertung`;
 
   const summaryText = document.getElementById('results-summary-text');
-  summaryText.textContent = `${priorityCount} Use Cases sind bereit zum Umsetzen, ${shortlistCount - priorityCount} weitere auf der Shortlist.`;
+  summaryText.textContent = `${priorityCount} Use Cases sind bereit zum Umsetzen, ${enablementCount} benötigen noch ein Tool.`;
 }
 
 function saveResults(kanoResults) {
@@ -1114,16 +1034,15 @@ function saveResults(kanoResults) {
     // Save kano_results for future use
     proj.kano_results = kanoResults.map(r => ({
       use_case_id: r.uc.id,
-      kano_status: r.status,
-      tool: r.tool,
-      quality: r.quality,
-      benefit: r.benefit,
+      kano_status: r.status,   // 'priority'|'optional'|'enablement'|'deferred'
+      tool: r.tool,            // 'yes'|'no'|'unsure'
+      benefit: r.benefit,      // 'gamechanger'|'helpful'|'nice_to_have'
     }));
     // Save swipe_results in screen4-compatible format
     proj.swipe_results = kanoResults.map(r => {
       let decision;
       if (r.status === 'priority') decision = 'up';
-      else if (['second_look','conditional','optional'].includes(r.status)) decision = 'right';
+      else if (['optional','enablement'].includes(r.status)) decision = 'right';
       else decision = 'left';
       return {
         use_case_id: r.uc.id,
@@ -1143,6 +1062,96 @@ function saveResults(kanoResults) {
 
 function goToShortlist() {
   window.location.href = 'trust-ai-screen4.html';
+}
+
+// ══ CSV Import ══
+function triggerCSVImport() {
+  document.getElementById('csv-file-input').value = '';
+  document.getElementById('csv-file-input').click();
+}
+
+function handleCSVImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    processCSV(text);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function processCSV(text) {
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  if (lines.length < 2) return;
+
+  // Skip header row
+  const dataLines = lines.slice(1);
+  const importedTools = [];
+  let filledCount = 0;
+
+  dataLines.forEach(line => {
+    const parts = line.split(';');
+    if (parts.length < 3) return;
+    const toolName  = parts[0].trim();
+    const available = parts[1].trim().toLowerCase();
+    const ucIdsRaw  = parts[2].trim();
+    if (!toolName || !available || !ucIdsRaw) return;
+
+    // Map available value to answer
+    let answer;
+    if (available === 'ja')          answer = 'yes';
+    else if (available === 'in planung') answer = 'unsure';
+    else if (available === 'nein')   answer = 'no';
+    else return; // unknown value, skip
+
+    const ucIds = ucIdsRaw.split('|').map(id => id.trim()).filter(id => id.length > 0);
+    const matchedIds = [];
+    ucIds.forEach(ucId => {
+      const uc = USE_CASES.find(u => u.id === ucId);
+      if (uc) {
+        toolAnswers[ucId] = answer;
+        matchedIds.push(ucId);
+        filledCount++;
+      }
+    });
+    if (matchedIds.length > 0) {
+      importedTools.push({ tool: toolName, available: parts[1].trim(), uc_ids: matchedIds });
+    }
+  });
+
+  if (importedTools.length === 0) {
+    showCSVNote('⚠️ Keine passenden Use Cases im CSV gefunden. Überprüfe das Format und die UC-IDs.', false);
+    return;
+  }
+
+  // Save to localStorage
+  try {
+    const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    proj.tool_csv_import = importedTools;
+    localStorage.setItem('trust_ai_project', JSON.stringify(proj));
+  } catch(e) {}
+
+  // Update Sweep 1 list if visible
+  if (document.getElementById('phase-sweep1').style.display !== 'none') {
+    renderSweep1();
+  }
+
+  // Show banner
+  const toolNames = importedTools.map(t => t.tool).join(', ');
+  showCSVNote(`✅ CSV importiert: <strong>${importedTools.length} Tools</strong> (${toolNames}) – <strong>${filledCount} Use Cases</strong> automatisch vorausgefüllt.`, true);
+  updateFilterSummary();
+}
+
+function showCSVNote(msg, success) {
+  const note = document.getElementById('csv-import-note');
+  if (!note) return;
+  note.innerHTML = msg;
+  note.style.display = 'block';
+  note.style.background = success ? 'var(--green-subtle)' : 'var(--yellow-subtle)';
+  note.style.borderColor = success ? 'var(--green-border)' : 'var(--yellow-border)';
+  note.style.color = success ? 'var(--green)' : 'var(--yellow)';
+  setTimeout(() => { note.style.display = 'none'; }, 6000);
 }
 
 // ══ Theme ══

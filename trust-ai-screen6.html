@@ -174,6 +174,35 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* VORAUSSETZUNGEN */
+  .enablement-item {
+    border-radius: 14px; border: 1px solid rgba(99,102,241,0.30);
+    background: rgba(99,102,241,0.07);
+    padding: 16px 20px; margin-bottom: 10px;
+    transition: transform 0.15s;
+  }
+  .enablement-item:hover { transform: translateY(-1px); }
+  .enablement-item:last-child { margin-bottom: 0; }
+  .enablement-item-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .enablement-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+  .enablement-tool-name { font-size: 14px; font-weight: 700; color: var(--accent2); flex: 1; }
+  .enablement-avail { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; margin-left: 6px; vertical-align: middle; }
+  .enablement-avail.available { background: rgba(34,197,94,0.15); color: var(--green); }
+  .enablement-avail.planned { background: rgba(99,102,241,0.15); color: var(--accent2); }
+  .enablement-avail.unavailable { background: rgba(239,68,68,0.12); color: var(--red); }
+  .enablement-enables { font-size: 12px; color: var(--text2); margin-bottom: 10px; line-height: 1.6; }
+  .enablement-owner-row { display: flex; align-items: center; gap: 8px; }
+  .enablement-owner-label { font-size: 11px; color: var(--text3); font-weight: 500; flex-shrink: 0; }
+  .enablement-owner-input {
+    flex: 1; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 7px; padding: 5px 10px; font-size: 12px;
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    outline: none; transition: border-color 0.15s;
+    max-width: 240px;
+  }
+  .enablement-owner-input:focus { border-color: var(--accent2); }
+  .enablement-owner-input::placeholder { color: var(--text3); }
 </style>
 </head>
 <body>
@@ -245,6 +274,19 @@
       <div class="section-count" id="cntRed"></div>
     </div>
     <div class="uc-grid" id="gridRed"></div>
+  </div>
+
+  <!-- VORAUSSETZUNGEN -->
+  <div class="section fade-up fade-up-d3" id="secEnablement" style="display:none;">
+    <div class="section-header">
+      <div class="section-icon">⭐</div>
+      <div class="section-title" style="color:var(--accent2);">Voraussetzungen</div>
+      <div class="section-count" id="cntEnablement"></div>
+    </div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6;">
+      Diese Tools/Daten werden benötigt, um weitere Use Cases zu ermöglichen:
+    </div>
+    <div id="gridEnablement"></div>
   </div>
 
   <!-- DEFERRED (compact note only) -->
@@ -462,6 +504,9 @@ function render() {
   renderUCGrid('yellow', counts, '🟡');
   renderUCGrid('red', counts, '🔴');
 
+  // Enablement (Voraussetzungen)
+  renderEnablements();
+
   // Deferred: compact note only
   const secDeferred = document.getElementById('secDeferred');
   if (counts.deferred > 0) {
@@ -587,6 +632,117 @@ function renderUCGrid(result, counts, icon) {
       ${a.notes ? `<div class="uc-notes">${a.notes}</div>` : ''}
     </div>`;
   }).join('');
+}
+
+// ────────────────────────────────────────────────
+// VORAUSSETZUNGEN
+// ────────────────────────────────────────────────
+
+function renderEnablements() {
+  const proj = project;
+  const kanoResults = proj.kano_results || [];
+  const toolImport = proj.tool_csv_import || [];
+  const sl = proj.shortlist || shortlist;
+  const enablementOwners = proj.enablement_owners || {};
+
+  // Filter enablement items from kano_results
+  const enablementItems = kanoResults.filter(k => k.kano_status === 'enablement');
+
+  const sec = document.getElementById('secEnablement');
+  const grid = document.getElementById('gridEnablement');
+  const cnt = document.getElementById('cntEnablement');
+
+  if (!enablementItems.length) {
+    sec.style.display = 'none';
+    return;
+  }
+  sec.style.display = '';
+
+  // Group enablement UCs by tool name
+  const toolGroups = {}; // { toolName: { tool, available, ucs: [{id, title}] } }
+
+  enablementItems.forEach(item => {
+    const ucId = item.use_case_id || item.id;
+    // Find matching tool from tool_csv_import
+    const matchedTool = toolImport.find(t => {
+      const ids = Array.isArray(t.uc_ids) ? t.uc_ids : (t.uc_ids ? String(t.uc_ids).split(',').map(x => x.trim()) : []);
+      return ids.includes(ucId);
+    });
+
+    const toolName = matchedTool ? matchedTool.tool : (item.tool || 'Unbekanntes Tool');
+    const available = matchedTool ? matchedTool.available : null;
+
+    // Get UC title
+    const slEntry = sl.find(s => s.use_case_id === ucId);
+    const ucInfo = ALL_UCS[ucId];
+    const title = item.title || ucInfo?.title || slEntry?.title || ucId;
+
+    if (!toolGroups[toolName]) {
+      toolGroups[toolName] = { tool: toolName, available, ucs: [] };
+    }
+    toolGroups[toolName].ucs.push({ id: ucId, title });
+  });
+
+  const toolGroupsArr = Object.values(toolGroups);
+  if (cnt) cnt.textContent = `${toolGroupsArr.length} Tool${toolGroupsArr.length !== 1 ? 's' : ''}`;
+
+  grid.innerHTML = toolGroupsArr.map(group => {
+    // Availability display
+    let availLabel = '';
+    let availClass = 'planned';
+    const avail = group.available;
+    if (avail === true || avail === 'true' || avail === 'ja' || avail === 'yes' || avail === 'verfügbar') {
+      availLabel = 'verfügbar'; availClass = 'available';
+    } else if (avail === false || avail === 'false' || avail === 'nein' || avail === 'no' || avail === 'nicht verfügbar') {
+      availLabel = 'nicht verfügbar'; availClass = 'unavailable';
+    } else if (avail === 'in Planung' || avail === 'planned' || avail === 'geplant') {
+      availLabel = 'in Planung'; availClass = 'planned';
+    } else if (avail != null) {
+      availLabel = String(avail); availClass = 'planned';
+    } else {
+      availLabel = 'in Planung'; availClass = 'planned';
+    }
+
+    const ucListHtml = group.ucs.map(uc => `<span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);">${uc.id}</span> ${uc.title}`).join(', ');
+    const ownerVal = enablementOwners[group.tool] || '';
+    const safeId = group.tool.replace(/[^a-zA-Z0-9]/g, '_');
+
+    return `<div class="enablement-item">
+      <div class="enablement-item-top">
+        <div class="enablement-icon">⭐</div>
+        <div style="flex:1;">
+          <span class="enablement-tool-name">${group.tool}</span>
+          <span class="enablement-avail ${availClass}">${availLabel}</span>
+        </div>
+      </div>
+      <div class="enablement-enables"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);font-weight:600;">Ermöglicht:</strong> ${ucListHtml}</div>
+      <div class="enablement-owner-row">
+        <span class="enablement-owner-label">Verantwortlich:</span>
+        <input
+          class="enablement-owner-input"
+          type="text"
+          placeholder="Name eingeben…"
+          value="${ownerVal.replace(/"/g, '&quot;')}"
+          data-tool="${group.tool.replace(/"/g, '&quot;')}"
+          oninput="saveEnablementOwner(this)"
+        />
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function saveEnablementOwner(input) {
+  const toolName = input.getAttribute('data-tool');
+  if (!toolName) return;
+  try {
+    const stored = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    if (!stored.enablement_owners) stored.enablement_owners = {};
+    stored.enablement_owners[toolName] = input.value;
+    localStorage.setItem('trust_ai_project', JSON.stringify(stored));
+    // Also update in-memory project
+    if (!project.enablement_owners) project.enablement_owners = {};
+    project.enablement_owners[toolName] = input.value;
+  } catch(e) {}
 }
 
 // ────────────────────────────────────────────────
@@ -862,6 +1018,92 @@ function exportPDF() {
     y += 9;
   }
 
+  // Voraussetzungen (Enablement) section
+  (function() {
+    const kanoResults = project.kano_results || [];
+    const toolImport = project.tool_csv_import || [];
+    const sl = project.shortlist || shortlist;
+    const enablementOwners = project.enablement_owners || {};
+    const enablementItems = kanoResults.filter(k => k.kano_status === 'enablement');
+    if (!enablementItems.length) return;
+
+    // Group by tool
+    const toolGroups = {};
+    enablementItems.forEach(item => {
+      const ucId = item.use_case_id || item.id;
+      const matchedTool = toolImport.find(t => {
+        const ids = Array.isArray(t.uc_ids) ? t.uc_ids : (t.uc_ids ? String(t.uc_ids).split(',').map(x => x.trim()) : []);
+        return ids.includes(ucId);
+      });
+      const toolName = matchedTool ? matchedTool.tool : (item.tool || 'Unbekanntes Tool');
+      const available = matchedTool ? matchedTool.available : null;
+      const ucInfo = ALL_UCS[ucId];
+      const title = item.title || ucInfo?.title || ucId;
+      if (!toolGroups[toolName]) toolGroups[toolName] = { tool: toolName, available, ucs: [] };
+      toolGroups[toolName].ucs.push({ id: ucId, title });
+    });
+    const groups = Object.values(toolGroups);
+    if (!groups.length) return;
+
+    y += 8;
+    checkY(30);
+    const accentIndigo = [99, 102, 241];
+    doc.setDrawColor(...accentIndigo);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, W-margin, y);
+    y += 5;
+    text('6. VORAUSSETZUNGEN', margin, y, { size:11, color:accentIndigo, weight:'bold' });
+    y += 5;
+    doc.setFontSize(8.5);
+    doc.setTextColor(...colors.text2);
+    doc.setFont('helvetica','normal');
+    doc.text('Diese Tools/Daten werden benoetigt, um weitere Use Cases zu ermoeglichen:', margin, y);
+    y += 8;
+
+    groups.forEach(group => {
+      let availText = '';
+      const avail = group.available;
+      if (avail === true || avail === 'true' || avail === 'ja' || avail === 'yes' || avail === 'verfügbar') availText = 'verfügbar';
+      else if (avail === false || avail === 'false' || avail === 'nein' || avail === 'no' || avail === 'nicht verfügbar') availText = 'nicht verfügbar';
+      else if (avail === 'in Planung' || avail === 'planned' || avail === 'geplant') availText = 'in Planung';
+      else if (avail != null) availText = String(avail);
+      else availText = 'in Planung';
+
+      const ucLine = group.ucs.map(uc => `${uc.id} ${uc.title}`).join(', ');
+      const ucWrapped = doc.splitTextToSize('Ermoeglicht: ' + ucLine, contentW - 8);
+      const owner = enablementOwners[group.tool] || '';
+      const cardH = 6 + 6 + ucWrapped.length * 4.5 + (owner ? 5 : 0) + 6;
+      checkY(cardH);
+      fillRect(margin, y, contentW, cardH, [22,26,52]);
+
+      let cy = y + 6;
+      doc.setFontSize(9.5);
+      doc.setTextColor(...accentIndigo);
+      doc.setFont('helvetica','bold');
+      doc.text('* ' + group.tool, margin + 4, cy);
+      // availability badge
+      doc.setFontSize(7.5);
+      doc.setTextColor(...colors.text2);
+      doc.setFont('helvetica','normal');
+      const toolTw = doc.getTextWidth('* ' + group.tool);
+      doc.text('(' + availText + ')', margin + 4 + toolTw + 2, cy);
+      cy += 5.5;
+
+      doc.setFontSize(8);
+      doc.setTextColor(...colors.text2);
+      doc.setFont('helvetica','normal');
+      ucWrapped.forEach(l => { doc.text(l, margin + 4, cy); cy += 4.5; });
+
+      if (owner) {
+        doc.setFontSize(8);
+        doc.setTextColor(...colors.text3);
+        doc.text('Verantwortlich: ' + owner, margin + 4, cy);
+      }
+      y += cardH + 4;
+    });
+    y += 4;
+  })();
+
   // Decision log
   y += 8;
   checkY(30);
@@ -869,7 +1111,7 @@ function exportPDF() {
   doc.setLineWidth(0.3);
   doc.line(margin, y, W-margin, y);
   y += 5;
-  text('6. ENTSCHEIDUNGSPROTOKOLL', margin, y, { size:11, color:colors.text3, weight:'bold' });
+  text('7. ENTSCHEIDUNGSPROTOKOLL', margin, y, { size:11, color:colors.text3, weight:'bold' });
   y += 8;
 
   const ampelLabels2 = { green:'Freigegeben', yellow:'Bedingt freigegeben', red:'Nicht empfohlen', deferred:'Auf dem Radar' };

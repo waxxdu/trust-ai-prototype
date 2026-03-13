@@ -603,7 +603,7 @@ const STEP_DEFS = [
   },
   {
     id: 'data',
-    label: 'Daten & Vertraulichkeit',
+    label: 'Daten & Datenschutz',
     alwaysShow: true,
     questions: [
       {
@@ -617,14 +617,6 @@ const STEP_DEFS = [
         ]
       },
       {
-        id: "q_data_available", text: "Sind die benötigten Daten vollständig und aktuell verfügbar?", type: "single",
-        options: [
-          { value:"yes", label:"Ja, vollständig und aktuell" },
-          { value:"partial", label:"Teilweise – Lücken vorhanden" },
-          { value:"no", label:"Nein, Daten fehlen oder sind veraltet" }
-        ]
-      },
-      {
         id: "q_data_management",
         text: "Wie hoch ist der Aufwand für KI-Readiness der Daten (Bereinigung, Aufbereitung, Zugang)?",
         hint: "Bezieht sich auf Zeit und Kosten, die nötig sind, um Daten KI-tauglich zu machen.",
@@ -635,20 +627,7 @@ const STEP_DEFS = [
           { value: "high",   label: "Hoch – erheblicher Aufwand für Bereinigung oder Zugang", flag: "flag_data_readiness" },
           { value: "unknown", label: "Unbekannt – noch nicht bewertet" }
         ]
-      }
-    ]
-  },
-  {
-    id: 'data_privacy',
-    label: 'Datenschutz',
-    // Only show if personal_data or customer_data selected AND a tool is available
-    condition: () => {
-      const dt = currentAnswers['q_data_types'] || [];
-      const toolAnswer = currentAnswers['q_tool_available'];
-      if (toolAnswer === 'no') return false; // no tool → AVV irrelevant
-      return dt.includes('personal_data') || dt.includes('customer_data');
-    },
-    questions: [
+      },
       {
         id: "q_avv", text: "Gibt es eine AVV mit dem Tool-Anbieter?",
         hint: "Erforderlich, weil personenbezogene oder Kundendaten verarbeitet werden.",
@@ -657,7 +636,14 @@ const STEP_DEFS = [
           { value:"yes", label:"Ja, AVV liegt vor" },
           { value:"unclear", label:"Unklar – muss geprüft werden", flag:"flag_avv_unclear" },
           { value:"no", label:"Nein, keine AVV vorhanden", flag:"flag_no_avv" }
-        ]
+        ],
+        // Only show if personal_data or customer_data selected AND a tool is available
+        condition: () => {
+          const dt = currentAnswers['q_data_types'] || [];
+          const toolAnswer = currentAnswers['q_tool_available'];
+          if (toolAnswer === 'no') return false;
+          return dt.includes('personal_data') || dt.includes('customer_data');
+        }
       }
     ]
   },
@@ -666,15 +652,6 @@ const STEP_DEFS = [
     label: 'Verantwortung',
     alwaysShow: true,
     questions: [
-      {
-        id: "q_decision_criticality", text: "Wie kritisch sind die Entscheidungen, die auf KI-Ergebnissen basieren?", type: "single",
-        options: [
-          { value:"low", label:"Niedrig – Fehler sind leicht korrigierbar" },
-          { value:"medium", label:"Mittel – Fehler verursachen Aufwand oder Verzögerungen" },
-          { value:"high", label:"Hoch – Fehler haben erhebliche Konsequenzen" },
-          { value:"critical", label:"Kritisch – Fehler können Projekterfolg oder Sicherheit gefährden" }
-        ]
-      },
       {
         id: "q_responsible_person", text: "Wer ist verantwortlich für diesen Use Case im Projekt?",
         type: "text", placeholder: "Name oder Rolle (z.B. Projektleiter, Testverantwortlicher)"
@@ -700,7 +677,7 @@ const STEP_DEFS = [
         // Hide if no personal data involved
         condition: () => {
           const dt = currentAnswers['q_data_types'] || [];
-          return dt.includes('personal_data') || dt.includes('customer_data') || dt.length === 0;
+          return dt.includes('personal_data') || dt.includes('customer_data');
         }
       },
       {
@@ -722,28 +699,6 @@ const STEP_DEFS = [
           { value:"defense", label:"Verteidigung / Rüstung", flag:"flag_regulated_defense" },
           { value:"medical_devices", label:"Medizinprodukte (MDR, FDA)", flag:"flag_regulated_medical" },
           { value:"automotive", label:"Automotive / funktionale Sicherheit", flag:"flag_regulated_automotive" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'compliance',
-    label: 'Compliance-Details',
-    // Only show if a regulated industry was selected (not "none")
-    condition: () => {
-      const ri = currentAnswers['q_regulated_industry'] || [];
-      return ri.length > 0 && !ri.includes('none');
-    },
-    questions: [
-      {
-        id: "q_compliance_documentation",
-        text: "Ist der KI-Einsatz in diesem Kontext dokumentations- und nachweispflichtig?",
-        type: "single",
-        options: [
-          { value:"yes", label:"Ja – Audit-Trail und Dokumentation erforderlich" },
-          { value:"partial", label:"Teilweise – bestimmte Aspekte müssen dokumentiert werden" },
-          { value:"no", label:"Nein – keine formale Dokumentationspflicht" },
-          { value:"unclear", label:"Unklar – muss mit Compliance geklärt werden" }
         ]
       }
     ]
