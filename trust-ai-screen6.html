@@ -46,6 +46,16 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
 
+  /* MANIFEST OUTDATED BANNER */
+  .manifest-outdated-banner {
+    background: rgba(234,179,8,.10); border-bottom: 1px solid rgba(234,179,8,.3);
+    padding: 12px 32px; display: flex; align-items: center; gap: 12px;
+    font-size: 13px; color: var(--text);
+  }
+  .manifest-outdated-banner-icon { font-size: 18px; flex-shrink: 0; }
+  .manifest-outdated-banner-text { flex: 1; }
+  .manifest-outdated-banner strong { color: var(--yellow); }
+
   /* TOPBAR */
   .topbar {
     position: sticky; top: 0; z-index: 100;
@@ -219,6 +229,12 @@
     <button class="btn btn-ghost" onclick="window.location.href='trust-ai-screen5.html'">← Bewertung</button>
     <button class="btn btn-ghost" onclick="window.location.href='trust-ai-screen7.html'">Dashboard →</button>
   </div>
+</div>
+
+<!-- MANIFEST OUTDATED BANNER -->
+<div id="manifestOutdatedBanner" class="manifest-outdated-banner" style="display:none;">
+  <div class="manifest-outdated-banner-icon">⚠️</div>
+  <div class="manifest-outdated-banner-text"><strong>Manifest veraltet</strong> – Bewertungen oder Projektdaten wurden geändert. PDF neu exportieren, um das Manifest zu aktualisieren.</div>
 </div>
 
 <!-- HERO -->
@@ -408,12 +424,14 @@ let assessments = {};
 let shortlist = [];
 let summaryText = '';
 let editMode = false;
+let ucOwners = {};
 
 function loadData() {
   try {
     project = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
     assessments = project.assessments_map || {};
     shortlist = project.shortlist || [];
+    ucOwners = project.uc_owners || {};
     if (!shortlist.length) {
       // Demo data
       assessments = {
@@ -431,8 +449,16 @@ function loadData() {
         { use_case_id:"UC-04", priority:5, sofort:false, status:"yellow" }
       ];
       project = { name:"Musterprojekt Alpha", description:"Digitalisierung der Projektmanagement-Prozesse", pm_email:"pm@example.de", created_at: new Date().toISOString() };
+      ucOwners = { "UC-02":"Projektleiterin Schmidt", "UC-01":"PM-Team", "UC-15":"Risikomanager Müller", "UC-10":"PM-Team", "UC-04":"Projektleiterin Schmidt" };
     }
   } catch(e) { project = {}; assessments = {}; shortlist = []; }
+  // Show manifest outdated banner if flag is set
+  try {
+    const banner = document.getElementById('manifestOutdatedBanner');
+    if (banner && project.manifest_needs_refresh) {
+      banner.style.display = 'flex';
+    }
+  } catch(e) {}
 }
 
 // ────────────────────────────────────────────────
@@ -613,6 +639,8 @@ function renderUCGrid(result, counts, icon) {
     const dataTypes = (a.answers?.q_data_types || []);
     const dataTypesHtml = dataTypes.length ? `<div class="uc-measures"><strong>Datenarten</strong>${dataTypes.map(d => DATA_TYPE_LABELS[d] || d).join(' · ')}</div>` : '';
 
+    const ownerVal = ucOwners[s.use_case_id] || '';
+    const safeUcId = s.use_case_id.replace(/[^a-zA-Z0-9]/g, '_');
     return `<div class="uc-card ${result}">
       <div class="uc-card-top">
         <div class="uc-ampel">${icon}</div>
@@ -624,12 +652,22 @@ function renderUCGrid(result, counts, icon) {
         ${s.sofort ? `<span class="tag tag-sofort">⚡ Sofort</span>` : ''}
         ${uc.ethical ? `<span class="tag tag-eth">⚠ Ethik</span>` : ''}
         ${uc.regulated ? `<span class="tag tag-reg">§ Reguliert</span>` : ''}
-        ${a.responsible_person ? `<span class="tag" style="background:var(--surface2);color:var(--text2);">👤 ${a.responsible_person}</span>` : ''}
       </div>
       ${dataTypesHtml}
       ${measures ? `<div class="uc-measures"><strong>Maßnahmen</strong>${measures}</div>` : ''}
       ${flagsHtml}
       ${a.notes ? `<div class="uc-notes">${a.notes}</div>` : ''}
+      <div class="enablement-owner-row" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.07);">
+        <span class="enablement-owner-label">Verantwortlich:</span>
+        <input
+          class="enablement-owner-input"
+          type="text"
+          placeholder="Name oder Rolle eingeben…"
+          value="${ownerVal.replace(/"/g, '&quot;')}"
+          data-ucid="${s.use_case_id}"
+          oninput="saveUCOwner(this)"
+        />
+      </div>
     </div>`;
   }).join('');
 }
@@ -739,9 +777,21 @@ function saveEnablementOwner(input) {
     if (!stored.enablement_owners) stored.enablement_owners = {};
     stored.enablement_owners[toolName] = input.value;
     localStorage.setItem('trust_ai_project', JSON.stringify(stored));
-    // Also update in-memory project
     if (!project.enablement_owners) project.enablement_owners = {};
     project.enablement_owners[toolName] = input.value;
+  } catch(e) {}
+}
+
+function saveUCOwner(input) {
+  const ucId = input.getAttribute('data-ucid');
+  if (!ucId) return;
+  ucOwners[ucId] = input.value;
+  try {
+    const stored = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    if (!stored.uc_owners) stored.uc_owners = {};
+    stored.uc_owners[ucId] = input.value;
+    localStorage.setItem('trust_ai_project', JSON.stringify(stored));
+    project.uc_owners = stored.uc_owners;
   } catch(e) {}
 }
 
@@ -774,6 +824,21 @@ function copyEmail() {
 // ────────────────────────────────────────────────
 
 function exportPDF() {
+  // Reset manifest_needs_refresh flag
+  try {
+    const stored = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    stored.manifest_needs_refresh = false;
+    localStorage.setItem('trust_ai_project', JSON.stringify(stored));
+    project.manifest_needs_refresh = false;
+    // Also update projects array
+    const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
+    const pidx = projects.findIndex(x => x.id === stored.id);
+    if (pidx >= 0) { projects[pidx].manifest_needs_refresh = false; localStorage.setItem('trust_ai_projects', JSON.stringify(projects)); }
+    // Hide banner
+    const banner = document.getElementById('manifestOutdatedBanner');
+    if (banner) banner.style.display = 'none';
+  } catch(e) {}
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
   const W = 210, H = 297;

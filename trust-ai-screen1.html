@@ -439,8 +439,8 @@
   </div>
 
   <!-- Card 3: Industry -->
-  <div class="card">
-    <div class="card-title">Industrie & Regulierung <span style="color:var(--text-tertiary);font-size:11px;font-weight:400;text-transform:none;">(optional, Mehrfachauswahl)</span></div>
+  <div class="card" id="card-industry">
+    <div class="card-title">Industrie & Regulierung <span class="required">*</span> <span style="color:var(--text-tertiary);font-size:11px;font-weight:400;text-transform:none;">(Mehrfachauswahl)</span></div>
     <div class="chip-group" id="industry-chips">
       <div class="chip" data-value="pharma" onclick="toggleChip(this)">
         <svg viewBox="0 0 24 24"><path d="M8 3H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/><rect x="8" y="1" width="8" height="4" rx="1"/></svg>
@@ -472,9 +472,10 @@
       </div>
       <div class="chip" data-value="none" onclick="toggleChipExclusive(this)">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        Keine spezifische Regulierung
+        Keine spezifischen Anforderungen
       </div>
     </div>
+    <div class="field-error" id="err-industry" style="margin-top:10px;">Bitte wähle eine Industrie oder "Keine spezifischen Anforderungen".</div>
   </div>
 
   <!-- Card 4: Tool Inventory (collapsible) -->
@@ -565,7 +566,7 @@ ChatGPT, OpenAI, "UC-05; UC-10", Keine PB-Daten, Nein, Pilotfreigabe</div>
 
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  Projekt wurde gespeichert!
+  <span>Projekt wurde gespeichert!</span>
 </div>
 
 <script>
@@ -597,15 +598,20 @@ ChatGPT, OpenAI, "UC-05; UC-10", Keine PB-Daten, Nein, Pilotfreigabe</div>
   }
 
   // ── Industry Chips ──
+  function clearIndustryError() {
+    document.getElementById('card-industry').classList.remove('has-error');
+    document.getElementById('err-industry').style.display = 'none';
+  }
   function toggleChip(el) {
     const noneChip = document.querySelector('[data-value="none"]');
     if (noneChip && noneChip.classList.contains('selected')) noneChip.classList.remove('selected');
     el.classList.toggle('selected');
+    if (document.querySelectorAll('#industry-chips .chip.selected').length > 0) clearIndustryError();
   }
   function toggleChipExclusive(el) {
     const wasSelected = el.classList.contains('selected');
     document.querySelectorAll('#industry-chips .chip').forEach(c => c.classList.remove('selected'));
-    if (!wasSelected) el.classList.add('selected');
+    if (!wasSelected) { el.classList.add('selected'); clearIndustryError(); }
   }
 
   // ── Tool Section Toggle ──
@@ -732,6 +738,88 @@ Otter.ai, Otter.ai Inc., "UC-02; UC-06", Nur für interne Meetings, Ja, DSGVO-ko
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
+  // ── Edit Mode ──
+  let editProjectId = null;
+
+  function initEditMode() {
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get('edit');
+    if (!editId) return;
+
+    editProjectId = editId;
+
+    // Update UI for edit mode
+    document.querySelector('.page-eyebrow').innerHTML = `
+      <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Projekt bearbeiten
+    `;
+    document.querySelector('.page-title').textContent = 'Projekt bearbeiten';
+    document.querySelector('.page-subtitle').textContent = 'Ändere die Projektdetails. Tool-Inventar-Änderungen markieren das Manifest als veraltet.';
+    document.getElementById('submit-btn').innerHTML = `Änderungen speichern <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`;
+    document.querySelector('.nav-step-indicator').textContent = 'BEARBEITEN';
+
+    // Load existing project data
+    loadProjectForEdit(editId);
+
+    // Scroll to tools section if requested
+    if (params.get('scroll') === 'tools') {
+      setTimeout(() => {
+        const toolToggle = document.getElementById('toolToggle');
+        if (toolToggle) {
+          toolToggle.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Auto-open tool section
+          if (!toolSectionOpen) toggleToolSection();
+        }
+      }, 400);
+    }
+  }
+
+  function loadProjectForEdit(id) {
+    let p = null;
+    try {
+      const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
+      p = projects.find(x => x.id === id);
+      if (!p) {
+        const single = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+        if (single.id === id) p = single;
+      }
+    } catch(e) {}
+    if (!p) return;
+
+    // Fill basics
+    document.getElementById('project-name').value = p.name || '';
+    document.getElementById('project-desc').value = p.description || '';
+    document.getElementById('pm-email').value = p.pm_email || '';
+    updateChar('project-name', 'name-count', 80);
+    updateChar('project-desc', 'desc-count', 400);
+
+    // Fill type
+    if (p.project_type) {
+      const typeEl = document.querySelector(`.type-card[data-type="${p.project_type}"]`);
+      if (typeEl) selectType(typeEl);
+    }
+
+    // Fill industry
+    if (p.industry && p.industry.length) {
+      p.industry.forEach(v => {
+        const chip = document.querySelector(`#industry-chips .chip[data-value="${v}"]`);
+        if (chip) {
+          if (v === 'none') toggleChipExclusive(chip);
+          else { chip.classList.add('selected'); clearIndustryError(); }
+        }
+      });
+    }
+
+    // Fill tool inventory
+    if (p.tool_inventory && p.tool_inventory.length) {
+      parsedTools = p.tool_inventory;
+      renderToolList();
+      updateToolBadge();
+      if (!toolSectionOpen) toggleToolSection();
+      selectToolOption('yes');
+    }
+  }
+
   // ── Submit ──
   function handleSubmit() {
     let valid = true;
@@ -743,33 +831,81 @@ Otter.ai, Otter.ai Inc., "UC-02; UC-06", Nur für interne Meetings, Ja, DSGVO-ko
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('group-email').classList.add('has-error'); valid = false; }
     const type = document.querySelector('.type-card.selected');
     if (!type) { document.getElementById('err-type').style.display = 'block'; valid = false; }
+    const industries = [];
+    document.querySelectorAll('#industry-chips .chip.selected').forEach(c => industries.push(c.dataset.value));
+    if (!industries.length) { document.getElementById('card-industry').classList.add('has-error'); document.getElementById('err-industry').style.display = 'block'; valid = false; }
     if (!valid) {
       document.querySelector('.has-error, [style*="display: block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    const industries = [];
-    document.querySelectorAll('#industry-chips .chip.selected').forEach(c => industries.push(c.dataset.value));
-    const project = {
-      id: crypto.randomUUID(),
-      name, description: desc, pm_email: email,
-      project_type: type.dataset.type, industry: industries,
-      tool_inventory: parsedTools,
-      created_at: new Date().toISOString(),
-      status: 'discovery'
-    };
-    localStorage.setItem('trust_ai_project', JSON.stringify(project));
-    const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
-    projects.push(project);
-    localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
-    showToast();
-    setTimeout(() => { window.location.href = 'trust-ai-screen3.html'; }, 1100);
+
+    if (editProjectId) {
+      // Edit mode: update existing project
+      handleEditSave(name, desc, email, type.dataset.type, industries);
+    } else {
+      // Create mode: new project
+      const project = {
+        id: crypto.randomUUID(),
+        name, description: desc, pm_email: email,
+        project_type: type.dataset.type, industry: industries,
+        tool_inventory: parsedTools,
+        created_at: new Date().toISOString(),
+        status: 'discovery'
+      };
+      localStorage.setItem('trust_ai_project', JSON.stringify(project));
+      const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
+      projects.push(project);
+      localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
+      showToast('Projekt wurde gespeichert!');
+      setTimeout(() => { window.location.href = 'trust-ai-screen3.html'; }, 1100);
+    }
   }
 
-  function showToast() {
+  function handleEditSave(name, desc, email, newType, newIndustry) {
+    try {
+      const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
+      const idx = projects.findIndex(x => x.id === editProjectId);
+      let p = idx >= 0 ? projects[idx] : JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+
+      const oldType = p.project_type;
+      const oldIndustry = JSON.stringify([...(p.industry||[])].sort());
+      const newIndustrySorted = JSON.stringify([...newIndustry].sort());
+
+      const typeChanged = newType !== oldType;
+      const industryChanged = newIndustrySorted !== oldIndustry;
+
+      p.name = name;
+      p.description = desc;
+      p.pm_email = email;
+      p.project_type = newType;
+      p.industry = newIndustry;
+      p.tool_inventory = parsedTools;
+      p.manifest_needs_refresh = true; // any change marks manifest as outdated
+
+      if (industryChanged) p.assessments_need_industry_review = true;
+
+      if (idx >= 0) {
+        projects[idx] = p;
+        localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
+      }
+      localStorage.setItem('trust_ai_project', JSON.stringify(p));
+      showToast('Änderungen gespeichert!');
+      setTimeout(() => { window.location.href = 'trust-ai-screen7.html'; }, 1100);
+    } catch(e) {
+      showToast('Fehler beim Speichern.');
+    }
+  }
+
+  function showToast(msg) {
     const toast = document.getElementById('toast');
+    const span = toast.querySelector('span') || toast;
+    if (toast.querySelector('span')) toast.querySelector('span').textContent = msg || 'Gespeichert!';
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3000);
   }
+
+  // Initialize edit mode on load
+  initEditMode();
 
   // ── Theme Toggle ──
   (function() {

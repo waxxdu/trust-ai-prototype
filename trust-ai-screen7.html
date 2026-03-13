@@ -130,7 +130,7 @@
   /* MODALS */
   .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:all .2s;}
   .modal-backdrop.open{opacity:1;visibility:visible;}
-  .modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:28px;width:100%;max-width:480px;box-shadow:0 24px 64px rgba(0,0,0,.5);transform:scale(.95);transition:transform .2s;}
+  .modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.5);transform:scale(.95);transition:transform .2s;}
   .modal-backdrop.open .modal-box{transform:scale(1);}
   .modal-title{font-size:18px;font-weight:700;margin-bottom:6px;}
   .modal-sub{font-size:13px;color:var(--text2);margin-bottom:20px;}
@@ -148,6 +148,31 @@
   .modal-btn-delete{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
   .modal-btn-delete:hover{background:var(--red);color:#fff;}
   .delete-warning{background:var(--red-bg);border:1px solid var(--red-border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--red);margin-bottom:16px;}
+
+  /* STORAGE BANNER */
+  .storage-banner{background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.25);border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;margin:12px 32px 0;}
+  .storage-banner-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+  .storage-banner-text{font-size:13px;color:var(--text2);flex:1;line-height:1.5;}
+  .storage-banner-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:0;line-height:1;flex-shrink:0;margin-top:-1px;}
+  .storage-banner-close:hover{color:var(--text);}
+
+  /* MANIFEST OUTDATED BADGE */
+  .badge-outdated{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(234,179,8,.15);color:var(--yellow);border:1px solid rgba(234,179,8,.3);margin-left:6px;vertical-align:middle;}
+
+  /* TYPE GRID IN MODAL */
+  .modal-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+  .modal-type-card{display:flex;align-items:center;gap:10px;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .15s;background:var(--surface2);user-select:none;}
+  .modal-type-card:hover{border-color:var(--border2);}
+  .modal-type-card.selected{border-color:var(--accent);background:rgba(99,102,241,.08);}
+  .modal-type-icon{font-size:18px;flex-shrink:0;}
+  .modal-type-label{font-size:13px;font-weight:500;color:var(--text);}
+  .modal-type-desc{font-size:11px;color:var(--text3);}
+
+  /* CHIP GROUP IN MODAL */
+  .modal-chip-group{display:flex;flex-wrap:wrap;gap:7px;}
+  .modal-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:100px;border:1.5px solid var(--border);background:var(--surface2);font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;user-select:none;}
+  .modal-chip:hover{border-color:var(--border2);}
+  .modal-chip.selected{border-color:var(--accent);background:rgba(99,102,241,.08);color:var(--accent2);}
 </style>
 </head>
 <body>
@@ -162,6 +187,13 @@
     <button id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus" style="background:var(--surface,#1a1d27);border:1px solid var(--border,#2e3350);border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;">☀️</button>
     <button class="btn btn-primary" onclick="newProject()">+ Neues Projekt</button>
   </div>
+</div>
+
+<!-- STORAGE BANNER -->
+<div id="storageBanner" class="storage-banner" style="display:none;">
+  <div class="storage-banner-icon">💾</div>
+  <div class="storage-banner-text">Alle Projektdaten werden ausschließlich in diesem Browser gespeichert. Kein Server, kein Account — bei Browser-Reset gehen Daten verloren.</div>
+  <button class="storage-banner-close" onclick="dismissStorageBanner()" title="Schließen">×</button>
 </div>
 
 <!-- HERO -->
@@ -240,7 +272,7 @@ function loadProjects() {
     projects = [
       {
         id:'demo1', name:'Digitalisierung PM-Prozesse', description:'KI-Unterstützung für alle PM-Kernaufgaben',
-        pm_email:'pm@example.de', status:'manifest',
+        pm_email:'pm@example.de', status:'manifest', project_type:'it', industry:['none'],
         created_at: new Date(Date.now()-14*86400000).toISOString(),
         assessments_map:{
           "UC-02":{ result:"green" }, "UC-01":{ result:"green" },
@@ -250,18 +282,20 @@ function loadProjects() {
       },
       {
         id:'demo2', name:'Produktentwicklung 2025', description:'KI für Testing und Qualitätssicherung',
-        pm_email:'pm2@example.de', status:'assessment',
+        pm_email:'pm2@example.de', status:'assessment', project_type:'product', industry:['none'],
         created_at: new Date(Date.now()-5*86400000).toISOString(),
         assessments_map:{ "UC-18":{ result:"green" } },
         shortlist:[{use_case_id:"UC-18"},{use_case_id:"UC-20"},{use_case_id:"UC-15"}]
       },
       {
         id:'demo3', name:'Agile Transformation Q3', description:'',
-        pm_email:'pm3@example.de', status:'discovery',
+        pm_email:'pm3@example.de', status:'discovery', project_type:'org', industry:['none'],
         created_at: new Date(Date.now()-2*86400000).toISOString(),
         assessments_map:{}, shortlist:[]
       }
     ];
+    // Persist demo data so edit modal can find them
+    localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
   }
   return projects;
 }
@@ -378,14 +412,17 @@ function render() {
           <button class="kebab-btn" onclick="toggleKebab(event,'${p.id}')" title="Optionen">⋯</button>
           <div class="kebab-menu" id="kebab-${p.id}">
             <div class="kebab-item" onclick="openEdit(event,'${p.id}')">✏️ Bearbeiten</div>
+            <div class="kebab-item" onclick="openToolsEdit(event,'${p.id}')">🔧 Tools bearbeiten</div>
             <div class="kebab-item" onclick="openProject('${p.id}','${nextScreen}')">▶️ Fortsetzen</div>
             <div class="kebab-item" onclick="openManifest('${p.id}')">📄 Manifest</div>
+            <div class="kebab-item" onclick="openRestart(event,'${p.id}')">↺ Bewertung neu starten</div>
             <div class="kebab-item danger" onclick="openDelete(event,'${p.id}')">🗑 Löschen</div>
           </div>
         </div>
       </div>
       <div class="proj-meta">
         <span class="tag tag-status-${p.status}">${STATUS_LABELS[p.status]||p.status}</span>
+        ${(p.manifest_needs_refresh && (p.status==='manifest'||p.status==='complete'))?`<span class="badge-outdated">⚠ Manifest veraltet</span>`:''}
         ${p.pm_email?`<span class="tag" style="background:var(--surface2);color:var(--text2);">📧 ${p.pm_email}</span>`:''}
         <span class="tag" style="background:var(--surface2);color:var(--text3);">📅 ${created}</span>
       </div>
@@ -439,6 +476,27 @@ function newProject() {
 
 render();
 
+// ─── Storage Banner ────────────────────────────────────────────────────────
+(function() {
+  try {
+    const notices = JSON.parse(localStorage.getItem('trust_ai_notices') || '[]');
+    if (!notices.includes('storage_warning')) {
+      document.getElementById('storageBanner').style.display = 'flex';
+    }
+  } catch(e) {
+    document.getElementById('storageBanner').style.display = 'flex';
+  }
+})();
+
+function dismissStorageBanner() {
+  document.getElementById('storageBanner').style.display = 'none';
+  try {
+    const notices = JSON.parse(localStorage.getItem('trust_ai_notices') || '[]');
+    if (!notices.includes('storage_warning')) notices.push('storage_warning');
+    localStorage.setItem('trust_ai_notices', JSON.stringify(notices));
+  } catch(e) {}
+}
+
 // ─── Sort ──────────────────────────────────────────────────────────────────
 function setSortOrder(val) {
   currentSort = val;
@@ -465,33 +523,133 @@ function openEdit(e, id) {
   e.stopPropagation();
   if (openKebab) { openKebab.classList.remove('open'); openKebab = null; }
   const projects = JSON.parse(localStorage.getItem('trust_ai_projects')||'[]');
-  const p = projects.find(x => x.id === id);
+  let p = projects.find(x => x.id === id);
+  if (!p) {
+    // Check current single project
+    try { const s = JSON.parse(localStorage.getItem('trust_ai_project')||'{}'); if (s.id===id) p=s; } catch(e){}
+  }
   if (!p) return;
   editId = id;
   document.getElementById('editName').value = p.name || '';
   document.getElementById('editDesc').value = p.description || '';
   document.getElementById('editEmail').value = p.pm_email || '';
+  // Pre-fill type
+  document.querySelectorAll('.modal-type-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.type === (p.project_type || ''));
+  });
+  // Pre-fill industry chips
+  const pIndustry = p.industry || [];
+  document.querySelectorAll('.modal-chip[data-value]').forEach(c => {
+    c.classList.toggle('selected', pIndustry.includes(c.dataset.value));
+  });
   document.getElementById('editModal').classList.add('open');
 }
+
+function selectModalType(el) {
+  document.querySelectorAll('.modal-type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleModalChip(el) {
+  const noneChip = document.querySelector('.modal-chip[data-value="none"]');
+  if (noneChip && noneChip.classList.contains('selected') && el !== noneChip) noneChip.classList.remove('selected');
+  el.classList.toggle('selected');
+}
+
+function toggleModalChipExclusive(el) {
+  const wasSelected = el.classList.contains('selected');
+  document.querySelectorAll('.modal-chip').forEach(c => c.classList.remove('selected'));
+  if (!wasSelected) el.classList.add('selected');
+}
+
 function saveEdit() {
   const projects = JSON.parse(localStorage.getItem('trust_ai_projects')||'[]');
   const idx = projects.findIndex(x => x.id === editId);
   if (idx < 0) return;
-  projects[idx].name = document.getElementById('editName').value.trim() || projects[idx].name;
-  projects[idx].description = document.getElementById('editDesc').value.trim();
-  projects[idx].pm_email = document.getElementById('editEmail').value.trim();
+  const p = projects[idx];
+
+  const newName = document.getElementById('editName').value.trim() || p.name;
+  const newDesc = document.getElementById('editDesc').value.trim();
+  const newEmail = document.getElementById('editEmail').value.trim();
+  const typeEl = document.querySelector('.modal-type-card.selected');
+  const newType = typeEl ? typeEl.dataset.type : p.project_type;
+  const newIndustry = [...document.querySelectorAll('.modal-chip.selected')].map(c => c.dataset.value);
+
+  const typeChanged = newType !== p.project_type;
+  const industryChanged = JSON.stringify(newIndustry.sort()) !== JSON.stringify([...(p.industry||[])].sort());
+
+  p.name = newName;
+  p.description = newDesc;
+  p.pm_email = newEmail;
+  p.project_type = newType;
+  p.industry = newIndustry.length ? newIndustry : (p.industry || []);
+
+  // Any field change marks manifest as potentially outdated
+  p.manifest_needs_refresh = true;
+  if (industryChanged) {
+    p.assessments_need_industry_review = true;
+  }
+
+  projects[idx] = p;
   localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
-  // Also update current project if same
   try {
     const cur = JSON.parse(localStorage.getItem('trust_ai_project')||'{}');
-    if (cur.id === editId) localStorage.setItem('trust_ai_project', JSON.stringify(projects[idx]));
+    if (cur.id === editId) localStorage.setItem('trust_ai_project', JSON.stringify(p));
   } catch(e) {}
   closeEdit();
   render();
 }
+
 function closeEdit() {
   document.getElementById('editModal').classList.remove('open');
   editId = null;
+}
+
+// ─── Tools bearbeiten ──────────────────────────────────────────────────────
+function openToolsEdit(e, id) {
+  e.stopPropagation();
+  if (openKebab) { openKebab.classList.remove('open'); openKebab = null; }
+  const projects = JSON.parse(localStorage.getItem('trust_ai_projects')||'[]');
+  const p = projects.find(x => x.id === id);
+  if (p) {
+    localStorage.setItem('trust_ai_project', JSON.stringify(p));
+  }
+  window.location.href = 'trust-ai-screen1.html?edit=' + encodeURIComponent(id) + '&scroll=tools';
+}
+
+// ─── Bewertung neu starten ─────────────────────────────────────────────────
+let restartId = null;
+function openRestart(e, id) {
+  e.stopPropagation();
+  if (openKebab) { openKebab.classList.remove('open'); openKebab = null; }
+  const projects = JSON.parse(localStorage.getItem('trust_ai_projects')||'[]');
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+  restartId = id;
+  document.getElementById('restartProjectName').textContent = p.name;
+  document.getElementById('restartModal').classList.add('open');
+}
+function confirmRestart() {
+  const projects = JSON.parse(localStorage.getItem('trust_ai_projects')||'[]');
+  const idx = projects.findIndex(x => x.id === restartId);
+  if (idx >= 0) {
+    projects[idx].assessments_map = {};
+    projects[idx].shortlist = [];
+    projects[idx].status = 'discovery';
+    projects[idx].manifest_needs_refresh = false;
+    projects[idx].assessments_need_industry_review = false;
+    localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
+    try {
+      const cur = JSON.parse(localStorage.getItem('trust_ai_project')||'{}');
+      if (cur.id === restartId) localStorage.setItem('trust_ai_project', JSON.stringify(projects[idx]));
+    } catch(e) {}
+  }
+  closeRestart();
+  render();
+}
+function closeRestart() {
+  document.getElementById('restartModal').classList.remove('open');
+  restartId = null;
 }
 
 // ─── Delete ────────────────────────────────────────────────────────────────
@@ -560,7 +718,7 @@ function toggleTheme() {
 <div class="modal-backdrop" id="editModal">
   <div class="modal-box">
     <div class="modal-title">Projekt bearbeiten</div>
-    <div class="modal-sub">Ändere die Grundinfos dieses Projekts.</div>
+    <div class="modal-sub">Ändere die Grundinfos dieses Projekts. Änderungen an Typ oder Industrie markieren das Manifest als veraltet.</div>
     <div class="modal-field">
       <label>Projektname</label>
       <input class="modal-input" id="editName" type="text" placeholder="Projektname" maxlength="80"/>
@@ -572,6 +730,40 @@ function toggleTheme() {
     <div class="modal-field">
       <label>E-Mail Projektleiter</label>
       <input class="modal-input" id="editEmail" type="email" placeholder="name@unternehmen.de"/>
+    </div>
+    <div class="modal-field">
+      <label>Projektart</label>
+      <div class="modal-type-grid">
+        <div class="modal-type-card" data-type="it" onclick="selectModalType(this)">
+          <div class="modal-type-icon">🖥️</div>
+          <div><div class="modal-type-label">IT-Projekt</div><div class="modal-type-desc">Software, Infra, Transformation</div></div>
+        </div>
+        <div class="modal-type-card" data-type="org" onclick="selectModalType(this)">
+          <div class="modal-type-icon">👥</div>
+          <div><div class="modal-type-label">Org-Projekt</div><div class="modal-type-desc">Change, Restrukturierung</div></div>
+        </div>
+        <div class="modal-type-card" data-type="product" onclick="selectModalType(this)">
+          <div class="modal-type-icon">📦</div>
+          <div><div class="modal-type-label">Produktentwicklung</div><div class="modal-type-desc">Neue Produkte, Features</div></div>
+        </div>
+        <div class="modal-type-card" data-type="other" onclick="selectModalType(this)">
+          <div class="modal-type-icon">💡</div>
+          <div><div class="modal-type-label">Sonstiges</div><div class="modal-type-desc">Beratung, Strategie, Forschung</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Industrie & Regulierung <span style="color:var(--text3);font-size:10px;text-transform:none;font-weight:400;">(Mehrfachauswahl)</span></label>
+      <div class="modal-chip-group">
+        <div class="modal-chip" data-value="pharma" onclick="toggleModalChip(this)">💊 Pharma / Life Sciences</div>
+        <div class="modal-chip" data-value="finance" onclick="toggleModalChip(this)">💰 Finanzdienstleistungen</div>
+        <div class="modal-chip" data-value="energy" onclick="toggleModalChip(this)">⚡ Energie / KRITIS</div>
+        <div class="modal-chip" data-value="medical" onclick="toggleModalChip(this)">🏥 Medizinprodukte</div>
+        <div class="modal-chip" data-value="automotive" onclick="toggleModalChip(this)">🚗 Automotive</div>
+        <div class="modal-chip" data-value="defense" onclick="toggleModalChip(this)">🛡️ Verteidigung / Dual Use</div>
+        <div class="modal-chip" data-value="public" onclick="toggleModalChip(this)">🏛️ Öffentlicher Sektor</div>
+        <div class="modal-chip" data-value="none" onclick="toggleModalChipExclusive(this)">✓ Keine spezifischen Anforderungen</div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="modal-btn modal-btn-cancel" onclick="closeEdit()">Abbrechen</button>
@@ -589,6 +781,19 @@ function toggleTheme() {
     <div class="modal-actions">
       <button class="modal-btn modal-btn-cancel" onclick="closeDelete()">Abbrechen</button>
       <button class="modal-btn modal-btn-delete" onclick="confirmDelete()">Endgültig löschen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Restart Modal -->
+<div class="modal-backdrop" id="restartModal">
+  <div class="modal-box">
+    <div class="modal-title">Bewertung neu starten?</div>
+    <div class="delete-warning" style="background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.3);color:var(--yellow);">⚠️ Alle bisherigen Bewertungen und die Shortlist werden zurückgesetzt. Das Projekt bleibt erhalten.</div>
+    <div style="font-size:14px;color:var(--text2);margin-bottom:20px;">Projekt: <strong id="restartProjectName" style="color:var(--text);"></strong></div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" onclick="closeRestart()">Abbrechen</button>
+      <button class="modal-btn modal-btn-save" onclick="confirmRestart()">Neu starten</button>
     </div>
   </div>
 </div>

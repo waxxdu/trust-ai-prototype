@@ -352,6 +352,35 @@
   .completion-stat-label { font-size: 11px; color: var(--text3); }
 
   ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* ── DIRTY INDICATOR ── */
+  .uc-list-dirty { font-size: 9px; color: var(--orange); margin-left: auto; flex-shrink: 0; }
+
+  /* ── SAVE TOAST ── */
+  .toast-s5 {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(60px);
+    background: var(--text); color: var(--bg); padding: 10px 18px; border-radius: 100px;
+    font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast-s5.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── ASSUMPTION BANNER ── */
+  .assumption-banner {
+    background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.20);
+    border-radius: 10px; margin-bottom: 20px; overflow: hidden; font-size: 13px;
+  }
+  .assumption-banner-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; cursor: pointer; color: var(--accent2);
+    font-size: 12px; font-weight: 500; user-select: none;
+  }
+  .assumption-banner-header:hover { background: rgba(99,102,241,0.06); }
+  .assumption-banner-body { padding: 0 14px 12px; }
+  .assumption-banner-body ol { padding-left: 18px; color: var(--text2); line-height: 1.7; }
+  .assumption-banner-body li { margin-bottom: 4px; }
+  .assumption-banner-chevron { width: 14px; height: 14px; stroke: var(--accent2); fill: none; stroke-width: 2; stroke-linecap: round; transition: transform 0.2s; }
 </style>
 </head>
 <body>
@@ -373,7 +402,7 @@
     <div class="topbar-uc-meta" id="topbarUcMeta">–</div>
   </div>
   <div class="topbar-right">
-    <span class="topbar-step-pill" id="topbarStepPill">Schritt 1/4</span>
+    <span class="topbar-step-pill" id="topbarStepPill">Schritt 1/2</span>
     <button id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;padding:0;flex-shrink:0;">☀️</button>
     <button class="topbar-btn topbar-btn-ghost" onclick="deferCurrentUC()">Zurückstellen</button>
   </div>
@@ -402,6 +431,21 @@
       <div class="uc-header-desc" id="ucDesc"></div>
     </div>
 
+    <!-- ASSUMPTION BANNER -->
+    <div class="assumption-banner" id="assumptionBanner">
+      <div class="assumption-banner-header" onclick="toggleAssumptionBanner()">
+        <span>ℹ️ Designentscheidungen dieses Wizards</span>
+        <svg class="assumption-banner-chevron" id="assumptionChevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="assumption-banner-body" id="assumptionBody" style="display:none;">
+        <ol>
+          <li><strong>AVV ist implizit:</strong> Ist ein Tool freigegeben, gilt die AVV als geprüft – sie ist Teil des Tool-Freigabeprozesses.</li>
+          <li><strong>PMs treffen keine Personalentscheidungen:</strong> Direkte Personalentscheidungen (Beförderung, Kündigung) liegen außerhalb des PM-Scopes – die entsprechende Frage entfällt.</li>
+          <li><strong>Regulierung ist Pflicht in Schritt 1:</strong> Regulatorische Anforderungen werden einmalig im Projekt gesetzt und gelten für alle Use Cases.</li>
+        </ol>
+      </div>
+    </div>
+
     <!-- WIZARD HEADER -->
     <div class="wizard-header">
       <div class="wizard-steps" id="wizardSteps"></div>
@@ -425,13 +469,19 @@
   </div>
 </div>
 
+<!-- SAVE TOAST -->
+<div class="toast-s5" id="toastS5">✓ <span id="toastS5Text">Gespeichert</span></div>
+
 <!-- BOTTOM BAR -->
 <div class="bottom-bar" id="bottomBar">
   <div class="bb-left">
     <button class="bb-btn bb-btn-ghost" id="btnBack" onclick="prevStep()">← Zurück</button>
     <div class="bb-step-dots" id="bbDots"></div>
   </div>
-  <button class="bb-btn bb-btn-primary" id="btnNext" onclick="nextStep()">Weiter →</button>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button class="bb-btn bb-btn-ghost" id="btnSave" onclick="saveCurrentAssessmentExplicit()" style="display:none;">💾 Speichern</button>
+    <button class="bb-btn bb-btn-primary" id="btnNext" onclick="nextStep()">Weiter →</button>
+  </div>
 </div>
 
 <script>
@@ -488,9 +538,9 @@ const MEASURES = [
   { id:"no_confidential_data_in_prompt", label:"Keine vertraulichen Daten im Prompt", cat:"tech", flags:["flag_confidential_data","flag_customer_data"] },
   { id:"no_personal_data", label:"Personenbezogene Daten ausschließen", cat:"tech", flags:["flag_personal_data"] },
   { id:"versioning", label:"Versionierung sicherstellen", cat:"tech", flags:[] },
-  { id:"audit_log", label:"Audit-Log führen", cat:"tech", flags:["flag_regulated_finance","flag_regulated_pharma","flag_regulated_medical"] },
-  { id:"check_avv", label:"AVV mit Tool-Anbieter prüfen", cat:"legal", flags:["flag_personal_data","flag_customer_data","flag_avv_unclear","flag_no_avv"] },
-  { id:"check_tool_approval", label:"Tool-Freigabe bestätigen", cat:"legal", flags:["flag_tool_not_approved","flag_approval_unclear"] },
+  { id:"audit_log", label:"Audit-Log führen", cat:"tech", flags:[] },
+  { id:"check_avv", label:"AVV mit Tool-Anbieter prüfen", cat:"legal", flags:["flag_personal_data","flag_customer_data"] },
+  { id:"check_tool_approval", label:"Tool-Freigabe bestätigen", cat:"legal", flags:[] },
   { id:"define_confidentiality_rules", label:"Vertraulichkeitsregeln definieren", cat:"legal", flags:["flag_confidential_data"] }
 ];
 
@@ -549,26 +599,10 @@ const UC_BEST_PRACTICES = {
 };
 
 const FLAGS = {
-  flag_tool_not_approved: { severity:"yellow", msg:"Das vorhandene Tool ist noch nicht freigegeben.", action:"Tool zur 'Auf dem Radar'-Liste hinzufügen und Freigabeprozess anstoßen." },
-  flag_data_readiness: { severity:'yellow', msg:'Hoher Aufwand für Daten-Readiness', action:'KI-Readiness der Daten vorab klären und als Projektaufwand einplanen.' },
-  flag_no_tool: { severity:"red", msg:"Kein Tool für diesen Use Case vorhanden.", action:"Use Case als 'aktuell nicht umsetzbar' markieren." },
-  flag_approval_unclear: { severity:"yellow", msg:"Freigabe ist unklar – erst einsetzen, wenn Klarheit besteht.", action:"Klärung mit IT/Compliance/Management herbeiführen." },
-  flag_not_approved: { severity:"red", msg:"Dieser Use Case ist im Unternehmen nicht freigegeben.", action:"Use Case kann in diesem Projekt nicht umgesetzt werden." },
-  flag_personal_data: { severity:"yellow", msg:"Personenbezogene Daten sind betroffen – Datenschutz prüfen.", action:"AVV prüfen, Datenklassifizierung vornehmen." },
+  flag_personal_data: { severity:"yellow", msg:"Personenbezogene Daten sind betroffen – Datenschutz prüfen.", action:"AVV mit Tool-Anbieter prüfen, Datenklassifizierung vornehmen." },
   flag_customer_data: { severity:"yellow", msg:"Kundendaten sind betroffen – datenschutzrechtliche Zulässigkeit prüfen.", action:"Kundenvertrag und Datenschutz prüfen." },
-  flag_confidential_data: { severity:"yellow", msg:"Vertrauliche Daten sollen in KI-Tools fließen – ist das erlaubt?", action:"Unternehmensrichtlinie prüfen." },
-  flag_avv_unclear: { severity:"yellow", msg:"Keine Klarheit über AVV mit Tool-Anbieter.", action:"IT/Datenschutz klären lassen, bevor personenbezogene Daten verwendet werden." },
-  flag_no_avv: { severity:"red", msg:"Keine AVV vorhanden – personenbezogene Daten dürfen nicht verarbeitet werden.", action:"Use Case erst umsetzbar, wenn AVV vorliegt." },
-  flag_ethics_persons: { severity:"yellow", msg:"KI beeinflusst Entscheidungen über Personen – besondere Sorgfalt erforderlich.", action:"Transparenz sicherstellen, Betroffene informieren, Widerspruchsmöglichkeit prüfen." },
-  flag_ethics_persons_indirect: { severity:"yellow", msg:"Personen sind indirekt von KI-Ergebnissen betroffen.", action:"Kommunikation und Transparenz sicherstellen." },
-  flag_transparency: { severity:"red", msg:"Bewusste Intransparenz über KI-Nutzung ist ethisch problematisch.", action:"Kommunikationsplan entwickeln oder Nutzung überdenken." },
-  flag_gdpr: { severity:"yellow", msg:"DSGVO-Anforderungen sind relevant.", action:"Datenschutzbeauftragten einbinden, Verarbeitungsverzeichnis prüfen." },
-  flag_regulated_pharma: { severity:"yellow", msg:"GxP-reguliertes Umfeld: KI-Nutzung muss validiert und dokumentiert werden.", action:"Validierungsanforderungen und SOPs prüfen." },
-  flag_regulated_finance: { severity:"yellow", msg:"Finanzregulierung relevant: MiFID/BaFin-Anforderungen prüfen.", action:"Compliance-Abteilung einbinden." },
-  flag_regulated_energy: { severity:"yellow", msg:"Kritische Infrastruktur: Erhöhte Sicherheitsanforderungen.", action:"Sicherheitsbeauftragten einbinden." },
-  flag_regulated_defense: { severity:"red", msg:"Verteidigung / Dual Use: Erhöhte ethische und rechtliche Anforderungen.", action:"Rechtliche und ethische Prüfung durch Compliance und Legal vor Einsatz." },
-  flag_regulated_medical: { severity:"yellow", msg:"Medizinprodukte-Regulierung: MDR/FDA-Anforderungen beachten.", action:"Regulatory Affairs einbinden." },
-  flag_regulated_automotive: { severity:"yellow", msg:"Funktionale Sicherheit: ISO 26262 Anforderungen prüfen.", action:"Safety Engineer einbinden." }
+  flag_confidential_data: { severity:"yellow", msg:"Vertrauliche Daten sollen in KI-Tools fließen – ist das erlaubt?", action:"Unternehmensrichtlinie und Datenschutz prüfen." },
+  flag_high_error_impact: { severity:"yellow", msg:"Fehler in diesem Use Case sind schwer reversibel → Aufsicht erhöhen.", action:"Menschliche Überwachung und Freigabeprozesse priorisieren." }
 };
 
 // ════════════════════════════════════════════════
@@ -579,126 +613,34 @@ const FLAGS = {
 
 const STEP_DEFS = [
   {
-    id: 'stack',
-    label: 'Stack & Freigabe',
+    id: 'risk',
+    label: 'Daten & Risiko',
     alwaysShow: true,
     questions: [
       {
-        id: "q_tool_available", text: "Ist ein zugelassenes Tool für diesen Use Case vorhanden?", type: "single",
-        options: [
-          { value:"yes", label:"Ja, ein freigegebenes Tool ist vorhanden" },
-          { value:"yes_not_approved", label:"Tool vorhanden, aber noch nicht freigegeben", flag:"flag_tool_not_approved" },
-          { value:"no", label:"Kein Tool vorhanden", flag:"flag_no_tool" }
-        ]
-      },
-      {
-        id: "q_use_case_approved", text: "Ist dieser Use Case im Unternehmen für euer Projekt zugelassen?", type: "single",
-        options: [
-          { value:"yes", label:"Ja, explizit freigegeben" },
-          { value:"unclear", label:"Unklar – keine klare Aussage dazu", flag:"flag_approval_unclear" },
-          { value:"no", label:"Nein, nicht freigegeben", flag:"flag_not_approved" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'data',
-    label: 'Daten & Datenschutz',
-    alwaysShow: true,
-    questions: [
-      {
-        id: "q_data_types", text: "Welche Art von Daten fließen in diesen Use Case ein?", type: "multi",
+        id: "q_data_types", text: "Welche Daten fließen in diesen Use Case?", type: "multi",
         options: [
           { value:"internal_project", label:"Interne Projektdaten (Pläne, Status, Aufgaben)" },
           { value:"personal_data", label:"Personenbezogene Daten (Namen, Rollen, Leistung)", flag:"flag_personal_data" },
           { value:"customer_data", label:"Kundendaten oder Kundenprojektdaten", flag:"flag_customer_data" },
-          { value:"strategic_data", label:"Strategische oder vertrauliche Unternehmensdaten", flag:"flag_confidential_data" },
+          { value:"strategic_data", label:"Strategische / vertrauliche Daten", flag:"flag_confidential_data" },
           { value:"public", label:"Nur öffentliche Daten" }
         ]
       },
       {
-        id: "q_data_management",
-        text: "Wie hoch ist der Aufwand für KI-Readiness der Daten (Bereinigung, Aufbereitung, Zugang)?",
-        hint: "Bezieht sich auf Zeit und Kosten, die nötig sind, um Daten KI-tauglich zu machen.",
-        type: "single",
+        id: "q_output_type", text: "Was produziert die KI primär?", type: "single",
         options: [
-          { value: "low",    label: "Gering – Daten sind direkt nutzbar" },
-          { value: "medium", label: "Mittel – etwas Aufbereitung nötig" },
-          { value: "high",   label: "Hoch – erheblicher Aufwand für Bereinigung oder Zugang", flag: "flag_data_readiness" },
-          { value: "unknown", label: "Unbekannt – noch nicht bewertet" }
+          { value:"draft", label:"Entwurf oder Vorschlag (Mensch arbeitet damit weiter)" },
+          { value:"analysis", label:"Analyse oder Entscheidungsgrundlage (Mensch entscheidet)" },
+          { value:"action", label:"Direkte Ausgabe oder Aktion (kein weiterer Menschenschritt)" }
         ]
       },
       {
-        id: "q_avv", text: "Gibt es eine AVV mit dem Tool-Anbieter?",
-        hint: "Erforderlich, weil personenbezogene oder Kundendaten verarbeitet werden.",
-        type: "single",
+        id: "q_error_impact", text: "Was passiert, wenn die KI einen Fehler macht?", type: "single",
         options: [
-          { value:"yes", label:"Ja, AVV liegt vor" },
-          { value:"unclear", label:"Unklar – muss geprüft werden", flag:"flag_avv_unclear" },
-          { value:"no", label:"Nein, keine AVV vorhanden", flag:"flag_no_avv" }
-        ],
-        // Only show if personal_data or customer_data selected AND a tool is available
-        condition: () => {
-          const dt = currentAnswers['q_data_types'] || [];
-          const toolAnswer = currentAnswers['q_tool_available'];
-          if (toolAnswer === 'no') return false;
-          return dt.includes('personal_data') || dt.includes('customer_data');
-        }
-      }
-    ]
-  },
-  {
-    id: 'responsibility',
-    label: 'Verantwortung',
-    alwaysShow: true,
-    questions: [
-      {
-        id: "q_responsible_person", text: "Wer ist verantwortlich für diesen Use Case im Projekt?",
-        type: "text", placeholder: "Name oder Rolle (z.B. Projektleiter, Testverantwortlicher)"
-      }
-    ]
-  },
-  {
-    id: 'ethics',
-    label: 'Ethik & Regulierung',
-    alwaysShow: true,
-    questions: [
-      {
-        id: "q_decisions_about_persons",
-        text: "Beeinflusst die KI-Ausgabe Einschätzungen oder Entscheidungen über einzelne Personen?",
-        hint: "z.B. Leistungsbewertung, Ressourcenzuweisung, Aufgabenverteilung",
-        // Only relevant if personal_data involved – but ask always as it's ethical, not just data-related
-        type: "single",
-        options: [
-          { value:"no", label:"Nein" },
-          { value:"indirect", label:"Indirekt – Personen sind betroffen, aber nicht Gegenstand der Analyse", flag:"flag_ethics_persons_indirect" },
-          { value:"yes", label:"Ja – KI beeinflusst direkt Entscheidungen über Personen", flag:"flag_ethics_persons" }
-        ],
-        // Hide if no personal data involved
-        condition: () => {
-          const dt = currentAnswers['q_data_types'] || [];
-          return dt.includes('personal_data') || dt.includes('customer_data');
-        }
-      },
-      {
-        id: "q_transparency", text: "Wissen alle relevanten Beteiligten, dass KI in diesem Bereich eingesetzt wird?", type: "single",
-        options: [
-          { value:"yes", label:"Ja, alle sind informiert" },
-          { value:"planned", label:"Nein, muss noch kommuniziert werden" },
-          { value:"no", label:"Nein, und das ist bewusst so", flag:"flag_transparency" }
-        ]
-      },
-      {
-        id: "q_regulated_industry", text: "Gibt es in eurem Projektkontext regulatorische Anforderungen?", type: "multi",
-        options: [
-          { value:"none", label:"Nein, keine spezifischen Anforderungen" },
-          { value:"gdpr", label:"DSGVO / Datenschutz", flag:"flag_gdpr" },
-          { value:"pharma", label:"Pharma / Life Sciences (GxP, FDA)", flag:"flag_regulated_pharma" },
-          { value:"finance", label:"Finanzdienstleistungen (MiFID, BaFin)", flag:"flag_regulated_finance" },
-          { value:"energy", label:"Energie / kritische Infrastruktur", flag:"flag_regulated_energy" },
-          { value:"defense", label:"Verteidigung / Rüstung", flag:"flag_regulated_defense" },
-          { value:"medical_devices", label:"Medizinprodukte (MDR, FDA)", flag:"flag_regulated_medical" },
-          { value:"automotive", label:"Automotive / funktionale Sicherheit", flag:"flag_regulated_automotive" }
+          { value:"low", label:"Schnell erkennbar, leicht zu korrigieren" },
+          { value:"medium", label:"Aufwändig zu beheben, aber behebbar" },
+          { value:"high", label:"Schwerwiegend oder kaum reversibel", flag:"flag_high_error_impact" }
         ]
       }
     ]
@@ -726,6 +668,8 @@ let currentAmpel = null;
 let currentNotes = '';
 let currentWizardStep = 0; // index into activeSteps
 let currentBpCustom = {}; // projektspezifische Best-Practice-Notizen je UC
+let hitlManuallySet = false;
+let _savedStateSnapshot = null; // for dirty checking
 
 function getActiveSteps() {
   return STEP_DEFS.filter(s => {
@@ -795,12 +739,7 @@ function resetCurrentState() {
   currentAmpel = null;
   currentNotes = '';
   currentWizardStep = 0;
-
-  // Pre-fill regulated industry from project setup (Screen 1)
-  const industryPrefill = getIndustryPrefill();
-  if (industryPrefill.length) {
-    currentAnswers['q_regulated_industry'] = industryPrefill;
-  }
+  hitlManuallySet = false;
 
   if (assessments[ucId]) {
     const a = assessments[ucId];
@@ -814,6 +753,23 @@ function resetCurrentState() {
   }
   computeFlags();
   updateMeasuresFromFlags();
+  // Take snapshot for dirty checking
+  _savedStateSnapshot = getStateSnapshot();
+}
+
+function getStateSnapshot() {
+  return JSON.stringify({
+    answers: currentAnswers,
+    hitl: currentHITL,
+    ampel: currentAmpel,
+    measures: [...currentMeasures].sort(),
+    notes: currentNotes
+  });
+}
+
+function isDirty() {
+  if (!_savedStateSnapshot) return false;
+  return getStateSnapshot() !== _savedStateSnapshot;
 }
 
 // ════════════════════════════════════════════════
@@ -889,15 +845,17 @@ function renderTopbar() {
 }
 
 function renderSidebar() {
+  const dirty = isDirty();
   const list = document.getElementById('ucList');
   list.innerHTML = shortlist.map((item, i) => {
     const uc = ALL_UCS[item.use_case_id];
     const a = assessments[item.use_case_id];
     const resultClass = a ? `done-${a.result}` : '';
+    const isCurrentDirty = i === currentIdx && dirty;
     return `<div class="uc-list-item ${resultClass} ${item.sofort?'sofort-item':''} ${i===currentIdx?'active':''}" onclick="jumpToUC(${i})">
       <div class="uc-list-dot"></div>
       <div class="uc-list-name">${uc ? uc.title : item.use_case_id}</div>
-      <div class="uc-list-num">${i+1}</div>
+      ${isCurrentDirty ? `<div class="uc-list-dirty" title="Ungespeicherte Änderungen">● Nicht gespeichert</div>` : `<div class="uc-list-num">${i+1}</div>`}
     </div>`;
   }).join('');
   const done = Object.keys(assessments).length;
@@ -988,14 +946,47 @@ function renderQuestion(q) {
   return html;
 }
 
+function deriveHITL(outputType, errorImpact) {
+  if (!outputType || !errorImpact) return null;
+  if (outputType === 'draft' && errorImpact !== 'high') return 'level_1';
+  if (outputType === 'draft' && errorImpact === 'high') return 'level_2';
+  if (outputType === 'analysis') return 'level_2';
+  if (outputType === 'action' && errorImpact === 'low') return 'level_2';
+  return 'level_3';
+}
+
+function getHITLRationale(outputType, errorImpact) {
+  if (!outputType || !errorImpact) return null;
+  if (outputType === 'draft' && errorImpact !== 'high')
+    return 'Da die KI einen Entwurf liefert und Fehler leicht erkennbar sind, reicht eine vollständige Kontrolle durch Review.';
+  if (outputType === 'draft' && errorImpact === 'high')
+    return 'Der KI-Output ist ein Entwurf, aber Fehler sind schwer korrigierbar – erhöhte Überwachung wird empfohlen.';
+  if (outputType === 'analysis')
+    return 'Da die KI eine Entscheidungsgrundlage liefert und der Mensch final entscheidet, empfehlen wir überwachte Autonomie.';
+  if (outputType === 'action' && errorImpact === 'low')
+    return 'Die KI handelt direkt, aber Fehler sind leicht erkennbar – überwachte Autonomie mit Monitoring ist ausreichend.';
+  return 'Da die KI direkt handelt und Fehler aufwändig oder kaum reversibel sind, empfehlen wir: Gate/Freigabe vor jeder Aktion.';
+}
+
 function renderResultStep() {
   const ucId = shortlist[currentIdx].use_case_id;
   const uc = ALL_UCS[ucId];
   const suggested = computeSuggestedResult();
+
+  const outputType = currentAnswers['q_output_type'];
+  const errorImpact = currentAnswers['q_error_impact'];
+  const derivedHITL = deriveHITL(outputType, errorImpact);
+  const rationale = getHITLRationale(outputType, errorImpact);
+
+  // Auto-apply derived HITL if user hasn't manually overridden
+  if (derivedHITL && !hitlManuallySet) {
+    currentHITL = derivedHITL;
+  }
+
   const levels = [
     { id:'level_1', icon:'🛡️', label:'Volle Kontrolle', desc:'Mensch prüft jedes Ergebnis und entscheidet.' },
     { id:'level_2', icon:'👁️', label:'Überwachte Autonomie', desc:'Mensch überwacht, prüft stichprobenartig.' },
-    { id:'level_3', icon:'🤖', label:'Kontrollierte Automatisierung', desc:'KI handelt eigenständig in Grenzen.' }
+    { id:'level_3', icon:'🤖', label:'Kontrollierte Automatisierung', desc:'KI handelt eigenständig in definierten Grenzen.' }
   ];
 
   // Compute flag-required + suggested measures
@@ -1004,31 +995,46 @@ function renderResultStep() {
 
   let html = '';
 
-  // HITL
-  html += `<div class="section-card"><div class="section-title">Human-in-the-Loop (HITL)</div>
-    <div class="hitl-grid">
-      ${levels.map(l => {
-        const isRec = uc && uc.hitl_default === l.id;
-        const isSel = currentHITL === l.id;
-        return `<div class="hitl-opt ${isSel ? 'selected '+l.id : ''} ${isRec ? 'recommended' : ''}" onclick="selectHITL('${l.id}')">
-          <div class="hitl-icon">${l.icon}</div>
-          <div class="hitl-label">${l.label}</div>
-          <div class="hitl-desc">${l.desc}</div>
-        </div>`;
-      }).join('')}
-    </div>
+  // HITL recommendation + override
+  const hitlLevelLabels = { level_1:'🛡️ Volle Kontrolle', level_2:'👁️ Überwachte Autonomie', level_3:'🤖 Kontrollierte Automatisierung' };
+  const isOverridden = hitlManuallySet && derivedHITL && currentHITL !== derivedHITL;
+
+  html += `<div class="section-card"><div class="section-title">Human-in-the-Loop (HITL)</div>`;
+
+  if (derivedHITL && rationale) {
+    html += `<div style="padding:12px 14px;border-radius:10px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);margin-bottom:16px;font-size:13px;color:var(--text2);line-height:1.5;">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent2);margin-bottom:6px;">Empfehlung: ${hitlLevelLabels[derivedHITL]}</div>
+      <div>${rationale}</div>
+    </div>`;
+  }
+
+  html += `<div class="hitl-grid">
+    ${levels.map(l => {
+      const isDerived = l.id === derivedHITL;
+      const isSel = currentHITL === l.id;
+      return `<div class="hitl-opt ${isSel ? 'selected '+l.id : ''} ${isDerived && !hitlManuallySet ? 'recommended' : ''}" onclick="selectHITL('${l.id}')">
+        <div class="hitl-icon">${l.icon}</div>
+        <div class="hitl-label">${l.label}</div>
+        <div class="hitl-desc">${l.desc}</div>
+      </div>`;
+    }).join('')}
   </div>`;
+
+  if (isOverridden) {
+    html += `<div style="margin-top:12px;padding:10px 13px;border-radius:9px;background:var(--yellow-bg);border:1px solid rgba(234,179,8,0.3);font-size:12px;color:var(--text2);">
+      <strong style="color:var(--yellow);">Abweichung von Empfehlung:</strong> Du hast ${hitlLevelLabels[currentHITL]} gewählt (Empfehlung: ${hitlLevelLabels[derivedHITL]}). Bitte begründe kurz in den Notizen.
+    </div>`;
+  }
+
+  html += `</div>`;
 
   // Measures – grouped, with required/suggested highlighting
   const catLabels = { hitl:'Human-in-the-Loop', org:'Organisatorisch', tech:'Technisch', legal:'Rechtlich' };
   const cats = ['hitl','org','tech','legal'];
-  // Only show legal cat if there are flag-required or suggested measures in it
   html += `<div class="section-card"><div class="section-title">Maßnahmen</div>`;
   cats.forEach(cat => {
     const ms = MEASURES.filter(m => m.cat === cat);
-    // Filter: show measure if it's required by flags, suggested for UC, or in currentMeasures
     const relevantMs = ms.filter(m => flagRequired.has(m.id) || ucSuggested.has(m.id) || currentMeasures.has(m.id));
-    // For legal/tech: only show if relevant
     const showAll = cat === 'hitl' || cat === 'org';
     const displayMs = showAll ? ms : relevantMs;
     if (!displayMs.length) return;
@@ -1047,7 +1053,7 @@ function renderResultStep() {
   });
   html += `</div>`;
 
-  // Best Practices – filtered by relevance (flags + UC)
+  // Best Practices
   const allBPs = UC_BEST_PRACTICES[ucId] || [];
   if (allBPs.length) {
     html += `<div class="section-card"><div class="section-title">Best Practices</div><div class="bp-list">`;
@@ -1060,7 +1066,7 @@ function renderResultStep() {
     </div>`;
   }
 
-  // Result
+  // Result / Ampel
   let aiText = '';
   if (suggested === 'red') aiText = `🔴 Rote Flags vorhanden. Dieser Use Case sollte erst nach Klärung aller offenen Punkte umgesetzt werden.`;
   else if (suggested === 'yellow') aiText = `🟡 Gelbe Hinweise vorhanden. Einsatz möglich, aber mit Auflagen.`;
@@ -1078,10 +1084,6 @@ function renderResultStep() {
         </div>`;
       }).join('')}
     </div>
-    ${currentAmpel && currentAmpel !== suggested ? `<div class="override-note" style="margin-top:14px;">
-      <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">Du weichst von der Empfehlung ab. Bitte begründe kurz:</div>
-      <textarea class="notes-area" placeholder="Begründung..." oninput="currentNotes=this.value">${''}</textarea>
-    </div>` : ''}
     ${currentAmpel === 'red' && uc.consequence ? `<div class="consequence-box" style="margin-top:14px;">
       <h4>⚠ Konsequenz bei Ablehnung</h4>
       <div class="consequence-item">Aufwand-Impact: ${uc.consequence.effort}</div>
@@ -1090,7 +1092,7 @@ function renderResultStep() {
   </div>`;
 
   html += `<div class="section-card"><div class="section-title">Notizen</div>
-    <textarea class="notes-area" placeholder="Optionale Notizen..." oninput="currentNotes=this.value">${currentNotes}</textarea>
+    <textarea class="notes-area" placeholder="Optionale Notizen..." oninput="currentNotes=this.value;renderSidebar();renderBottomBar();">${currentNotes}</textarea>
   </div>`;
 
   return html;
@@ -1109,6 +1111,10 @@ function renderBottomBar() {
     btnNext.textContent = 'Weiter →';
     btnNext.disabled = false;
   }
+  // Show save button whenever there are dirty changes (any step)
+  const btnSave = document.getElementById('btnSave');
+  if (btnSave) btnSave.style.display = isDirty() ? '' : 'none';
+
   const dots = activeSteps.map((s, i) =>
     `<div class="bb-dot ${i < currentWizardStep ? 'done' : i === currentWizardStep ? 'active' : ''}"></div>`
   ).join('');
@@ -1146,6 +1152,7 @@ function updateText(qid, val) {
 
 function selectHITL(level) {
   currentHITL = level;
+  hitlManuallySet = true;
   rerender();
 }
 
@@ -1166,6 +1173,7 @@ function rerender() {
   renderStepContent();
   renderBottomBar();
   renderTopbar();
+  renderSidebar();
 }
 
 function nextStep() {
@@ -1198,11 +1206,10 @@ function prevStep() {
 
 function jumpToUC(idx) {
   if (idx === currentIdx) {
-    // Close mobile menu if open
     document.getElementById('sidebar').classList.remove('mobile-open');
     return;
   }
-  saveCurrentAssessment();
+  // Navigate without saving — dirty state is discarded, user is warned via sidebar indicator
   currentIdx = idx;
   resetCurrentState();
   renderUCHeader();
@@ -1237,22 +1244,60 @@ function toggleMobileMenu() {
   document.getElementById('sidebar').classList.toggle('mobile-open');
 }
 
+function toggleAssumptionBanner() {
+  const body = document.getElementById('assumptionBody');
+  const chevron = document.getElementById('assumptionChevron');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  chevron.style.transform = open ? '' : 'rotate(180deg)';
+}
+
 function saveBpCustom(ucId, value) {
   currentBpCustom[ucId] = value;
 }
 
 function saveCurrentAssessment() {
   const ucId = shortlist[currentIdx].use_case_id;
+  const outputType = currentAnswers['q_output_type'];
+  const errorImpact = currentAnswers['q_error_impact'];
+  const finalHITL = currentHITL || deriveHITL(outputType, errorImpact) || 'level_1';
   assessments[ucId] = {
     use_case_id: ucId, answers: JSON.parse(JSON.stringify(currentAnswers)), flags: [...currentFlags],
     result: currentAmpel || computeSuggestedResult() || 'yellow',
-    hitl_level: currentHITL, selected_measures: [...currentMeasures],
+    hitl_level: finalHITL, selected_measures: [...currentMeasures],
     notes: currentNotes, bp_custom: currentBpCustom[ucId] || '',
+    output_type: outputType, error_impact: errorImpact,
     assessed_at: new Date().toISOString()
   };
   const slItem = shortlist.find(s => s.use_case_id === ucId);
   if (slItem) slItem.status = assessments[ucId].result;
+  _savedStateSnapshot = getStateSnapshot(); // reset dirty state
   persistAssessments();
+}
+
+function saveCurrentAssessmentExplicit() {
+  saveCurrentAssessment();
+  // Check if project is in manifest status and show toast
+  try {
+    const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    if (proj.status === 'manifest') {
+      showToastS5('Bewertung gespeichert — Manifest sollte neu exportiert werden.');
+    } else {
+      showToastS5('Bewertung gespeichert.');
+    }
+  } catch(e) {
+    showToastS5('Bewertung gespeichert.');
+  }
+  renderSidebar();
+  renderBottomBar();
+}
+
+function showToastS5(msg) {
+  const toast = document.getElementById('toastS5');
+  const span = document.getElementById('toastS5Text');
+  if (span) span.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 function persistAssessments() {
@@ -1260,8 +1305,23 @@ function persistAssessments() {
     const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
     proj.assessments_map = assessments;
     proj.shortlist = shortlist;
-    proj.status = 'assessment';
+    // Set manifest_needs_refresh if project was already in manifest status
+    if (proj.status === 'manifest') {
+      proj.manifest_needs_refresh = true;
+    }
+    if (proj.status !== 'manifest' && proj.status !== 'complete') {
+      proj.status = 'assessment';
+    }
     localStorage.setItem('trust_ai_project', JSON.stringify(proj));
+    // Also update projects array
+    try {
+      const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
+      const pidx = projects.findIndex(x => x.id === proj.id);
+      if (pidx >= 0) {
+        projects[pidx] = { ...projects[pidx], ...proj };
+        localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
+      }
+    } catch(e2) {}
   } catch(e) {}
 }
 
@@ -1280,6 +1340,13 @@ function showCompletion() {
     const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
     proj.assessments_map = assessments; proj.shortlist = shortlist; proj.status = 'manifest';
     localStorage.setItem('trust_ai_project', JSON.stringify(proj));
+    // Also update projects array
+    const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
+    const pidx = projects.findIndex(x => x.id === proj.id);
+    if (pidx >= 0) {
+      projects[pidx] = { ...projects[pidx], ...proj };
+      localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
+    }
   } catch(e) {}
 }
 
