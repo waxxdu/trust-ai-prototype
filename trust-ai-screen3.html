@@ -11,324 +11,361 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --accent: #4F6EF7;
-  --accent-hover: #3B57E8;
-  --accent-subtle: rgba(79,110,247,0.10);
-  --accent-border: rgba(79,110,247,0.30);
-  --green: #22C55E;
-  --green-subtle: rgba(34,197,94,0.12);
-  --green-border: rgba(34,197,94,0.35);
-  --red: #EF4444;
-  --red-subtle: rgba(239,68,68,0.10);
-  --red-border: rgba(239,68,68,0.30);
-  --yellow: #F59E0B;
-  --yellow-subtle: rgba(245,158,11,0.10);
-  --yellow-border: rgba(245,158,11,0.30);
+  --accent: #4F6EF7; --accent-hover: #3B57E8;
+  --accent-subtle: rgba(79,110,247,0.10); --accent-border: rgba(79,110,247,0.30);
+  --green: #22C55E; --green-subtle: rgba(34,197,94,0.12); --green-border: rgba(34,197,94,0.35);
+  --red: #EF4444; --red-subtle: rgba(239,68,68,0.10); --red-border: rgba(239,68,68,0.30);
+  --yellow: #F59E0B; --yellow-subtle: rgba(245,158,11,0.10); --yellow-border: rgba(245,158,11,0.30);
+  --orange: #F97316; --orange-subtle: rgba(249,115,22,0.10); --orange-border: rgba(249,115,22,0.30);
+  --purple: #8B5CF6; --purple-subtle: rgba(139,92,246,0.10);
   --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px;
   --transition: 200ms cubic-bezier(0.4,0,0.2,1);
 }
-
 :root {
-  --bg: #F4F5F8;
-  --surface: #FFFFFF;
-  --surface-2: #F8F9FC;
-  --surface-3: #EEF0F6;
-  --border: #E2E5EF;
-  --border-hover: #C8CCDC;
-  --text-primary: #0F1523;
-  --text-secondary: #5A6075;
-  --text-tertiary: #9299B0;
-  --nav-bg: rgba(244,245,248,0.9);
-  --shadow-card: 0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
+  --bg: #F4F5F8; --surface: #FFFFFF; --surface2: #F8F9FC; --surface3: #EEF0F6;
+  --border: #E2E5EF; --border-hover: #C8CCDC;
+  --text1: #0F1523; --text2: #5A6075; --text3: #9299B0;
+  --nav-bg: rgba(244,245,248,0.92);
+  --shadow: 0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
 }
-
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0D0F17; --surface: #151823; --surface-2: #1C2030; --surface-3: #222638;
-    --border: #262B3E; --border-hover: #333A54;
-    --text-primary: #EDF0FF; --text-secondary: #8B92B0; --text-tertiary: #555D7A;
-    --nav-bg: rgba(13,15,23,0.90);
-    --shadow-card: 0 4px 32px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+    --bg:#0D0F17; --surface:#151823; --surface2:#1C2030; --surface3:#222638;
+    --border:#262B3E; --border-hover:#333A54;
+    --text1:#EDF0FF; --text2:#8B92B0; --text3:#555D7A;
+    --nav-bg:rgba(13,15,23,0.92); --shadow:0 4px 32px rgba(0,0,0,0.35),0 1px 4px rgba(0,0,0,0.25);
   }
 }
 [data-theme="dark"] {
-  --bg: #0D0F17; --surface: #151823; --surface-2: #1C2030; --surface-3: #222638;
-  --border: #262B3E; --border-hover: #333A54;
-  --text-primary: #EDF0FF; --text-secondary: #8B92B0; --text-tertiary: #555D7A;
-  --nav-bg: rgba(13,15,23,0.90);
-  --shadow-card: 0 4px 32px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+  --bg:#0D0F17; --surface:#151823; --surface2:#1C2030; --surface3:#222638;
+  --border:#262B3E; --border-hover:#333A54; --text1:#EDF0FF; --text2:#8B92B0; --text3:#555D7A;
+  --nav-bg:rgba(13,15,23,0.92); --shadow:0 4px 32px rgba(0,0,0,0.35),0 1px 4px rgba(0,0,0,0.25);
 }
 [data-theme="light"] {
-  --bg: #F6F7FA; --surface: #FFFFFF; --surface-2: #FAFBFE; --surface-3: #EFF1F8;
-  --border: #E4E7F2; --border-hover: #CAD0E2;
-  --text-primary: #111827; --text-secondary: #4B5568; --text-tertiary: #8A92A8;
-  --nav-bg: rgba(246,247,250,0.90);
-  --shadow-card: 0 4px 32px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  --bg:#F6F7FA; --surface:#FFFFFF; --surface2:#FAFBFE; --surface3:#EFF1F8;
+  --border:#E4E7F2; --border-hover:#CAD0E2; --text1:#111827; --text2:#4B5568; --text3:#8A92A8;
+  --nav-bg:rgba(246,247,250,0.92); --shadow:0 4px 32px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);
 }
 
-html, body { height: 100%; overflow: hidden; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text-primary);
-  -webkit-font-smoothing: antialiased;
-  user-select: none;
-  touch-action: none;
-}
+html { scroll-behavior: smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text1); -webkit-font-smoothing:antialiased; }
+body.no-scroll { overflow:hidden; }
 
 /* ── Nav ── */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  background: var(--nav-bg);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px; height: 56px;
-  display: flex; align-items: center; justify-content: space-between;
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  background:var(--nav-bg); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border); padding:0 20px; height:56px;
+  display:flex; align-items:center; justify-content:space-between;
 }
-.nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
-.nav-logo-mark {
-  width: 30px; height: 30px; background: var(--accent); border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-}
-.nav-logo-mark svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.nav-logo-text { font-size: 14px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
-.nav-logo-text span { color: var(--accent); }
-.nav-right { display: flex; align-items: center; gap: 16px; }
-.nav-step { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-tertiary); letter-spacing: 0.05em; }
-.progress-dots { display: flex; gap: 5px; align-items: center; }
-.progress-dot { width: 6px; height: 6px; border-radius: 100px; background: var(--border); transition: all var(--transition); }
-.progress-dot.done { background: var(--accent); opacity: 0.4; width: 18px; }
-.progress-dot.active { background: var(--accent); width: 24px; }
-
-/* ── Layout ── */
-.layout {
-  position: fixed; inset: 56px 0 0 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: flex-start;
-  padding: 16px 20px 0;
-  overflow: hidden;
+.nav-logo { display:flex; align-items:center; gap:9px; text-decoration:none; }
+.nav-logo-mark { width:30px; height:30px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; }
+.nav-logo-mark svg { width:16px; height:16px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+.nav-logo-text { font-size:14px; font-weight:600; color:var(--text1); letter-spacing:-0.01em; }
+.nav-logo-text span { color:var(--accent); }
+.nav-right { display:flex; align-items:center; gap:10px; }
+.nav-step { font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); letter-spacing:0.05em; }
+.progress-dots { display:flex; gap:5px; align-items:center; }
+.progress-dot { width:6px; height:6px; border-radius:100px; background:var(--border); transition:all var(--transition); }
+.progress-dot.done { background:var(--accent); opacity:0.4; width:18px; }
+.progress-dot.active { background:var(--accent); width:24px; }
+.icon-btn {
+  background:transparent; border:1px solid var(--border); border-radius:8px;
+  width:32px; height:32px; cursor:pointer; font-size:15px;
+  display:flex; align-items:center; justify-content:center; color:var(--text2); flex-shrink:0;
 }
 
-.header-strip {
-  width: 100%; max-width: 440px;
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 12px; flex-shrink: 0;
-}
-.progress-label-main { font-size: 12px; color: var(--text-tertiary); font-family: 'DM Mono', monospace; }
-.progress-label-main strong { color: var(--text-secondary); font-weight: 500; }
-.undo-btn {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 12px; color: var(--text-tertiary); background: none; border: none;
-  cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 4px 0;
-  transition: color var(--transition);
-}
-.undo-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.undo-btn:not(:disabled):hover { color: var(--text-primary); }
-.undo-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+/* ── Page Wrapper ── */
+.page { padding-top:56px; min-height:100vh; }
 
-/* ── Card Stack ── */
-.card-stack {
-  position: relative;
-  width: 100%; max-width: 440px;
-  flex: 1; min-height: 0;
-  margin-bottom: 0;
-}
+/* ── Phase: Filter ── */
+.filter-page { max-width:600px; margin:0 auto; padding:28px 20px 100px; }
+.filter-hero { text-align:center; margin-bottom:28px; }
+.filter-hero-icon { font-size:36px; margin-bottom:12px; }
+.filter-hero h1 { font-size:24px; font-weight:700; letter-spacing:-0.03em; margin-bottom:8px; }
+.filter-hero p { font-size:14px; color:var(--text2); line-height:1.65; font-weight:300; }
 
-/* ── Swipe Card ── */
-.swipe-card {
-  position: absolute; inset: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-card);
-  padding: 20px 22px 16px;
-  display: flex; flex-direction: column;
-  cursor: grab; overflow: hidden;
-  will-change: transform;
-  bottom: 100px;
-}
-.swipe-card:active { cursor: grabbing; }
+.kano-steps { display:flex; align-items:stretch; gap:0; margin-bottom:28px; border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden; }
+.kano-step { flex:1; padding:12px 10px; text-align:center; background:var(--surface); position:relative; }
+.kano-step + .kano-step { border-left:1px solid var(--border); }
+.kano-step-num { font-size:10px; font-family:'DM Mono',monospace; color:var(--text3); margin-bottom:4px; letter-spacing:0.05em; }
+.kano-step-icon { font-size:20px; margin-bottom:4px; }
+.kano-step-label { font-size:11px; font-weight:600; color:var(--text1); }
+.kano-step-sub { font-size:10px; color:var(--text3); margin-top:2px; line-height:1.4; }
+.kano-step.ko { background:var(--red-subtle); }
+.kano-step.ko .kano-step-label { color:var(--red); }
+.kano-step.perf { background:var(--orange-subtle); }
+.kano-step.perf .kano-step-label { color:var(--orange); }
 
-.swipe-card.behind-1 {
-  transform: scale(0.96) translateY(10px);
-  opacity: 0.7; pointer-events: none; z-index: 1;
+.filter-section { margin-bottom:20px; }
+.filter-section-label { font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text3); margin-bottom:10px; }
+.preset-row { display:flex; gap:8px; }
+.preset-btn {
+  flex:1; padding:10px 16px; border-radius:var(--radius-md); border:1.5px solid var(--border);
+  background:var(--surface); cursor:pointer; font-size:13px; font-weight:500; color:var(--text2);
+  font-family:'DM Sans',sans-serif; transition:all var(--transition); text-align:center;
 }
-.swipe-card.behind-2 {
-  transform: scale(0.92) translateY(20px);
-  opacity: 0.4; pointer-events: none; z-index: 0;
-}
-.swipe-card.active { z-index: 10; }
+.preset-btn.active { border-color:var(--accent); background:var(--accent-subtle); color:var(--accent); }
 
-.swipe-overlay {
-  position: absolute; inset: 0; border-radius: var(--radius-xl);
-  opacity: 0; pointer-events: none;
-  display: flex; align-items: center; justify-content: center; z-index: 20;
+.cat-chips { display:flex; flex-wrap:wrap; gap:7px; }
+.cat-chip {
+  padding:7px 13px; border-radius:100px; border:1.5px solid var(--border);
+  background:var(--surface); cursor:pointer; font-size:12px; font-weight:500; color:var(--text2);
+  font-family:'DM Sans',sans-serif; transition:all var(--transition); display:flex; align-items:center; gap:6px;
+  user-select:none;
 }
-.overlay-right { background: linear-gradient(135deg, var(--green-subtle), transparent); }
-.overlay-left  { background: linear-gradient(225deg, var(--red-subtle), transparent); }
-.overlay-up    { background: linear-gradient(180deg, var(--yellow-subtle), transparent); }
+.cat-chip.active { border-color:var(--accent-border); background:var(--accent-subtle); color:var(--accent); }
+.cat-chip-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 
-.swipe-badge {
-  padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 700;
-  letter-spacing: 0.05em; text-transform: uppercase; border: 2px solid;
+.filter-summary {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
+  padding:12px 16px; display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px;
 }
-.badge-right { color: var(--green); border-color: var(--green); transform: rotate(-12deg); }
-.badge-left  { color: var(--red);   border-color: var(--red);   transform: rotate(12deg); }
-.badge-up    { color: var(--yellow);border-color: var(--yellow); }
+.filter-summary-count { font-size:14px; font-weight:600; }
+.filter-summary-count span { color:var(--accent); }
+.filter-summary-note { font-size:12px; color:var(--text3); }
 
-/* ── Card Content ── */
-.card-category {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--accent); background: var(--accent-subtle); border: 1px solid var(--accent-border);
-  border-radius: 100px; padding: 3px 10px; margin-bottom: 12px; align-self: flex-start;
+.autofill-note {
+  background:var(--green-subtle); border:1px solid var(--green-border); border-radius:var(--radius-sm);
+  padding:10px 14px; margin-bottom:20px; font-size:12px; color:var(--green); display:none;
 }
-.card-id { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-tertiary); margin-bottom: 5px; }
-.card-title { font-size: 19px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 10px; }
-.card-description { font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; font-weight: 300; flex: 1; overflow-y: auto; }
-
-.card-divider { height: 1px; background: var(--border); margin: 14px 0; flex-shrink: 0; }
-
-.card-tools { display: flex; flex-wrap: wrap; gap: 5px; flex-shrink: 0; margin-bottom: 10px; }
-.tool-chip {
-  font-size: 11px; color: var(--text-tertiary); background: var(--surface-2);
-  border: 1px solid var(--border); border-radius: 100px; padding: 2px 9px;
-}
-
-.ethics-flag {
-  display: flex; align-items: center; gap: 7px;
-  background: var(--yellow-subtle); border: 1px solid var(--yellow-border);
-  border-radius: var(--radius-sm); padding: 8px 12px;
-  font-size: 12px; color: var(--yellow); flex-shrink: 0; margin-bottom: 8px;
-}
-.ethics-flag svg { width: 14px; height: 14px; stroke: var(--yellow); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-
-.rejection-hint {
-  display: flex; align-items: flex-start; gap: 7px;
-  background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 8px 12px;
-  font-size: 12px; color: var(--text-secondary); flex-shrink: 0;
-}
-.rejection-hint svg { width: 13px; height: 13px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; margin-top: 1px; }
-.classification-significant { color: var(--red); font-weight: 500; }
-.classification-valuable { color: var(--yellow); font-weight: 500; }
-.classification-nice_to_have { color: var(--green); font-weight: 500; }
-
-/* ── Action Bar ── */
-.action-bar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  padding: 12px 20px 28px;
-  background: linear-gradient(to top, var(--bg) 65%, transparent);
-  display: flex; justify-content: center; align-items: flex-end; gap: 14px;
-  z-index: 100;
-  transition: opacity 0.4s ease;
-}
-
-.action-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 5px;
-  cursor: pointer; border: none; background: none;
-  transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.action-btn-inner {
-  width: 54px; height: 54px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  border: 2px solid; transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
-.action-btn svg { width: 22px; height: 22px; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.action-btn-label { font-size: 11px; font-weight: 500; font-family: 'DM Sans', sans-serif; color: var(--text-tertiary); }
-
-.action-btn:active .action-btn-inner { transform: scale(0.88); }
-.action-btn:hover .action-btn-inner { transform: scale(1.1); }
-
-.btn-skip .action-btn-inner { border-color: var(--red-border); background: var(--red-subtle); }
-.btn-skip svg { stroke: var(--red); }
-.btn-skip .action-btn-label { color: var(--red); }
-.btn-skip:hover .action-btn-inner { background: rgba(239,68,68,0.18); border-color: var(--red); box-shadow: 0 4px 20px rgba(239,68,68,0.25); }
-
-.btn-shortlist .action-btn-inner { border-color: var(--green-border); background: var(--green-subtle); }
-.btn-shortlist svg { stroke: var(--green); }
-.btn-shortlist .action-btn-label { color: var(--green); }
-.btn-shortlist:hover .action-btn-inner { background: rgba(34,197,94,0.20); border-color: var(--green); box-shadow: 0 4px 20px rgba(34,197,94,0.25); }
-
-.btn-now .action-btn-inner {
-  width: 64px; height: 64px;
-  border-color: var(--yellow-border); background: var(--yellow-subtle);
-}
-.btn-now svg { stroke: var(--yellow); width: 24px; height: 24px; }
-.btn-now .action-btn-label { color: var(--yellow); }
-.btn-now:hover .action-btn-inner { background: rgba(245,158,11,0.20); border-color: var(--yellow); box-shadow: 0 4px 20px rgba(245,158,11,0.30); }
-
-/* ── Skip Modal ── */
-.modal-backdrop {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-  display: flex; align-items: flex-end; justify-content: center;
-  z-index: 500; opacity: 0; pointer-events: none;
-  transition: opacity 200ms ease;
-  backdrop-filter: blur(4px);
-}
-.modal-backdrop.open { opacity: 1; pointer-events: all; }
-.modal {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  padding: 20px 20px 36px; width: 100%; max-width: 480px;
-  transform: translateY(100%); transition: transform 300ms cubic-bezier(0.34, 1.3, 0.64, 1);
-}
-.modal-backdrop.open .modal { transform: translateY(0); }
-.modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 100px; margin: 0 auto 18px; }
-.modal-title { font-size: 17px; font-weight: 600; margin-bottom: 14px; letter-spacing: -0.02em; }
-.modal-options { display: flex; flex-direction: column; gap: 8px; }
-.modal-option {
-  display: flex; align-items: center; gap: 12px;
-  padding: 11px 14px; border-radius: var(--radius-md);
-  border: 1.5px solid var(--border); background: var(--surface-2);
-  cursor: pointer; font-size: 14px; color: var(--text-primary);
-  transition: all var(--transition); font-family: 'DM Sans', sans-serif;
-}
-.modal-option:hover { border-color: var(--accent-border); background: var(--accent-subtle); }
-.modal-option .emoji { font-size: 18px; flex-shrink: 0; }
-
-/* ── Done Screen ── */
-.done-screen {
-  position: fixed; inset: 56px 0 0 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-}
-.done-screen.visible { opacity: 1; pointer-events: all; animation: fadeUp 0.5s ease both; }
-.done-icon {
-  width: 72px; height: 72px; border-radius: 50%; background: var(--green-subtle);
-  border: 2px solid var(--green-border); display: flex; align-items: center; justify-content: center;
-  margin-bottom: 18px;
-}
-.done-icon svg { width: 30px; height: 30px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-.done-title { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; text-align: center; }
-.done-sub { font-size: 14px; color: var(--text-secondary); text-align: center; margin-bottom: 28px; line-height: 1.6; font-weight: 300; }
-.done-stats { display: flex; gap: 12px; margin-bottom: 28px; width: 100%; max-width: 360px; }
-.done-stat {
-  flex: 1; background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-md); padding: 16px 12px; text-align: center;
-}
-.done-stat-num { font-size: 28px; font-weight: 700; letter-spacing: -0.04em; }
-.done-stat-label { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
-.stat-shortlist .done-stat-num { color: var(--green); }
-.stat-now .done-stat-num { color: var(--yellow); }
-.stat-skip .done-stat-num { color: var(--text-secondary); }
 
 .btn-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 13px 26px; border-radius: var(--radius-md);
-  background: var(--accent); color: #fff; font-size: 15px; font-weight: 500;
-  cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
-  box-shadow: 0 4px 16px rgba(79,110,247,0.35);
-  transition: all var(--transition);
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:14px 28px; border-radius:var(--radius-md); background:var(--accent);
+  color:#fff; font-size:15px; font-weight:500; cursor:pointer; border:none;
+  font-family:'DM Sans',sans-serif; box-shadow:0 4px 16px rgba(79,110,247,0.35);
+  transition:all var(--transition); width:100%;
 }
-.btn-primary svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; }
-.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-primary:hover { background:var(--accent-hover); transform:translateY(-1px); }
+.btn-primary:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+.btn-primary svg { width:16px; height:16px; stroke:#fff; fill:none; stroke-width:2.2; stroke-linecap:round; }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ── Phase: Sweep List ── */
+.sweep-page { max-width:680px; margin:0 auto; padding:0 0 120px; }
+
+.sweep-header {
+  position:sticky; top:56px; z-index:100;
+  background:var(--bg); border-bottom:1px solid var(--border);
+  padding:14px 20px 12px;
 }
+.sweep-step-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.sweep-step-badge {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.06em;
+  background:var(--accent-subtle); color:var(--accent); border:1px solid var(--accent-border);
+  border-radius:100px; padding:2px 9px;
+}
+.sweep-progress-bar { flex:1; height:4px; background:var(--surface3); border-radius:100px; overflow:hidden; }
+.sweep-progress-fill { height:100%; background:var(--accent); border-radius:100px; transition:width 0.4s ease; }
+.sweep-back-btn {
+  background:none; border:none; cursor:pointer; font-size:12px; color:var(--text3);
+  font-family:'DM Sans',sans-serif; padding:4px 0; display:flex; align-items:center; gap:4px;
+}
+.sweep-back-btn:hover { color:var(--text2); }
+.sweep-title { font-size:17px; font-weight:600; letter-spacing:-0.02em; margin-bottom:4px; }
+.sweep-subtitle { font-size:13px; color:var(--text2); font-weight:300; line-height:1.5; }
+.autofill-banner {
+  margin-top:10px; padding:8px 12px; background:var(--green-subtle); border:1px solid var(--green-border);
+  border-radius:var(--radius-sm); font-size:12px; color:var(--green); display:none;
+}
+
+.sweep-list { padding:0 20px; }
+.sweep-cat-heading {
+  font-size:10px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--text3); padding:16px 0 8px; border-bottom:1px solid var(--border); margin-bottom:0;
+}
+.sweep-row {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 0; border-bottom:1px solid var(--border); min-height:60px;
+}
+.sweep-row-info { flex:1; min-width:0; }
+.sweep-row-cat {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:10px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
+  color:var(--text3); margin-bottom:3px;
+}
+.sweep-row-cat-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.sweep-row-title { font-size:13px; font-weight:500; line-height:1.35; color:var(--text1); }
+.sweep-row-autofill { font-size:10px; color:var(--green); margin-top:2px; }
+.sweep-btn-group { display:flex; gap:5px; flex-shrink:0; }
+.sweep-btn {
+  width:38px; height:38px; border-radius:var(--radius-sm); border:1.5px solid var(--border);
+  background:var(--surface2); cursor:pointer; font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all var(--transition); font-family:'DM Sans',sans-serif;
+}
+.sweep-btn:hover { border-color:var(--border-hover); background:var(--surface3); }
+.sweep-btn.selected-yes { background:var(--green-subtle); border-color:var(--green-border); }
+.sweep-btn.selected-no  { background:var(--red-subtle);   border-color:var(--red-border); }
+.sweep-btn.selected-unsure { background:var(--yellow-subtle); border-color:var(--yellow-border); }
+
+.sweep-footer {
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
+  padding:12px 20px 28px;
+  background:linear-gradient(to top, var(--bg) 70%, transparent);
+}
+.sweep-footer-inner { max-width:680px; margin:0 auto; display:flex; flex-direction:column; gap:8px; }
+.sweep-remaining { font-size:12px; color:var(--text3); text-align:center; font-family:'DM Mono',monospace; }
+.sweep-remaining .remaining-num { color:var(--accent); font-weight:600; }
+
+/* ── Phase: Card (Sweep 3) ── */
+.card-phase-wrap {
+  position:fixed; inset:56px 0 0 0;
+  display:flex; flex-direction:column; align-items:center;
+  padding:16px 20px 0; overflow:hidden;
+}
+.card-phase-header {
+  width:100%; max-width:440px; flex-shrink:0;
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;
+}
+.card-phase-progress { font-size:12px; color:var(--text3); font-family:'DM Mono',monospace; }
+.card-phase-progress strong { color:var(--text2); font-weight:500; }
+.card-undo-btn {
+  display:flex; align-items:center; gap:5px;
+  font-size:12px; color:var(--text3); background:none; border:none;
+  cursor:pointer; font-family:'DM Sans',sans-serif; padding:4px 0;
+  transition:color var(--transition);
+}
+.card-undo-btn:disabled { opacity:0.3; cursor:not-allowed; }
+.card-undo-btn:not(:disabled):hover { color:var(--text1); }
+.card-undo-btn svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+
+.card-stack {
+  position:relative; width:100%; max-width:440px;
+  flex:1; min-height:0;
+}
+.swipe-card {
+  position:absolute; inset:0; bottom:0;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-xl); box-shadow:var(--shadow);
+  padding:20px 22px 16px; display:flex; flex-direction:column;
+  cursor:grab; overflow:hidden; will-change:transform;
+}
+.swipe-card:active { cursor:grabbing; }
+.swipe-card.behind-1 { transform:scale(0.96) translateY(10px); opacity:0.7; pointer-events:none; z-index:1; }
+.swipe-card.behind-2 { transform:scale(0.92) translateY(20px); opacity:0.4; pointer-events:none; z-index:0; }
+.swipe-card.active { z-index:10; }
+
+.swipe-overlay {
+  position:absolute; inset:0; border-radius:var(--radius-xl);
+  opacity:0; pointer-events:none;
+  display:flex; align-items:center; justify-content:center; z-index:20;
+}
+.overlay-nice { background:linear-gradient(225deg,var(--yellow-subtle),transparent); }
+.overlay-helpful { background:linear-gradient(135deg,var(--orange-subtle),transparent); }
+.overlay-game { background:linear-gradient(180deg,var(--red-subtle),transparent); }
+.swipe-badge {
+  padding:8px 20px; border-radius:100px; font-size:13px; font-weight:700;
+  letter-spacing:0.05em; text-transform:uppercase; border:2px solid;
+}
+.badge-nice    { color:var(--yellow); border-color:var(--yellow); transform:rotate(12deg); }
+.badge-helpful { color:var(--orange); border-color:var(--orange); transform:rotate(-12deg); }
+.badge-game    { color:var(--red);    border-color:var(--red); }
+
+.card-id { font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); margin-bottom:5px; }
+.card-category {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--accent); background:var(--accent-subtle); border:1px solid var(--accent-border);
+  border-radius:100px; padding:3px 10px; margin-bottom:12px; align-self:flex-start;
+}
+.card-title { font-size:18px; font-weight:600; letter-spacing:-0.025em; line-height:1.2; margin-bottom:10px; }
+.card-description { font-size:13px; color:var(--text2); line-height:1.65; font-weight:300; flex:1; overflow-y:auto; }
+.card-divider { height:1px; background:var(--border); margin:12px 0; flex-shrink:0; }
+.card-tools { display:flex; flex-wrap:wrap; gap:5px; flex-shrink:0; margin-bottom:8px; }
+.tool-chip { font-size:11px; color:var(--text3); background:var(--surface2); border:1px solid var(--border); border-radius:100px; padding:2px 9px; }
+.ethics-flag {
+  display:flex; align-items:center; gap:7px; background:var(--yellow-subtle);
+  border:1px solid var(--yellow-border); border-radius:var(--radius-sm); padding:7px 11px;
+  font-size:11px; color:var(--yellow); flex-shrink:0;
+}
+.ethics-flag svg { width:13px; height:13px; stroke:var(--yellow); fill:none; stroke-width:2; stroke-linecap:round; flex-shrink:0; }
+
+.card-quality-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11px; color:var(--text3); margin-bottom:6px; flex-shrink:0;
+}
+
+.benefit-bar {
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
+  padding:10px 20px 28px;
+  background:linear-gradient(to top, var(--bg) 65%, transparent);
+}
+.benefit-bar-inner { max-width:440px; margin:0 auto; }
+.benefit-question { font-size:12px; color:var(--text3); text-align:center; margin-bottom:10px; font-family:'DM Mono',monospace; }
+.benefit-btns { display:flex; gap:8px; }
+.benefit-btn {
+  flex:1; padding:12px 8px; border-radius:var(--radius-md); border:1.5px solid var(--border);
+  background:var(--surface); cursor:pointer; font-family:'DM Sans',sans-serif;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  transition:all 200ms cubic-bezier(0.34,1.56,0.64,1);
+}
+.benefit-btn:hover { transform:translateY(-2px); }
+.benefit-btn:active { transform:scale(0.95); }
+.benefit-btn-icon { font-size:22px; }
+.benefit-btn-label { font-size:11px; font-weight:600; color:var(--text2); }
+.benefit-btn-sub { font-size:10px; color:var(--text3); text-align:center; line-height:1.3; }
+.benefit-btn.btn-nice:hover, .benefit-btn.btn-nice:active { border-color:var(--yellow-border); background:var(--yellow-subtle); }
+.benefit-btn.btn-helpful:hover, .benefit-btn.btn-helpful:active { border-color:var(--orange-border); background:var(--orange-subtle); }
+.benefit-btn.btn-game:hover, .benefit-btn.btn-game:active { border-color:var(--red-border); background:var(--red-subtle); }
+
+/* ── Phase: Results ── */
+.results-page { max-width:600px; margin:0 auto; padding:24px 20px 100px; }
+.results-hero { margin-bottom:24px; }
+.results-hero-icon { font-size:36px; margin-bottom:12px; }
+.results-hero h1 { font-size:22px; font-weight:700; letter-spacing:-0.03em; margin-bottom:6px; }
+.results-hero p { font-size:13px; color:var(--text2); line-height:1.6; font-weight:300; }
+
+.results-stats { display:flex; gap:8px; margin-bottom:24px; }
+.results-stat {
+  flex:1; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:12px; text-align:center;
+}
+.results-stat-num { font-size:26px; font-weight:700; letter-spacing:-0.04em; }
+.results-stat-label { font-size:10px; color:var(--text3); margin-top:2px; }
+
+.result-group { margin-bottom:16px; }
+.result-group-header {
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border-radius:var(--radius-md) var(--radius-md) 0 0;
+  border:1px solid var(--border); border-bottom:none;
+}
+.result-group-icon { font-size:18px; flex-shrink:0; }
+.result-group-title { font-size:13px; font-weight:600; flex:1; }
+.result-group-count { font-size:11px; font-family:'DM Mono',monospace; color:var(--text3); }
+.result-group-body { border:1px solid var(--border); border-radius:0 0 var(--radius-md) var(--radius-md); overflow:hidden; }
+.result-item { padding:10px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.result-item:last-child { border-bottom:none; }
+.result-item-id { font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); flex-shrink:0; }
+.result-item-title { font-size:13px; font-weight:500; flex:1; }
+.result-item-badge { font-size:10px; padding:2px 8px; border-radius:100px; flex-shrink:0; font-weight:600; }
+
+.group-priority .result-group-header { background:var(--green-subtle); border-color:var(--green-border); }
+.group-priority .result-group-title { color:var(--green); }
+.group-second .result-group-header { background:var(--accent-subtle); border-color:var(--accent-border); }
+.group-second .result-group-title { color:var(--accent); }
+.group-conditional .result-group-header { background:var(--yellow-subtle); border-color:var(--yellow-border); }
+.group-conditional .result-group-title { color:var(--yellow); }
+.group-optional .result-group-header { background:var(--surface2); }
+.group-deferred .result-group-header { background:var(--surface2); }
+.group-not-rec .result-group-header { background:var(--red-subtle); border-color:var(--red-border); }
+.group-not-rec .result-group-title { color:var(--red); }
+
+.collapsed-groups { margin-bottom:16px; }
+.collapsed-row {
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
+  margin-bottom:6px; font-size:13px; color:var(--text2);
+}
+.collapsed-row-icon { font-size:16px; }
+
+.results-cta { position:fixed; bottom:0; left:0; right:0; z-index:100; padding:12px 20px 28px; background:linear-gradient(to top, var(--bg) 70%, transparent); }
+.results-cta-inner { max-width:600px; margin:0 auto; }
+.results-cta-note { font-size:11px; color:var(--text3); text-align:center; margin-bottom:8px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation:fadeUp 0.4s ease both; }
 </style>
 </head>
 <body>
@@ -341,8 +378,8 @@ nav {
     <span class="nav-logo-text">TRUST<span>-AI</span></span>
   </a>
   <div class="nav-right">
-    <button onclick="window.location.href='trust-ai-trust-ai-screen7.html'" style="background:transparent;border:1px solid var(--border);color:var(--text-secondary);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">← Zurück</button>
-    <button id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus" style="background:transparent;border:1px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;">☀️</button>
+    <button class="icon-btn" onclick="window.location.href='trust-ai-screen2.html'" title="Zurück" style="font-size:13px;">←</button>
+    <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus">☀️</button>
     <div class="progress-dots">
       <div class="progress-dot done"></div>
       <div class="progress-dot done"></div>
@@ -356,161 +393,501 @@ nav {
   </div>
 </nav>
 
-<div class="layout">
-  <div class="header-strip">
-    <div class="progress-label-main">Karte <strong id="card-counter">1</strong> von <strong id="card-total">26</strong></div>
-    <button class="undo-btn" id="undo-btn" onclick="undoLast()" disabled>
-      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-      Rückgängig
+<!-- ══ Phase 0: Filter ══ -->
+<div id="phase-filter" class="page">
+  <div class="filter-page">
+    <div class="filter-hero">
+      <div class="filter-hero-icon">🎯</div>
+      <h1>Use Case Discovery</h1>
+      <p>In 3 schnellen Schritten zur KI-Shortlist.<br/>Das Kano-Modell führt dich durch Tool-Check, Qualitäts-Gate und Nutzen-Rating.</p>
+    </div>
+
+    <div class="kano-steps">
+      <div class="kano-step ko">
+        <div class="kano-step-num">01</div>
+        <div class="kano-step-icon">🔧</div>
+        <div class="kano-step-label">Tool-Check</div>
+        <div class="kano-step-sub">Muss-Faktor<br/>Tool vorhanden?</div>
+      </div>
+      <div class="kano-step ko">
+        <div class="kano-step-num">02</div>
+        <div class="kano-step-icon">✅</div>
+        <div class="kano-step-label">Qualitäts-Gate</div>
+        <div class="kano-step-sub">Muss-Faktor<br/>KI verlässlich?</div>
+      </div>
+      <div class="kano-step perf">
+        <div class="kano-step-num">03</div>
+        <div class="kano-step-icon">🔥</div>
+        <div class="kano-step-label">Nutzen-Rating</div>
+        <div class="kano-step-sub">Leistungsfaktor<br/>Wie viel Mehrwert?</div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-label">Auswahl</div>
+      <div class="preset-row">
+        <button class="preset-btn active" id="preset-all" onclick="setPreset('all')">
+          Alle 24 Use Cases
+        </button>
+        <button class="preset-btn" id="preset-top10" onclick="setPreset('top10')">
+          ⚡ Top 10
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-label">Oder nach Kategorie filtern</div>
+      <div class="cat-chips" id="cat-chips"></div>
+    </div>
+
+    <div class="filter-summary">
+      <div class="filter-summary-count"><span id="filter-count">24</span> Use Cases ausgewählt</div>
+      <div class="filter-summary-note" id="autofill-hint" style="display:none;">✨ <span id="autofill-count">0</span> automatisch vorausgefüllt</div>
+    </div>
+
+    <button class="btn-primary" onclick="startDiscovery()">
+      Discovery starten
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
   </div>
-  <div class="card-stack" id="card-stack"></div>
 </div>
 
-<!-- Action Bar -->
-<div class="action-bar" id="action-bar">
-  <button class="action-btn btn-skip" onclick="swipeCard('left')">
-    <div class="action-btn-inner">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+<!-- ══ Phase 1: Tool-Check ══ -->
+<div id="phase-sweep1" class="page" style="display:none;">
+  <div class="sweep-page">
+    <div class="sweep-header">
+      <div class="sweep-step-row">
+        <button class="sweep-back-btn" onclick="goToFilter()">← Auswahl</button>
+        <div style="flex:1;"></div>
+        <span class="sweep-step-badge">Schritt 1 / 3</span>
+      </div>
+      <div class="sweep-progress-bar" style="margin-bottom:10px;">
+        <div class="sweep-progress-fill" style="width:33%;"></div>
+      </div>
+      <div class="sweep-title">🔧 Tool-Check</div>
+      <div class="sweep-subtitle">Gibt es für diesen Use Case ein zugelassenes KI-Tool in eurem Projekt?</div>
+      <div class="autofill-banner" id="autofill-banner"></div>
     </div>
-    <span class="action-btn-label">Überspringen</span>
-  </button>
-  <button class="action-btn btn-now" onclick="swipeCard('up')">
-    <div class="action-btn-inner">
-      <svg viewBox="0 0 24 24"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
-    </div>
-    <span class="action-btn-label">Sofort</span>
-  </button>
-  <button class="action-btn btn-shortlist" onclick="swipeCard('right')">
-    <div class="action-btn-inner">
-      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-    </div>
-    <span class="action-btn-label">Shortlist</span>
-  </button>
-</div>
-
-<!-- Skip Reason Modal -->
-<div class="modal-backdrop" id="skip-modal" onclick="closeModalOutside(event)">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Warum nicht?</div>
-    <div class="modal-options">
-      <div class="modal-option" onclick="confirmSkip('not_relevant')"><span class="emoji">🚫</span> Für unser Projekt nicht relevant</div>
-      <div class="modal-option" onclick="confirmSkip('too_much_effort')"><span class="emoji">⚙️</span> Zu aufwändig einzurichten</div>
-      <div class="modal-option" onclick="confirmSkip('no_tool')"><span class="emoji">🔧</span> Kein passendes Tool vorhanden</div>
-      <div class="modal-option" onclick="confirmSkip('already_manual')"><span class="emoji">✅</span> Bereits manuell gelöst, funktioniert gut</div>
-      <div class="modal-option" onclick="confirmSkip('data_privacy')"><span class="emoji">🔒</span> Datenschutz- oder Compliance-Bedenken</div>
-      <div class="modal-option" onclick="confirmSkip('no_reason')"><span class="emoji">💬</span> Kein spezifischer Grund</div>
+    <div class="sweep-list" id="sweep1-list"></div>
+  </div>
+  <div class="sweep-footer">
+    <div class="sweep-footer-inner">
+      <div class="sweep-remaining" id="s1-remaining"></div>
+      <button class="btn-primary" id="s1-next" onclick="goToSweep2()" disabled>Weiter zum Qualitäts-Gate →</button>
     </div>
   </div>
 </div>
 
-<!-- Done Screen -->
-<div class="done-screen" id="done-screen">
-  <div class="done-icon">
-    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  </div>
-  <div class="done-title">Discovery abgeschlossen!</div>
-  <div class="done-sub">Du hast alle Use Cases gesichtet.<br/>Hier ist deine Zusammenfassung:</div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:-16px;font-size:11px;color:var(--text-secondary);font-family:'DM Mono',monospace;letter-spacing:0.03em;">
-    <span style="opacity:0.5">Longlist</span>
-    <span style="color:var(--green);font-weight:600;">✓ Discovery</span>
-    <span>→</span>
-    <span style="color:var(--yellow);">Shortlist</span>
-    <span>→</span>
-    <span>Priorisierung</span>
-    <span>→</span>
-    <span>Bewertung</span>
-  </div>
-  <div class="done-stats">
-    <div class="done-stat stat-now">
-      <div class="done-stat-num" id="stat-now">0</div>
-      <div class="done-stat-label">⚡ Sofort</div>
+<!-- ══ Phase 2: Quality Gate ══ -->
+<div id="phase-sweep2" class="page" style="display:none;">
+  <div class="sweep-page">
+    <div class="sweep-header">
+      <div class="sweep-step-row">
+        <button class="sweep-back-btn" onclick="goToSweep1()">← Tool-Check</button>
+        <div style="flex:1;"></div>
+        <span class="sweep-step-badge">Schritt 2 / 3</span>
+      </div>
+      <div class="sweep-progress-bar" style="margin-bottom:10px;">
+        <div class="sweep-progress-fill" style="width:66%;"></div>
+      </div>
+      <div class="sweep-title">✅ Qualitäts-Gate</div>
+      <div class="sweep-subtitle">Kann KI hier verlässliche Ergebnisse liefern, die du inhaltlich verantworten kannst?</div>
     </div>
-    <div class="done-stat stat-shortlist">
-      <div class="done-stat-num" id="stat-shortlist">0</div>
-      <div class="done-stat-label">✓ Shortlist</div>
-    </div>
-    <div class="done-stat stat-skip">
-      <div class="done-stat-num" id="stat-skip">0</div>
-      <div class="done-stat-label">– Übersprungen</div>
+    <div class="sweep-list" id="sweep2-list"></div>
+  </div>
+  <div class="sweep-footer">
+    <div class="sweep-footer-inner">
+      <div class="sweep-remaining" id="s2-remaining"></div>
+      <button class="btn-primary" id="s2-next" onclick="goToSweep3()" disabled>Weiter zum Nutzen-Rating →</button>
     </div>
   </div>
-  <button class="btn-primary" onclick="goToShortlist()">
-    Zur Priorisierung
-    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-  </button>
+</div>
+
+<!-- ══ Phase 3: Benefit Rating ══ -->
+<div id="phase-sweep3" style="display:none;">
+  <div class="card-phase-wrap">
+    <div class="card-phase-header">
+      <div class="card-phase-progress">
+        Karte <strong id="s3-counter">1</strong> von <strong id="s3-total">1</strong>
+      </div>
+      <button class="card-undo-btn" id="s3-undo" onclick="undoBenefit()" disabled>
+        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Rückgängig
+      </button>
+    </div>
+    <div class="card-stack" id="card-stack"></div>
+  </div>
+  <div class="benefit-bar">
+    <div class="benefit-bar-inner">
+      <div class="benefit-question">Wie viel Mehrwert bringt das für euer Projekt?</div>
+      <div class="benefit-btns">
+        <button class="benefit-btn btn-nice" onclick="rateBenefit('nice_to_have')">
+          <div class="benefit-btn-icon">🟡</div>
+          <div class="benefit-btn-label">Nice-to-have</div>
+          <div class="benefit-btn-sub">kaum Unterschied</div>
+        </button>
+        <button class="benefit-btn btn-helpful" onclick="rateBenefit('helpful')">
+          <div class="benefit-btn-icon">🟠</div>
+          <div class="benefit-btn-label">Hilfreich</div>
+          <div class="benefit-btn-sub">spürbare Effizienz</div>
+        </button>
+        <button class="benefit-btn btn-game" onclick="rateBenefit('gamechanger')">
+          <div class="benefit-btn-icon">🔥</div>
+          <div class="benefit-btn-label">Gamechanger</div>
+          <div class="benefit-btn-sub">erheblicher Mehrwert</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Phase 4: Results ══ -->
+<div id="phase-results" class="page" style="display:none;">
+  <div class="results-page fade-up">
+    <div class="results-hero">
+      <div class="results-hero-icon">🎉</div>
+      <h1>Discovery abgeschlossen</h1>
+      <p id="results-summary-text">Deine Use Cases wurden durch den Kano-Trichter bewertet.</p>
+    </div>
+    <div class="results-stats" id="results-stats"></div>
+    <div id="results-groups"></div>
+  </div>
+  <div class="results-cta">
+    <div class="results-cta-inner">
+      <div class="results-cta-note" id="results-cta-note"></div>
+      <button class="btn-primary" onclick="goToShortlist()">
+        Zur Shortlist
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
+// ══ Use Case Data ══
 const USE_CASES = [
-  { id:"UC-01", title:"Erstellung von Projektstatusberichten", category:"Kommunikation & Reporting", card_description:"KI aggregiert Projektdaten und erstellt automatisch strukturierte Statusberichte – formatiert und versandfertig.", typical_tools:["ChatGPT","Copilot","Notion AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"2–4 Stunden pro Woche manuell.", classification:"significant" } },
-  { id:"UC-02", title:"Zusammenfassung von Meetings", category:"Dokumentation & Wissen", card_description:"KI transkribiert und fasst Meetinginhalte, Entscheidungen und Action Items automatisch zusammen.", typical_tools:["MS Teams Premium","Otter.ai","Fireflies"], ethical_flag:true, ethical_note:"Aufzeichnung von Personen – Einwilligung erforderlich.", rejection_consequence:{ effort_impact:"30–60 Min. Protokollaufwand pro Meeting.", classification:"significant" } },
-  { id:"UC-03", title:"Erstellung von Präsentationen", category:"Kommunikation & Reporting", card_description:"KI erstellt Gliederung, Texte und Vorschläge für Folien auf Basis von Briefings oder Dokumenten.", typical_tools:["ChatGPT","Copilot","Gamma.app"], ethical_flag:false, rejection_consequence:{ effort_impact:"3–6 Stunden pro Präsentation.", classification:"nice_to_have" } },
-  { id:"UC-04", title:"Erstellung von Projektdokumentation", category:"Dokumentation & Wissen", card_description:"KI erstellt, strukturiert und pflegt Projektdokumente wie Konzepte, Spezifikationen und Handbücher.", typical_tools:["ChatGPT","Copilot","Confluence AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"Dokumentation ist einer der zeitintensivsten PM-Bereiche.", classification:"significant" } },
-  { id:"UC-05", title:"Formulierung von Stakeholder-Kommunikation", category:"Kommunikation & Reporting", card_description:"KI formuliert E-Mails, Updates und Nachrichten an Stakeholder – zielgruppengerecht und situationsangemessen.", typical_tools:["ChatGPT","Copilot","Grammarly"], ethical_flag:false, rejection_consequence:{ effort_impact:"Gering – eher Komfort als Kernprozess.", classification:"nice_to_have" } },
-  { id:"UC-06", title:"Live-Zusammenfassung während Meetings", category:"Meeting-Unterstützung", card_description:"KI fasst laufende Diskussionen in Echtzeit zusammen und zeigt den aktuellen Stand für alle sichtbar an.", typical_tools:["MS Teams Premium","Otter.ai Live"], ethical_flag:true, ethical_note:"Echtzeit-Aufzeichnung aller Personen – erhöhte Anforderungen.", rejection_consequence:{ effort_impact:"Kein wesentlicher Mehraufwand bei Ablehnung.", classification:"nice_to_have" } },
-  { id:"UC-07", title:"Vorschläge für nächste Fragen im Meeting", category:"Meeting-Unterstützung", card_description:"KI analysiert die laufende Diskussion und schlägt dem Moderator relevante Folgefragen vor.", typical_tools:["GPT-basierte Meeting-Tools"], ethical_flag:false, rejection_consequence:{ effort_impact:"Keine – rein additiver Nutzen.", classification:"nice_to_have" } },
-  { id:"UC-08", title:"Hinweise auf offene Punkte oder Unklarheiten", category:"Meeting-Unterstützung", card_description:"KI erkennt während des Meetings ungelöste Fragen und Widersprüche und gibt dem Moderator diskret einen Hinweis.", typical_tools:["GPT-basierte Meeting-Tools"], ethical_flag:false, rejection_consequence:{ effort_impact:"Offene Punkte werden erst in der Nachbereitung aufgedeckt.", classification:"valuable" } },
-  { id:"UC-09", title:"Coaching des Moderators während Meetings", category:"Meeting-Unterstützung", card_description:"KI gibt dem Moderator diskrete Echtzeit-Hinweise zu Meetingführung, Zeit, Beteiligung und Dynamik.", typical_tools:["Speziallösungen"], ethical_flag:true, ethical_note:"Analyse von Redeverhalten – potenziell sensibel für Leistungsbewertung.", rejection_consequence:{ effort_impact:"Keine.", classification:"nice_to_have" } },
-  { id:"UC-10", title:"Erstellung von Projektplänen", category:"Planung & Steuerung", card_description:"KI erstellt auf Basis der Projektbeschreibung einen strukturierten Entwurf mit Phasen, Meilensteinen und Aufgaben.", typical_tools:["ChatGPT","Copilot","Asana AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"KI beschleunigt den ersten Planungsentwurf erheblich.", classification:"valuable" } },
-  { id:"UC-11", title:"Schätzung von Aufwänden", category:"Planung & Steuerung", card_description:"KI unterstützt bei der Aufwandsschätzung durch Analyse ähnlicher Projekte, Erfahrungswerte und Komplexitätsbewertung.", typical_tools:["ChatGPT","Speziallösungen"], ethical_flag:false, rejection_consequence:{ effort_impact:"Fehlschätzungen sind ein häufiger Projektrisikofaktor.", classification:"valuable" } },
-  { id:"UC-12", title:"Optimierung von Zeitplänen", category:"Planung & Steuerung", card_description:"KI analysiert Abhängigkeiten, Ressourcen und Constraints und schlägt optimierte Zeitpläne vor.", typical_tools:["Microsoft Project","Monday.ai"], ethical_flag:false, rejection_consequence:{ effort_impact:"Manuelle Neuplanung ist zeitaufwändig.", classification:"valuable" } },
-  { id:"UC-13", title:"Simulation von Projektszenarien", category:"Planung & Steuerung", card_description:"KI simuliert 'Was wäre wenn'-Szenarien und zeigt Auswirkungen auf Zeit, Kosten und Qualität.", typical_tools:["ChatGPT mit Projektdaten"], ethical_flag:false, rejection_consequence:{ effort_impact:"Ohne Simulation werden Risiken oft zu spät erkannt.", classification:"significant" } },
-  { id:"UC-14", title:"Unterstützung bei Stage-Gate-Bewertungen", category:"Planung & Steuerung", card_description:"KI bereitet Stage-Gate-Entscheidungen vor, fasst den Projektstatus zusammen und bewertet Kriterien.", typical_tools:["ChatGPT","Copilot"], ethical_flag:true, ethical_note:"Direkte Folgen für Teams – Verantwortungsdiffusion durch KI ist ein ethisches Risiko.", rejection_consequence:{ effort_impact:"Gate-Review-Vorbereitung ist zeitaufwändig.", classification:"valuable" } },
-  { id:"UC-15", title:"Bewertung von Risiken", category:"Risiko & Entscheidung", card_description:"KI identifiziert und bewertet Projektrisiken auf Basis von Projektdaten, Erfahrungswerten und Mustererkennung.", typical_tools:["ChatGPT","Speziallösungen Risikomanagement"], ethical_flag:false, rejection_consequence:{ effort_impact:"Ohne Systematik werden Risiken übersehen.", classification:"significant" } },
-  { id:"UC-16", title:"Erstellung von Entscheidungsvorlagen", category:"Risiko & Entscheidung", card_description:"KI strukturiert Entscheidungsbedarfe, fasst Optionen zusammen und bereitet Empfehlungen auf.", typical_tools:["ChatGPT","Copilot"], ethical_flag:true, ethical_note:"Wenn KI eine Empfehlung gibt, sinkt die kritische Auseinandersetzung mit Alternativen.", rejection_consequence:{ effort_impact:"Erfahrene PMs erstellen gute Vorlagen auch manuell.", classification:"valuable" } },
-  { id:"UC-17", title:"Analyse von Projektperformance", category:"Risiko & Entscheidung", card_description:"KI analysiert KPIs, Trends und Muster in Projektdaten und gibt Hinweise auf Abweichungen und Verbesserungspotenziale.", typical_tools:["Power BI mit KI","Tableau AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"Muster werden ohne KI oft zu spät erkannt.", classification:"significant" } },
-  { id:"UC-18", title:"Erstellung von Testfällen", category:"Qualität & Testing", card_description:"KI generiert auf Basis von Anforderungen oder User Stories strukturierte Testfälle und Testszenarien.", typical_tools:["GitHub Copilot","ChatGPT"], ethical_flag:false, rejection_consequence:{ effort_impact:"Testfallentwicklung ist sehr zeitaufwändig.", classification:"significant" } },
-  { id:"UC-20", title:"Identifikation von Qualitätsproblemen", category:"Qualität & Testing", card_description:"KI erkennt Qualitätsmuster, analysiert Testergebnisse und warnt vor systemischen Problemen in Entwicklung und Testing.", typical_tools:["PM-Tools mit Analytics"], ethical_flag:false, rejection_consequence:{ effort_impact:"Frühe Erkennung verhindert späte Eskalationen.", classification:"significant" } },
-  { id:"UC-21", title:"Beantwortung von Projektfragen", category:"Dokumentation & Wissen", card_description:"KI beantwortet Fragen von Projektmitgliedern auf Basis der Projektdokumentation sofort und entlastet den PM.", typical_tools:["ChatGPT","Copilot für SharePoint"], ethical_flag:false, rejection_consequence:{ effort_impact:"Fragen an den PM binden erheblich Kapazität.", classification:"significant" } },
-  { id:"UC-22", title:"Durchsuchung von Projektdokumentation", category:"Dokumentation & Wissen", card_description:"KI durchsucht die Projektdokumentation semantisch und findet relevante Inhalte auch ohne exakte Stichwörter.", typical_tools:["Copilot für SharePoint","Confluence AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"Suche in großen Dokumentenbeständen ist mühsam.", classification:"valuable" } },
-  { id:"UC-24", title:"Onboarding neuer Projektmitglieder", category:"Dokumentation & Wissen", card_description:"KI führt neue Teammitglieder durch den Projektkontext, beantwortet Fragen und erklärt Entscheidungshistorie.", typical_tools:["ChatGPT mit Projektdaten","Copilot"], ethical_flag:false, rejection_consequence:{ effort_impact:"Onboarding ohne KI bindet erfahrene Teammitglieder stark.", classification:"significant" } },
-  { id:"UC-25", title:"Unterstützung im Vendor- und Vertragsmanagement", category:"Risiko & Entscheidung", card_description:"KI analysiert und fasst Verträge zusammen, identifiziert Risiken und unterstützt bei der Lieferantenbewertung.", typical_tools:["ChatGPT","Speziallösungen Legal Tech"], ethical_flag:false, rejection_consequence:{ effort_impact:"Kritische Klauseln werden manuell eher übersehen.", classification:"valuable" } },
-  { id:"UC-26", title:"Budgetüberwachung und Kostenprognose", category:"Planung & Steuerung", card_description:"KI überwacht den Budgetverbrauch, erkennt Abweichungen frühzeitig und erstellt Kostenprognosen.", typical_tools:["SAP mit KI","Power BI AI"], ethical_flag:false, rejection_consequence:{ effort_impact:"Späte Erkennung von Budgetabweichungen ist ein häufiger Risikofaktor.", classification:"significant" } },
+  { id:"UC-01", title:"Erstellung von Projektstatusberichten", category:"Kommunikation & Reporting", card_description:"KI aggregiert Projektdaten und erstellt automatisch strukturierte Statusberichte – formatiert und versandfertig.", typical_tools:["ChatGPT","Copilot","Notion AI"], ethical_flag:false },
+  { id:"UC-02", title:"Zusammenfassung von Meetings", category:"Dokumentation & Wissen", card_description:"KI transkribiert und fasst Meetinginhalte, Entscheidungen und Action Items automatisch zusammen.", typical_tools:["MS Teams Premium","Otter.ai","Fireflies"], ethical_flag:true, ethical_note:"Aufzeichnung von Personen – Einwilligung erforderlich." },
+  { id:"UC-03", title:"Erstellung von Präsentationen", category:"Kommunikation & Reporting", card_description:"KI erstellt Gliederung, Texte und Vorschläge für Folien auf Basis von Briefings oder Dokumenten.", typical_tools:["ChatGPT","Copilot","Gamma.app"], ethical_flag:false },
+  { id:"UC-04", title:"Erstellung von Projektdokumentation", category:"Dokumentation & Wissen", card_description:"KI erstellt, strukturiert und pflegt Projektdokumente wie Konzepte, Spezifikationen und Handbücher.", typical_tools:["ChatGPT","Copilot","Confluence AI"], ethical_flag:false },
+  { id:"UC-05", title:"Formulierung von Stakeholder-Kommunikation", category:"Kommunikation & Reporting", card_description:"KI formuliert E-Mails, Updates und Nachrichten an Stakeholder – zielgruppengerecht und situationsangemessen.", typical_tools:["ChatGPT","Copilot","Grammarly"], ethical_flag:false },
+  { id:"UC-06", title:"Live-Zusammenfassung während Meetings", category:"Meeting-Unterstützung", card_description:"KI fasst laufende Diskussionen in Echtzeit zusammen und zeigt den aktuellen Stand für alle sichtbar an.", typical_tools:["MS Teams Premium","Otter.ai Live"], ethical_flag:true, ethical_note:"Echtzeit-Aufzeichnung aller Personen – erhöhte Anforderungen." },
+  { id:"UC-07", title:"Vorschläge für nächste Fragen im Meeting", category:"Meeting-Unterstützung", card_description:"KI analysiert die laufende Diskussion und schlägt dem Moderator relevante Folgefragen vor.", typical_tools:["GPT-basierte Meeting-Tools"], ethical_flag:false },
+  { id:"UC-08", title:"Hinweise auf offene Punkte oder Unklarheiten", category:"Meeting-Unterstützung", card_description:"KI erkennt während des Meetings ungelöste Fragen und Widersprüche und gibt dem Moderator diskret einen Hinweis.", typical_tools:["GPT-basierte Meeting-Tools"], ethical_flag:false },
+  { id:"UC-09", title:"Coaching des Moderators während Meetings", category:"Meeting-Unterstützung", card_description:"KI gibt dem Moderator diskrete Echtzeit-Hinweise zu Meetingführung, Zeit, Beteiligung und Dynamik.", typical_tools:["Speziallösungen"], ethical_flag:true, ethical_note:"Analyse von Redeverhalten – potenziell sensibel für Leistungsbewertung." },
+  { id:"UC-10", title:"Erstellung von Projektplänen", category:"Planung & Steuerung", card_description:"KI erstellt auf Basis der Projektbeschreibung einen strukturierten Entwurf mit Phasen, Meilensteinen und Aufgaben.", typical_tools:["ChatGPT","Copilot","Asana AI"], ethical_flag:false },
+  { id:"UC-11", title:"Schätzung von Aufwänden", category:"Planung & Steuerung", card_description:"KI unterstützt bei der Aufwandsschätzung durch Analyse ähnlicher Projekte, Erfahrungswerte und Komplexitätsbewertung.", typical_tools:["ChatGPT","Speziallösungen"], ethical_flag:false },
+  { id:"UC-12", title:"Optimierung von Zeitplänen", category:"Planung & Steuerung", card_description:"KI analysiert Abhängigkeiten, Ressourcen und Constraints und schlägt optimierte Zeitpläne vor.", typical_tools:["Microsoft Project","Monday.ai"], ethical_flag:false },
+  { id:"UC-13", title:"Simulation von Projektszenarien", category:"Planung & Steuerung", card_description:"KI simuliert 'Was wäre wenn'-Szenarien und zeigt Auswirkungen auf Zeit, Kosten und Qualität.", typical_tools:["ChatGPT mit Projektdaten"], ethical_flag:false },
+  { id:"UC-14", title:"Unterstützung bei Stage-Gate-Bewertungen", category:"Planung & Steuerung", card_description:"KI bereitet Stage-Gate-Entscheidungen vor, fasst den Projektstatus zusammen und bewertet Kriterien.", typical_tools:["ChatGPT","Copilot"], ethical_flag:true, ethical_note:"Direkte Folgen für Teams – Verantwortungsdiffusion durch KI ist ein ethisches Risiko." },
+  { id:"UC-15", title:"Bewertung von Risiken", category:"Risiko & Entscheidung", card_description:"KI identifiziert und bewertet Projektrisiken auf Basis von Projektdaten, Erfahrungswerten und Mustererkennung.", typical_tools:["ChatGPT","Speziallösungen Risikomanagement"], ethical_flag:false },
+  { id:"UC-16", title:"Erstellung von Entscheidungsvorlagen", category:"Risiko & Entscheidung", card_description:"KI strukturiert Entscheidungsbedarfe, fasst Optionen zusammen und bereitet Empfehlungen auf.", typical_tools:["ChatGPT","Copilot"], ethical_flag:true, ethical_note:"Wenn KI eine Empfehlung gibt, sinkt die kritische Auseinandersetzung mit Alternativen." },
+  { id:"UC-17", title:"Analyse von Projektperformance", category:"Risiko & Entscheidung", card_description:"KI analysiert KPIs, Trends und Muster in Projektdaten und gibt Hinweise auf Abweichungen und Verbesserungspotenziale.", typical_tools:["Power BI mit KI","Tableau AI"], ethical_flag:false },
+  { id:"UC-18", title:"Erstellung von Testfällen", category:"Qualität & Testing", card_description:"KI generiert auf Basis von Anforderungen oder User Stories strukturierte Testfälle und Testszenarien.", typical_tools:["GitHub Copilot","ChatGPT"], ethical_flag:false },
+  { id:"UC-20", title:"Identifikation von Qualitätsproblemen", category:"Qualität & Testing", card_description:"KI erkennt Qualitätsmuster, analysiert Testergebnisse und warnt vor systemischen Problemen in Entwicklung und Testing.", typical_tools:["PM-Tools mit Analytics"], ethical_flag:false },
+  { id:"UC-21", title:"Beantwortung von Projektfragen", category:"Dokumentation & Wissen", card_description:"KI beantwortet Fragen von Projektmitgliedern auf Basis der Projektdokumentation sofort und entlastet den PM.", typical_tools:["ChatGPT","Copilot für SharePoint"], ethical_flag:false },
+  { id:"UC-22", title:"Durchsuchung von Projektdokumentation", category:"Dokumentation & Wissen", card_description:"KI durchsucht die Projektdokumentation semantisch und findet relevante Inhalte auch ohne exakte Stichwörter.", typical_tools:["Copilot für SharePoint","Confluence AI"], ethical_flag:false },
+  { id:"UC-24", title:"Onboarding neuer Projektmitglieder", category:"Dokumentation & Wissen", card_description:"KI führt neue Teammitglieder durch den Projektkontext, beantwortet Fragen und erklärt Entscheidungshistorie.", typical_tools:["ChatGPT mit Projektdaten","Copilot"], ethical_flag:false },
+  { id:"UC-25", title:"Unterstützung im Vendor- und Vertragsmanagement", category:"Risiko & Entscheidung", card_description:"KI analysiert und fasst Verträge zusammen, identifiziert Risiken und unterstützt bei der Lieferantenbewertung.", typical_tools:["ChatGPT","Speziallösungen Legal Tech"], ethical_flag:false },
+  { id:"UC-26", title:"Budgetüberwachung und Kostenprognose", category:"Planung & Steuerung", card_description:"KI überwacht den Budgetverbrauch, erkennt Abweichungen frühzeitig und erstellt Kostenprognosen.", typical_tools:["SAP mit KI","Power BI AI"], ethical_flag:false },
 ];
 
-// ── State ──
-let currentIndex = 0;
-let history = [];
-let swipeResults = [];
-let isDragging = false;
-let startX = 0, startY = 0;
-let currentX = 0, currentY = 0;
-let pendingSkipIndex = null;
+const TOP_10_IDS = ['UC-01','UC-02','UC-04','UC-10','UC-15','UC-17','UC-18','UC-21','UC-24','UC-26'];
+
+const CATEGORIES = [
+  { key:'Kommunikation & Reporting', label:'Kommunikation', color:'#4F6EF7' },
+  { key:'Dokumentation & Wissen',    label:'Dokumentation', color:'#22C55E' },
+  { key:'Meeting-Unterstützung',     label:'Meeting',       color:'#F59E0B' },
+  { key:'Planung & Steuerung',       label:'Planung',       color:'#8B5CF6' },
+  { key:'Risiko & Entscheidung',     label:'Risiko',        color:'#EF4444' },
+  { key:'Qualität & Testing',        label:'Qualität',      color:'#F97316' },
+];
+
+// ══ State ══
+let preset = 'all';
+let activeCats = new Set(CATEGORIES.map(c => c.key));
+let activeUCs = [...USE_CASES];
+let toolAnswers = {};    // ucId → 'yes'|'no'|'unsure'
+let autoFilledIds = new Set();
+let qualityAnswers = {}; // ucId → 'yes'|'no'|'unsure'
+let benefitAnswers = {}; // ucId → 'gamechanger'|'helpful'|'nice_to_have'
+let sweep3Queue = [];
+let sweep3Index = 0;
+let sweep3History = [];
 let isAnimating = false;
+let dragStartX = 0, dragStartY = 0, dragCurX = 0, dragCurY = 0, isDragging = false;
 
-const classLabels = { significant: 'Hohe Relevanz', valuable: 'Wertvoll', nice_to_have: 'Nice to have' };
-
+// ══ Init ══
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('card-total').textContent = USE_CASES.length;
-  renderCards();
-  initDrag();
+  applyThemeFromStorage();
+  buildCatChips();
+  autoFillFromInventory();
+  updateFilterSummary();
 });
 
-function renderCards() {
+function autoFillFromInventory() {
+  try {
+    const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
+    const inventory = proj.tool_inventory || [];
+    autoFilledIds = new Set();
+    inventory.forEach(tool => {
+      (tool.approved_use_cases || []).forEach(ucId => {
+        const uc = USE_CASES.find(u => u.id === ucId);
+        if (uc) { toolAnswers[ucId] = 'yes'; autoFilledIds.add(ucId); }
+      });
+    });
+    if (autoFilledIds.size > 0) {
+      const el = document.getElementById('autofill-hint');
+      const cnt = document.getElementById('autofill-count');
+      if (el) { el.style.display = 'block'; cnt.textContent = autoFilledIds.size; }
+    }
+  } catch(e) {}
+}
+
+function buildCatChips() {
+  const container = document.getElementById('cat-chips');
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-chip active';
+    btn.dataset.cat = cat.key;
+    btn.innerHTML = `<span class="cat-chip-dot" style="background:${cat.color}"></span>${cat.label}`;
+    btn.onclick = () => toggleCat(cat.key, btn);
+    container.appendChild(btn);
+  });
+}
+
+function toggleCat(key, btn) {
+  if (preset !== 'custom') setPreset('custom', false);
+  if (activeCats.has(key)) {
+    if (activeCats.size <= 1) return;
+    activeCats.delete(key);
+    btn.classList.remove('active');
+  } else {
+    activeCats.add(key);
+    btn.classList.add('active');
+  }
+  updateFilterSummary();
+}
+
+function setPreset(p, updateChips = true) {
+  preset = p;
+  document.getElementById('preset-all').classList.toggle('active', p === 'all');
+  document.getElementById('preset-top10').classList.toggle('active', p === 'top10');
+  if (updateChips) {
+    activeCats = new Set(CATEGORIES.map(c => c.key));
+    document.querySelectorAll('.cat-chip').forEach(el => el.classList.add('active'));
+  }
+  updateFilterSummary();
+}
+
+function updateFilterSummary() {
+  let ucs;
+  if (preset === 'top10') {
+    ucs = USE_CASES.filter(u => TOP_10_IDS.includes(u.id));
+  } else {
+    ucs = USE_CASES.filter(u => activeCats.has(u.category));
+  }
+  activeUCs = ucs;
+  const el = document.getElementById('filter-count');
+  if (el) el.textContent = ucs.length;
+  // update autofill count relative to activeUCs
+  const relevant = [...autoFilledIds].filter(id => ucs.some(u => u.id === id)).length;
+  const hintEl = document.getElementById('autofill-hint');
+  const cntEl = document.getElementById('autofill-count');
+  if (hintEl && cntEl) {
+    hintEl.style.display = relevant > 0 ? 'block' : 'none';
+    cntEl.textContent = relevant;
+  }
+}
+
+// ══ Phase navigation ══
+function showPhase(id) {
+  ['phase-filter','phase-sweep1','phase-sweep2','phase-sweep3','phase-results'].forEach(p => {
+    const el = document.getElementById(p);
+    if (el) el.style.display = 'none';
+  });
+  const target = document.getElementById(id);
+  if (target) target.style.display = '';
+  // manage body scroll
+  document.body.classList.toggle('no-scroll', id === 'phase-sweep3');
+  window.scrollTo(0, 0);
+}
+
+function goToFilter() { showPhase('phase-filter'); }
+
+function startDiscovery() {
+  updateFilterSummary();
+  renderSweep1();
+  showPhase('phase-sweep1');
+}
+
+// ══ Sweep 1: Tool Check ══
+function renderSweep1() {
+  const list = document.getElementById('sweep1-list');
+  list.innerHTML = '';
+  const byCat = groupByCat(activeUCs);
+  byCat.forEach(({ cat, ucs }) => {
+    const heading = document.createElement('div');
+    heading.className = 'sweep-cat-heading';
+    heading.textContent = cat;
+    list.appendChild(heading);
+    ucs.forEach(uc => {
+      const row = createSweepRow(uc, 'tool', toolAnswers[uc.id] || null);
+      list.appendChild(row);
+    });
+  });
+  const autoCount = activeUCs.filter(u => autoFilledIds.has(u.id)).length;
+  const banner = document.getElementById('autofill-banner');
+  if (autoCount > 0) {
+    banner.style.display = 'block';
+    banner.innerHTML = `✨ <strong>${autoCount} Use Cases</strong> wurden automatisch aus deinem Tool-Inventar vorausgefüllt. Du kannst die Angaben überschreiben.`;
+  }
+  updateS1Footer();
+}
+
+function createSweepRow(uc, sweep, currentVal) {
+  const cat = CATEGORIES.find(c => c.key === uc.category);
+  const color = cat ? cat.color : '#9299B0';
+  const isAutoFilled = sweep === 'tool' && autoFilledIds.has(uc.id);
+  const row = document.createElement('div');
+  row.className = 'sweep-row';
+  row.dataset.id = uc.id;
+
+  const labels1 = { yes:'✅', no:'❌', unsure:'❓' };
+  const titles1 = { yes:'Tool vorhanden', no:'Kein Tool', unsure:'Unsicher' };
+  const labels2 = { yes:'✅', no:'❌', unsure:'❓' };
+  const titles2 = { yes:'Ja, verlässlich', no:'Nein', unsure:'Unsicher' };
+  const labs = sweep === 'tool' ? labels1 : labels2;
+  const tits = sweep === 'tool' ? titles1 : titles2;
+
+  row.innerHTML = `
+    <div class="sweep-row-info">
+      <div class="sweep-row-cat">
+        <span class="sweep-row-cat-dot" style="background:${color}"></span>
+        ${cat ? cat.label : uc.category}
+      </div>
+      <div class="sweep-row-title">${uc.title}</div>
+      ${isAutoFilled ? '<div class="sweep-row-autofill">✨ Auto-erkannt aus Tool-Inventar</div>' : ''}
+    </div>
+    <div class="sweep-btn-group">
+      <button class="sweep-btn ${currentVal==='yes'?'selected-yes':''}" data-val="yes" title="${tits.yes}" onclick="setSweepAnswer('${sweep}','${uc.id}','yes',this)">${labs.yes}</button>
+      <button class="sweep-btn ${currentVal==='no'?'selected-no':''}" data-val="no" title="${tits.no}" onclick="setSweepAnswer('${sweep}','${uc.id}','no',this)">${labs.no}</button>
+      <button class="sweep-btn ${currentVal==='unsure'?'selected-unsure':''}" data-val="unsure" title="${tits.unsure}" onclick="setSweepAnswer('${sweep}','${uc.id}','unsure',this)">${labs.unsure}</button>
+    </div>`;
+  return row;
+}
+
+function setSweepAnswer(sweep, ucId, val, btn) {
+  const answers = sweep === 'tool' ? toolAnswers : qualityAnswers;
+  answers[ucId] = val;
+  // update button states in this row
+  const row = btn.closest('.sweep-row');
+  row.querySelectorAll('.sweep-btn').forEach(b => {
+    b.classList.remove('selected-yes','selected-no','selected-unsure');
+  });
+  const cls = val === 'yes' ? 'selected-yes' : val === 'no' ? 'selected-no' : 'selected-unsure';
+  btn.classList.add(cls);
+  if (sweep === 'tool') updateS1Footer();
+  else updateS2Footer();
+}
+
+function updateS1Footer() {
+  const unanswered = activeUCs.filter(u => !toolAnswers[u.id]).length;
+  const rem = document.getElementById('s1-remaining');
+  const btn = document.getElementById('s1-next');
+  if (unanswered === 0) {
+    rem.innerHTML = '<span style="color:var(--green);">✓ Alle beantwortet</span>';
+    btn.disabled = false;
+  } else {
+    rem.innerHTML = `Noch <span class="remaining-num">${unanswered}</span> zu beantworten`;
+    btn.disabled = true;
+  }
+}
+
+function groupByCat(ucs) {
+  const order = CATEGORIES.map(c => c.key);
+  const map = {};
+  ucs.forEach(uc => {
+    if (!map[uc.category]) map[uc.category] = [];
+    map[uc.category].push(uc);
+  });
+  return order.filter(k => map[k]).map(k => ({ cat: k, ucs: map[k] }));
+}
+
+function goToSweep1() { showPhase('phase-sweep1'); }
+function goToSweep2() {
+  renderSweep2();
+  showPhase('phase-sweep2');
+}
+
+// ══ Sweep 2: Quality Gate ══
+function renderSweep2() {
+  const list = document.getElementById('sweep2-list');
+  list.innerHTML = '';
+  const byCat = groupByCat(activeUCs);
+  byCat.forEach(({ cat, ucs }) => {
+    const heading = document.createElement('div');
+    heading.className = 'sweep-cat-heading';
+    heading.textContent = cat;
+    list.appendChild(heading);
+    ucs.forEach(uc => {
+      const row = createSweepRow(uc, 'quality', qualityAnswers[uc.id] || null);
+      list.appendChild(row);
+    });
+  });
+  updateS2Footer();
+}
+
+function updateS2Footer() {
+  const unanswered = activeUCs.filter(u => !qualityAnswers[u.id]).length;
+  const rem = document.getElementById('s2-remaining');
+  const btn = document.getElementById('s2-next');
+  if (unanswered === 0) {
+    rem.innerHTML = '<span style="color:var(--green);">✓ Alle beantwortet</span>';
+    btn.disabled = false;
+  } else {
+    rem.innerHTML = `Noch <span class="remaining-num">${unanswered}</span> zu beantworten`;
+    btn.disabled = true;
+  }
+}
+
+function goToSweep3() {
+  sweep3Queue = activeUCs.filter(u => qualityAnswers[u.id] !== 'no');
+  sweep3Index = 0;
+  sweep3History = [];
+  if (sweep3Queue.length === 0) { computeAndShowResults(); return; }
+  renderSweep3Cards();
+  showPhase('phase-sweep3');
+}
+
+// ══ Sweep 3: Benefit Rating ══
+function renderSweep3Cards() {
   const stack = document.getElementById('card-stack');
   stack.innerHTML = '';
-  for (let i = Math.min(currentIndex + 2, USE_CASES.length - 1); i >= currentIndex; i--) {
-    if (i >= USE_CASES.length) continue;
-    const card = createCardEl(USE_CASES[i]);
-    if (i === currentIndex) card.classList.add('active');
-    else if (i === currentIndex + 1) card.classList.add('behind-1');
+  for (let i = Math.min(sweep3Index + 2, sweep3Queue.length - 1); i >= sweep3Index; i--) {
+    if (i >= sweep3Queue.length) continue;
+    const card = createBenefitCard(sweep3Queue[i]);
+    if (i === sweep3Index) card.classList.add('active');
+    else if (i === sweep3Index + 1) card.classList.add('behind-1');
     else card.classList.add('behind-2');
     stack.appendChild(card);
   }
-  updateCounter();
+  updateS3Counter();
+  initSwipe3();
 }
 
-function createCardEl(uc) {
-  const classColor = { significant:'classification-significant', valuable:'classification-valuable', nice_to_have:'classification-nice_to_have' };
+function createBenefitCard(uc) {
+  const cat = CATEGORIES.find(c => c.key === uc.category);
   const div = document.createElement('div');
   div.className = 'swipe-card';
   div.dataset.id = uc.id;
+  const qAnswer = qualityAnswers[uc.id];
+  const qBadge = qAnswer === 'unsure'
+    ? '<div class="card-quality-badge">⚠️ Qualität unsicher – wird als „Bedingt" eingestuft</div>' : '';
   div.innerHTML = `
-    <div class="swipe-overlay overlay-right"><span class="swipe-badge badge-right">Shortlist ✓</span></div>
-    <div class="swipe-overlay overlay-left"><span class="swipe-badge badge-left">Überspringen ✕</span></div>
-    <div class="swipe-overlay overlay-up"><span class="swipe-badge badge-up">⚡ Sofort</span></div>
+    <div class="swipe-overlay overlay-nice"><span class="swipe-badge badge-nice">🟡 Nice-to-have</span></div>
+    <div class="swipe-overlay overlay-helpful"><span class="swipe-badge badge-helpful">🟠 Hilfreich</span></div>
+    <div class="swipe-overlay overlay-game"><span class="swipe-badge badge-game">🔥 Gamechanger</span></div>
     <div class="card-id">${uc.id}</div>
     <div class="card-category">${uc.category}</div>
     <div class="card-title">${uc.title}</div>
@@ -518,164 +895,272 @@ function createCardEl(uc) {
     <div class="card-divider"></div>
     <div class="card-tools">${uc.typical_tools.map(t=>`<span class="tool-chip">${t}</span>`).join('')}</div>
     ${uc.ethical_flag ? `<div class="ethics-flag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>${uc.ethical_note}</span></div>` : ''}
-    <div class="rejection-hint">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <span>Ohne KI: ${uc.rejection_consequence.effort_impact} &nbsp;<span class="${classColor[uc.rejection_consequence.classification]}">${classLabels[uc.rejection_consequence.classification]}</span></span>
-    </div>
+    ${qBadge}
   `;
   return div;
 }
 
-function updateCounter() {
-  document.getElementById('card-counter').textContent = currentIndex + 1;
-  document.getElementById('undo-btn').disabled = history.length === 0;
+function updateS3Counter() {
+  document.getElementById('s3-counter').textContent = sweep3Index + 1;
+  document.getElementById('s3-total').textContent = sweep3Queue.length;
+  document.getElementById('s3-undo').disabled = sweep3History.length === 0;
 }
 
-// ── Drag ──
-function initDrag() {
-  const stack = document.getElementById('card-stack');
-  stack.addEventListener('mousedown', onDragStart);
-  stack.addEventListener('touchstart', onDragStart, { passive: true });
-  document.addEventListener('mousemove', onDragMove);
-  document.addEventListener('touchmove', onDragMove, { passive: false });
-  document.addEventListener('mouseup', onDragEnd);
-  document.addEventListener('touchend', onDragEnd);
-}
-
-function getActiveCard() { return document.querySelector('.swipe-card.active'); }
-
-function onDragStart(e) {
-  if (isAnimating) return;
-  const card = getActiveCard(); if (!card) return;
-  isDragging = true;
-  const pt = e.touches ? e.touches[0] : e;
-  startX = pt.clientX; startY = pt.clientY;
-  currentX = 0; currentY = 0;
-}
-
-function onDragMove(e) {
-  if (!isDragging) return;
-  if (e.cancelable) e.preventDefault();
-  const pt = e.touches ? e.touches[0] : e;
-  currentX = pt.clientX - startX;
-  currentY = pt.clientY - startY;
-  const card = getActiveCard(); if (!card) return;
-  card.style.transform = `translate(${currentX}px,${currentY}px) rotate(${currentX*0.06}deg)`;
-  card.style.transition = 'none';
-  const THRESH = 60;
-  const oR = card.querySelector('.overlay-right');
-  const oL = card.querySelector('.overlay-left');
-  const oU = card.querySelector('.overlay-up');
-  if (currentY < -THRESH && Math.abs(currentX) < Math.abs(currentY)) {
-    oU.style.opacity = Math.min(1, Math.abs(currentY)/150); oR.style.opacity=0; oL.style.opacity=0;
-  } else if (currentX > THRESH) {
-    oR.style.opacity = Math.min(1, currentX/150); oL.style.opacity=0; oU.style.opacity=0;
-  } else if (currentX < -THRESH) {
-    oL.style.opacity = Math.min(1, Math.abs(currentX)/150); oR.style.opacity=0; oU.style.opacity=0;
-  } else {
-    oR.style.opacity=0; oL.style.opacity=0; oU.style.opacity=0;
-  }
-}
-
-function onDragEnd() {
-  if (!isDragging) return;
-  isDragging = false;
-  const card = getActiveCard(); if (!card) return;
-  if (currentY < -80 && Math.abs(currentX) < Math.abs(currentY)) swipeCard('up');
-  else if (currentX > 90) swipeCard('right');
-  else if (currentX < -90) swipeCard('left');
-  else {
-    card.style.transition = 'transform 350ms cubic-bezier(0.34,1.56,0.64,1)';
-    card.style.transform = 'translate(0,0) rotate(0deg)';
-    card.querySelectorAll('.swipe-overlay').forEach(o=>o.style.opacity=0);
-    setTimeout(()=>{card.style.transition='';},360);
-  }
-  currentX=0; currentY=0;
-}
-
-function swipeCard(direction) {
-  if (isAnimating || currentIndex >= USE_CASES.length) return;
-  if (direction === 'left') { pendingSkipIndex = currentIndex; openSkipModal(); return; }
+function rateBenefit(val) {
+  if (isAnimating || sweep3Index >= sweep3Queue.length) return;
   isAnimating = true;
-  const card = getActiveCard();
-  const uc = USE_CASES[currentIndex];
-  history.push({ index: currentIndex, resultLen: swipeResults.length });
-  swipeResults.push({ use_case_id: uc.id, decision: direction === 'right' ? 'right' : 'up', swiped_at: new Date().toISOString() });
-  animateOut(card, direction, advance);
+  const uc = sweep3Queue[sweep3Index];
+  sweep3History.push({ index: sweep3Index, prevVal: benefitAnswers[uc.id] });
+  benefitAnswers[uc.id] = val;
+  const card = document.querySelector('.swipe-card.active');
+  const dir = val === 'nice_to_have' ? 'left' : val === 'gamechanger' ? 'up' : 'right';
+  if (card) animateCard(card, dir, advanceSweep3);
+  else advanceSweep3();
 }
 
-function confirmSkip(reason) {
-  closeSkipModal();
-  if (pendingSkipIndex === null) return;
-  isAnimating = true;
-  const card = getActiveCard();
-  const uc = USE_CASES[pendingSkipIndex];
-  history.push({ index: pendingSkipIndex, resultLen: swipeResults.length });
-  swipeResults.push({ use_case_id: uc.id, decision: 'left', skip_reason: reason, swiped_at: new Date().toISOString() });
-  pendingSkipIndex = null;
-  animateOut(card, 'left', advance);
-}
-
-function advance() {
-  currentIndex++;
+function advanceSweep3() {
+  sweep3Index++;
   isAnimating = false;
-  if (currentIndex >= USE_CASES.length) showDone();
-  else renderCards();
+  if (sweep3Index >= sweep3Queue.length) computeAndShowResults();
+  else renderSweep3Cards();
 }
 
-function animateOut(card, dir, cb) {
+function undoBenefit() {
+  if (sweep3History.length === 0 || isAnimating) return;
+  const last = sweep3History.pop();
+  if (last.prevVal !== undefined) benefitAnswers[sweep3Queue[last.index].id] = last.prevVal;
+  else delete benefitAnswers[sweep3Queue[last.index].id];
+  sweep3Index = last.index;
+  renderSweep3Cards();
+}
+
+function animateCard(card, dir, cb) {
   card.style.transition = 'transform 340ms cubic-bezier(0.4,0,0.2,1), opacity 340ms ease';
-  if (dir==='right') card.style.transform='translateX(130%) rotate(22deg)';
-  else if (dir==='left') card.style.transform='translateX(-130%) rotate(-22deg)';
-  else { card.style.transform='translateY(-110%) scale(0.85)'; card.style.opacity='0'; }
+  if (dir === 'right') card.style.transform = 'translateX(130%) rotate(22deg)';
+  else if (dir === 'left') card.style.transform = 'translateX(-130%) rotate(-22deg)';
+  else { card.style.transform = 'translateY(-110%) scale(0.85)'; card.style.opacity = '0'; }
   setTimeout(cb, 350);
 }
 
-function undoLast() {
-  if (history.length === 0 || isAnimating) return;
-  const last = history.pop();
-  swipeResults.splice(last.resultLen);
-  currentIndex = last.index;
-  renderCards();
-  const card = getActiveCard();
-  if (card) { card.style.animation='none'; card.offsetHeight; card.style.animation='fadeUp 0.35s ease both'; }
+// ── Touch/drag for sweep3 ──
+function initSwipe3() {
+  const stack = document.getElementById('card-stack');
+  if (!stack) return;
+  stack.addEventListener('mousedown', s3DragStart);
+  stack.addEventListener('touchstart', s3DragStart, { passive: true });
+  document.addEventListener('mousemove', s3DragMove);
+  document.addEventListener('touchmove', s3DragMove, { passive: false });
+  document.addEventListener('mouseup', s3DragEnd);
+  document.addEventListener('touchend', s3DragEnd);
 }
 
-function openSkipModal() { document.getElementById('skip-modal').classList.add('open'); }
-function closeSkipModal() { document.getElementById('skip-modal').classList.remove('open'); }
-function closeModalOutside(e) { if (e.target===document.getElementById('skip-modal')) closeSkipModal(); }
+function s3DragStart(e) {
+  if (isAnimating) return;
+  const card = document.querySelector('.swipe-card.active');
+  if (!card) return;
+  isDragging = true;
+  const pt = e.touches ? e.touches[0] : e;
+  dragStartX = pt.clientX; dragStartY = pt.clientY;
+  dragCurX = 0; dragCurY = 0;
+}
 
-function showDone() {
-  const ab = document.getElementById('action-bar');
-  ab.style.opacity='0'; ab.style.pointerEvents='none';
-  const counts = {up:0,right:0,left:0};
-  swipeResults.forEach(r=>counts[r.decision]=(counts[r.decision]||0)+1);
-  document.getElementById('stat-now').textContent = counts.up||0;
-  document.getElementById('stat-shortlist').textContent = counts.right||0;
-  document.getElementById('stat-skip').textContent = counts.left||0;
-  document.getElementById('done-screen').classList.add('visible');
+function s3DragMove(e) {
+  if (!isDragging) return;
+  if (e.cancelable) e.preventDefault();
+  const pt = e.touches ? e.touches[0] : e;
+  dragCurX = pt.clientX - dragStartX;
+  dragCurY = pt.clientY - dragStartY;
+  const card = document.querySelector('.swipe-card.active');
+  if (!card) return;
+  card.style.transform = `translate(${dragCurX}px,${dragCurY}px) rotate(${dragCurX * 0.05}deg)`;
+  card.style.transition = 'none';
+  const THRESH = 50;
+  const oN = card.querySelector('.overlay-nice');
+  const oH = card.querySelector('.overlay-helpful');
+  const oG = card.querySelector('.overlay-game');
+  if (dragCurY < -THRESH && Math.abs(dragCurX) < Math.abs(dragCurY)) {
+    oG.style.opacity = Math.min(1, Math.abs(dragCurY) / 130); oN.style.opacity = 0; oH.style.opacity = 0;
+  } else if (dragCurX > THRESH) {
+    oH.style.opacity = Math.min(1, dragCurX / 130); oN.style.opacity = 0; oG.style.opacity = 0;
+  } else if (dragCurX < -THRESH) {
+    oN.style.opacity = Math.min(1, Math.abs(dragCurX) / 130); oH.style.opacity = 0; oG.style.opacity = 0;
+  } else {
+    oN.style.opacity = 0; oH.style.opacity = 0; oG.style.opacity = 0;
+  }
+}
+
+function s3DragEnd() {
+  if (!isDragging) return;
+  isDragging = false;
+  const card = document.querySelector('.swipe-card.active');
+  if (!card) return;
+  if (dragCurY < -80 && Math.abs(dragCurX) < Math.abs(dragCurY)) rateBenefit('gamechanger');
+  else if (dragCurX > 90) rateBenefit('helpful');
+  else if (dragCurX < -90) rateBenefit('nice_to_have');
+  else {
+    card.style.transition = 'transform 350ms cubic-bezier(0.34,1.56,0.64,1)';
+    card.style.transform = 'translate(0,0) rotate(0deg)';
+    card.querySelectorAll('.swipe-overlay').forEach(o => o.style.opacity = 0);
+    setTimeout(() => { card.style.transition = ''; }, 360);
+  }
+  dragCurX = 0; dragCurY = 0;
+}
+
+// ══ Kano Logic ══
+function computeKanoStatus(tool, quality, benefit) {
+  if (quality === 'no') return 'not_recommended';
+  if (quality === 'unsure') return 'conditional';
+  // quality === 'yes':
+  if (tool === 'yes') {
+    if (benefit === 'gamechanger' || benefit === 'helpful') return 'priority';
+    return 'optional';
+  }
+  // tool 'no' or 'unsure'
+  if (benefit === 'gamechanger' || benefit === 'helpful') return 'second_look';
+  return 'deferred';
+}
+
+const KANO_GROUPS = [
+  { key:'priority',        icon:'🔥', label:'Priorität: Umsetzen',              color:'var(--green)', cls:'group-priority' },
+  { key:'second_look',     icon:'⭐', label:'Zweiter Blick: Tool beantragen',    color:'var(--accent)', cls:'group-second' },
+  { key:'conditional',     icon:'⚠️', label:'Bedingt – Auflagen nötig',          color:'var(--yellow)', cls:'group-conditional' },
+  { key:'optional',        icon:'🟢', label:'Optional',                          color:'var(--text2)', cls:'group-optional' },
+  { key:'deferred',        icon:'⏸️', label:'Zurückgestellt',                    color:'var(--text3)', cls:'group-deferred' },
+  { key:'not_recommended', icon:'🚫', label:'Nicht empfohlen (Qualitäts-KO)',    color:'var(--red)', cls:'group-not-rec' },
+];
+
+function computeAndShowResults() {
+  const kanoResults = activeUCs.map(uc => {
+    const tool    = toolAnswers[uc.id] || 'unsure';
+    const quality = qualityAnswers[uc.id] || 'unsure';
+    const benefit = benefitAnswers[uc.id] || null;
+    const effectiveBenefit = benefit || (quality === 'no' ? null : 'nice_to_have');
+    const status  = computeKanoStatus(tool, quality, effectiveBenefit);
+    return { uc, tool, quality, benefit: effectiveBenefit, status };
+  });
+
+  renderResults(kanoResults);
+  saveResults(kanoResults);
+  showPhase('phase-results');
+}
+
+function renderResults(results) {
+  // Stats
+  const shortlistCount = results.filter(r => ['priority','second_look','conditional','optional'].includes(r.status)).length;
+  const priorityCount  = results.filter(r => r.status === 'priority').length;
+  const noCount        = results.filter(r => ['deferred','not_recommended'].includes(r.status)).length;
+
+  document.getElementById('results-stats').innerHTML = `
+    <div class="results-stat"><div class="results-stat-num" style="color:var(--green)">${priorityCount}</div><div class="results-stat-label">🔥 Priorität</div></div>
+    <div class="results-stat"><div class="results-stat-num" style="color:var(--accent)">${shortlistCount}</div><div class="results-stat-label">✓ Shortlist gesamt</div></div>
+    <div class="results-stat"><div class="results-stat-num" style="color:var(--text3)">${noCount}</div><div class="results-stat-label">⏸ Zurückgestellt</div></div>
+  `;
+
+  const grouped = {};
+  results.forEach(r => {
+    if (!grouped[r.status]) grouped[r.status] = [];
+    grouped[r.status].push(r);
+  });
+
+  const container = document.getElementById('results-groups');
+  container.innerHTML = '';
+
+  KANO_GROUPS.forEach(grp => {
+    const items = grouped[grp.key] || [];
+    if (items.length === 0) return;
+
+    // Deferred and not_recommended shown collapsed
+    if (grp.key === 'deferred' || grp.key === 'not_recommended') {
+      const row = document.createElement('div');
+      row.className = 'collapsed-row';
+      row.innerHTML = `<span class="collapsed-row-icon">${grp.icon}</span><span style="flex:1">${grp.label}</span><span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text3)">${items.length} Use Cases</span>`;
+      container.appendChild(row);
+      return;
+    }
+
+    const group = document.createElement('div');
+    group.className = `result-group ${grp.cls}`;
+    group.innerHTML = `
+      <div class="result-group-header">
+        <span class="result-group-icon">${grp.icon}</span>
+        <span class="result-group-title">${grp.label}</span>
+        <span class="result-group-count">${items.length}</span>
+      </div>
+      <div class="result-group-body">
+        ${items.map(r => {
+          const toolBadge = r.tool === 'yes' ? '<span class="result-item-badge" style="background:var(--green-subtle);color:var(--green);">✅ Tool</span>'
+                          : r.tool === 'no' ? '<span class="result-item-badge" style="background:var(--red-subtle);color:var(--red);">❌ Kein Tool</span>'
+                          : '<span class="result-item-badge" style="background:var(--yellow-subtle);color:var(--yellow);">❓ Unsicher</span>';
+          return `<div class="result-item">
+            <span class="result-item-id">${r.uc.id}</span>
+            <span class="result-item-title">${r.uc.title}</span>
+            ${toolBadge}
+          </div>`;
+        }).join('')}
+      </div>`;
+    container.appendChild(group);
+  });
+
+  const note = document.getElementById('results-cta-note');
+  note.textContent = `${shortlistCount} Use Cases auf der Shortlist – bereit für die Detailbewertung`;
+
+  const summaryText = document.getElementById('results-summary-text');
+  summaryText.textContent = `${priorityCount} Use Cases sind bereit zum Umsetzen, ${shortlistCount - priorityCount} weitere auf der Shortlist.`;
+}
+
+function saveResults(kanoResults) {
   try {
     const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
-    proj.swipe_results = swipeResults;
+    // Save kano_results for future use
+    proj.kano_results = kanoResults.map(r => ({
+      use_case_id: r.uc.id,
+      kano_status: r.status,
+      tool: r.tool,
+      quality: r.quality,
+      benefit: r.benefit,
+    }));
+    // Save swipe_results in screen4-compatible format
+    proj.swipe_results = kanoResults.map(r => {
+      let decision;
+      if (r.status === 'priority') decision = 'up';
+      else if (['second_look','conditional','optional'].includes(r.status)) decision = 'right';
+      else decision = 'left';
+      return {
+        use_case_id: r.uc.id,
+        decision,
+        kano_status: r.status,
+        swiped_at: new Date().toISOString(),
+      };
+    });
     proj.status = 'shortlist';
     localStorage.setItem('trust_ai_project', JSON.stringify(proj));
-  } catch(e){}
+    // Also update in projects array
+    const projects = JSON.parse(localStorage.getItem('trust_ai_projects') || '[]');
+    const idx = projects.findIndex(p => p.id === proj.id);
+    if (idx >= 0) { projects[idx] = proj; localStorage.setItem('trust_ai_projects', JSON.stringify(projects)); }
+  } catch(e) {}
 }
 
 function goToShortlist() {
-  try {
-    const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
-    proj.swipe_results = swipeResults;
-    proj.status = 'shortlist';
-    localStorage.setItem('trust_ai_project', JSON.stringify(proj));
-  } catch(e){}
   window.location.href = 'trust-ai-screen4.html';
 }
 
-// Theme
-(function(){ const t=localStorage.getItem('trust_ai_theme'); if(t) applyTheme(t); else if(window.matchMedia('(prefers-color-scheme:dark)').matches) applyTheme('dark'); })();
-function applyTheme(t){ document.documentElement.setAttribute('data-theme',t); const b=document.getElementById('theme-toggle'); if(b)b.textContent=t==='dark'?'🌙':'☀️'; localStorage.setItem('trust_ai_theme',t); }
-function toggleTheme(){ const c=document.documentElement.getAttribute('data-theme')||'light'; applyTheme(c==='dark'?'light':'dark'); }
+// ══ Theme ══
+function applyThemeFromStorage() {
+  const t = localStorage.getItem('trust_ai_theme');
+  if (t) applyTheme(t);
+  else if (window.matchMedia('(prefers-color-scheme:dark)').matches) applyTheme('dark');
+}
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  const b = document.getElementById('theme-toggle');
+  if (b) b.textContent = t === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('trust_ai_theme', t);
+}
+function toggleTheme() {
+  const c = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(c === 'dark' ? 'light' : 'dark');
+}
 </script>
 </body>
 </html>
