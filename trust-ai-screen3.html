@@ -391,21 +391,21 @@ nav {
     <div class="filter-hero">
       <div class="filter-hero-icon">🎯</div>
       <h1>Use Case Discovery</h1>
-      <p>In 2 schnellen Schritten zur KI-Shortlist.<br/>Das Kano-Modell führt dich durch Tool-Check und Nutzen-Rating.</p>
+      <p>In 2 schnellen Schritten zur KI-Shortlist.<br/>Das Kano-Modell führt dich durch Nutzen-Rating und Tool-Check.</p>
     </div>
 
     <div class="kano-steps">
-      <div class="kano-step ko">
-        <div class="kano-step-num">01</div>
-        <div class="kano-step-icon">🔧</div>
-        <div class="kano-step-label">Tool-Check</div>
-        <div class="kano-step-sub">Muss-Faktor<br/>Tool vorhanden?</div>
-      </div>
       <div class="kano-step perf">
-        <div class="kano-step-num">02</div>
+        <div class="kano-step-num">01</div>
         <div class="kano-step-icon">🔥</div>
         <div class="kano-step-label">Nutzen-Rating</div>
         <div class="kano-step-sub">Leistungsfaktor<br/>Wie viel Mehrwert?</div>
+      </div>
+      <div class="kano-step ko">
+        <div class="kano-step-num">02</div>
+        <div class="kano-step-icon">🔧</div>
+        <div class="kano-step-label">Tool-Check</div>
+        <div class="kano-step-sub">Muss-Faktor<br/>Tool vorhanden?</div>
       </div>
     </div>
 
@@ -445,12 +445,12 @@ nav {
   <div class="sweep-page">
     <div class="sweep-header">
       <div class="sweep-step-row">
-        <button class="sweep-back-btn" onclick="goToFilter()">← Auswahl</button>
+        <button class="sweep-back-btn" onclick="showPhase('phase-sweep3')">← Nutzen-Rating</button>
         <div style="flex:1;"></div>
-        <span class="sweep-step-badge">Schritt 1 / 2</span>
+        <span class="sweep-step-badge">Schritt 2 / 2</span>
       </div>
       <div class="sweep-progress-bar" style="margin-bottom:10px;">
-        <div class="sweep-progress-fill" style="width:50%;"></div>
+        <div class="sweep-progress-fill" style="width:100%;"></div>
       </div>
       <div class="sweep-title">🔧 Tool-Check</div>
       <div class="sweep-subtitle">Gibt es für diesen Use Case ein zugelassenes KI-Tool in eurem Projekt?</div>
@@ -461,7 +461,7 @@ nav {
   <div class="sweep-footer">
     <div class="sweep-footer-inner">
       <div class="sweep-remaining" id="s1-remaining"></div>
-      <button class="btn-primary" id="s1-next" onclick="goToSweep2()" disabled>Weiter zum Nutzen-Rating →</button>
+      <button class="btn-primary" id="s1-next" onclick="computeAndShowResults()" disabled>Auswertung ansehen →</button>
     </div>
   </div>
 </div>
@@ -472,6 +472,7 @@ nav {
     <div class="card-phase-header">
       <div class="card-phase-progress">
         Karte <strong id="s3-counter">1</strong> von <strong id="s3-total">1</strong>
+        <span style="margin-left:10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);">Schritt 1 / 2</span>
       </div>
       <button class="card-undo-btn" id="s3-undo" onclick="undoBenefit()" disabled>
         <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -697,8 +698,12 @@ function goToFilter() { showPhase('phase-filter'); }
 
 function startDiscovery() {
   updateFilterSummary();
-  renderSweep1();
-  showPhase('phase-sweep1');
+  sweep3Queue = [...activeUCs];
+  sweep3Index = 0;
+  sweep3History = [];
+  if (sweep3Queue.length === 0) { renderSweep1(); showPhase('phase-sweep1'); return; }
+  renderSweep3Cards();
+  showPhase('phase-sweep3');
 }
 
 // ══ Sweep 1: Tool Check ══
@@ -793,14 +798,6 @@ function groupByCat(ucs) {
 }
 
 function goToSweep1() { showPhase('phase-sweep1'); }
-function goToSweep2() {
-  sweep3Queue = [...activeUCs];
-  sweep3Index = 0;
-  sweep3History = [];
-  if (sweep3Queue.length === 0) { computeAndShowResults(); return; }
-  renderSweep3Cards();
-  showPhase('phase-sweep3');
-}
 
 // ══ Sweep 3: Benefit Rating ══
 function renderSweep3Cards() {
@@ -859,7 +856,7 @@ function rateBenefit(val) {
 function advanceSweep3() {
   sweep3Index++;
   isAnimating = false;
-  if (sweep3Index >= sweep3Queue.length) computeAndShowResults();
+  if (sweep3Index >= sweep3Queue.length) { renderSweep1(); showPhase('phase-sweep1'); }
   else renderSweep3Cards();
 }
 
