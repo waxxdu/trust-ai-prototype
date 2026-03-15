@@ -246,8 +246,12 @@
   .measure-item:hover { border-color: var(--border2); }
   .measure-item.selected { border-color: var(--accent); background: rgba(99,102,241,0.08); }
   .measure-item.always-on {
-    opacity: 0.65; cursor: default;
+    opacity: 1; cursor: default;
     border-color: var(--border); background: var(--surface2);
+  }
+  .measures-section-desc {
+    font-size: 11px; color: var(--text3);
+    margin: 2px 0 8px 0; line-height: 1.4;
   }
   .measure-item.always-on .check-box { border-color: var(--border2); background: var(--surface3); }
   .measure-item.always-on .check-box::after { content: '✓'; font-size: 10px; color: var(--text3); font-weight: 700; }
@@ -260,13 +264,6 @@
   .measure-badge { font-size: 10px; color: var(--yellow); margin-left: auto; flex-shrink: 0; }
   .measure-badge-red { font-size: 10px; color: var(--red); margin-left: auto; flex-shrink: 0; }
   .measure-badge-hitl { font-size: 10px; color: var(--accent2); margin-left: auto; flex-shrink: 0; }
-  .btn-more {
-    display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
-    padding: 6px 12px; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; font-size: 12px; color: var(--text2); cursor: pointer;
-    font-family: 'DM Sans', sans-serif; transition: all 0.15s;
-  }
-  .btn-more:hover { border-color: var(--border2); color: var(--text); }
 
   /* ── BEST PRACTICES ── */
   .bp-list { display: flex; flex-direction: column; gap: 8px; }
@@ -677,7 +674,6 @@ let currentNotes = '';
 let currentBpCustom = {};
 let hitlManuallySet = false;
 let ampelManuallySet = false;
-let showMoreMeasures = false;
 let _savedStateSnapshot = null;
 
 function loadData() {
@@ -739,8 +735,6 @@ function resetCurrentState() {
   currentNotes = '';
   hitlManuallySet = false;
   ampelManuallySet = false;
-  showMoreMeasures = false;
-
   if (assessments[ucId]) {
     const a = assessments[ucId];
     currentAnswers = JSON.parse(JSON.stringify(a.answers || {}));
@@ -1040,31 +1034,35 @@ function renderMeasuresSection(ucId) {
   const hitlAuto = new Set(HITL_MEASURES[currentHITL] || []);
   const flagRequired = new Set(MEASURES.filter(m => isRequiredByFlag(m.id)).map(m => m.id));
 
-  // Measures shown in "Empfohlen & Pflicht" section:
-  // flag-required + UC-suggested, excluding defaults and HITL-auto
-  const primaryIds = new Set([...flagRequired, ...ucSuggested].filter(id =>
+  // Pflicht: flag-required only, excluding defaults and HITL-auto
+  const pflichtIds = new Set([...flagRequired].filter(id =>
     !DEFAULT_MEASURES.includes(id) && !hitlAuto.has(id)
   ));
 
-  // All measure IDs already shown in primary sections
-  const shownIds = new Set([...DEFAULT_MEASURES, ...hitlAuto, ...primaryIds]);
+  // Empfohlen: UC-suggested only, excluding defaults, HITL-auto, and Pflicht
+  const empfohlenIds = new Set([...ucSuggested].filter(id =>
+    !DEFAULT_MEASURES.includes(id) && !hitlAuto.has(id) && !pflichtIds.has(id)
+  ));
 
-  // "Weitere" measures: HIDDEN_MEASURES that aren't already shown above
-  // Also include any other measures that don't fit the above categories
-  const furtherIds = MEASURES
+  // All measure IDs already shown in primary sections
+  const shownIds = new Set([...DEFAULT_MEASURES, ...hitlAuto, ...pflichtIds, ...empfohlenIds]);
+
+  // Optional: all remaining measures not yet shown
+  const optionalIds = MEASURES
     .filter(m => {
-      if (shownIds.has(m.id)) return false; // already shown
+      if (shownIds.has(m.id)) return false;
       if (hitlAuto.has(m.id)) return false;
-      if (m.id === 'human_can_intervene' && !hitlAuto.has('human_can_intervene')) return false; // hide entirely unless HITL level_3
+      if (m.id === 'human_can_intervene' && !hitlAuto.has('human_can_intervene')) return false;
       return true;
     })
     .map(m => m.id);
 
   let html = `<div class="section-card"><div class="section-title">Maßnahmen</div>`;
 
-  // ── Immer aktiv ──
+  // ── Standard ──
   html += `<div class="measures-section">
-    <div class="measures-section-title">Immer aktiv <span class="badge-always">Standard</span></div>
+    <div class="measures-section-title">Standard <span class="badge-always">Immer aktiv</span></div>
+    <p class="measures-section-desc">Grundlegende Maßnahmen, die bei jedem KI-Einsatz verpflichtend sind — können nicht deaktiviert werden.</p>
     <div class="measures-grid">`;
   DEFAULT_MEASURES.forEach(id => {
     const m = MEASURES.find(m => m.id === id);
@@ -1080,6 +1078,7 @@ function renderMeasuresSection(ucId) {
   if (hitlAuto.size > 0) {
     html += `<div class="measures-section">
       <div class="measures-section-title">HITL-bedingt <span class="badge-auto">Automatisch</span></div>
+      <p class="measures-section-desc">Automatisch durch Ihre gewählte HITL-Stufe zugewiesen — nicht abwählbar.</p>
       <div class="measures-grid">`;
     hitlAuto.forEach(id => {
       const m = MEASURES.find(m => m.id === id);
@@ -1093,49 +1092,61 @@ function renderMeasuresSection(ucId) {
     html += `</div></div>`;
   }
 
-  // ── Empfohlen & Pflicht ──
-  if (primaryIds.size > 0) {
+  // ── Pflicht ──
+  if (pflichtIds.size > 0) {
     html += `<div class="measures-section">
-      <div class="measures-section-title">Empfohlen & Pflicht</div>
+      <div class="measures-section-title">Pflicht</div>
+      <p class="measures-section-desc">Durch Risiko-Flags als verpflichtend eingestuft — nicht abwählbar.</p>
       <div class="measures-grid">`;
-    primaryIds.forEach(id => {
+    pflichtIds.forEach(id => {
       const m = MEASURES.find(m => m.id === id);
       if (!m) return;
-      const isReq = flagRequired.has(id);
-      const isRedReq = isReq && currentFlags.some(f => FLAGS[f]?.severity === 'red' && m.flags.includes(f));
-      const isSel = currentMeasures.has(id);
-      let cls = 'measure-item';
-      if (isRedReq) cls += ' required-red';
-      else if (isReq) cls += ' required';
-      else if (isSel) cls += ' selected';
-      const onclick = (isReq) ? '' : `onclick="toggleMeasure('${id}')"`;
-      html += `<div class="${cls}" ${onclick}>
-        <div class="check-box${isSel?' checked':''}"></div>
+      const isRedReq = currentFlags.some(f => FLAGS[f]?.severity === 'red' && m.flags.includes(f));
+      const cls = 'measure-item' + (isRedReq ? ' required-red' : ' required');
+      html += `<div class="${cls}">
+        <div class="check-box checked"></div>
         <div class="measure-name">${m.label}</div>
-        ${isRedReq ? `<span class="measure-badge-red" title="Pflicht durch roten Flag">!</span>` : isReq ? `<span class="measure-badge" title="Pflicht durch Flag">!</span>` : ucSuggested.has(id) ? `<span class="measure-badge" style="color:var(--text3);" title="Empfohlen für diesen Use Case">⭐</span>` : ''}
+        ${isRedReq ? `<span class="measure-badge-red" title="Pflicht durch roten Flag">!</span>` : `<span class="measure-badge" title="Pflicht durch Flag">!</span>`}
       </div>`;
     });
     html += `</div></div>`;
   }
 
-  // ── Weitere ──
-  if (furtherIds.length > 0) {
-    html += `<button class="btn-more" onclick="toggleMoreMeasures()">
-      ${showMoreMeasures ? '▲ Weniger anzeigen' : `+ ${furtherIds.length} weitere Maßnahmen`}
-    </button>`;
-    if (showMoreMeasures) {
-      html += `<div style="margin-top:10px;"><div class="measures-grid">`;
-      furtherIds.forEach(id => {
-        const m = MEASURES.find(m => m.id === id);
-        if (!m) return;
-        const isSel = currentMeasures.has(id);
-        html += `<div class="measure-item${isSel?' selected':''}" onclick="toggleMeasure('${id}')">
-          <div class="check-box${isSel?' checked':''}"></div>
-          <div class="measure-name">${m.label}</div>
-        </div>`;
-      });
-      html += `</div></div>`;
-    }
+  // ── Empfohlen ──
+  if (empfohlenIds.size > 0) {
+    html += `<div class="measures-section">
+      <div class="measures-section-title">Empfohlen</div>
+      <p class="measures-section-desc">Für diesen Use Case empfohlene Maßnahmen — wählbar nach Bedarf.</p>
+      <div class="measures-grid">`;
+    empfohlenIds.forEach(id => {
+      const m = MEASURES.find(m => m.id === id);
+      if (!m) return;
+      const isSel = currentMeasures.has(id);
+      html += `<div class="measure-item${isSel?' selected':''}" onclick="toggleMeasure('${id}')">
+        <div class="check-box${isSel?' checked':''}"></div>
+        <div class="measure-name">${m.label}</div>
+        <span class="measure-badge" style="color:var(--text3);" title="Empfohlen für diesen Use Case">⭐</span>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // ── Optional ──
+  if (optionalIds.length > 0) {
+    html += `<div class="measures-section">
+      <div class="measures-section-title">Optional</div>
+      <p class="measures-section-desc">Weitere Maßnahmen — bei Bedarf ergänzen.</p>
+      <div class="measures-grid">`;
+    optionalIds.forEach(id => {
+      const m = MEASURES.find(m => m.id === id);
+      if (!m) return;
+      const isSel = currentMeasures.has(id);
+      html += `<div class="measure-item${isSel?' selected':''}" onclick="toggleMeasure('${id}')">
+        <div class="check-box${isSel?' checked':''}"></div>
+        <div class="measure-name">${m.label}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
   }
 
   html += `</div>`;
@@ -1269,10 +1280,6 @@ function toggleMeasure(id) {
   rerender();
 }
 
-function toggleMoreMeasures() {
-  showMoreMeasures = !showMoreMeasures;
-  rerender();
-}
 
 function selectAmpel(val) {
   currentAmpel = val;
