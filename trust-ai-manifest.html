@@ -226,8 +226,8 @@
   </div>
   <div class="topbar-actions">
     <button id="theme-toggle" onclick="toggleTheme()" title="Tag/Nacht-Modus" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex-shrink:0;">☀️</button>
-    <button class="btn btn-ghost" onclick="window.location.href='trust-ai-screen5.html'">← Bewertung</button>
-    <button class="btn btn-ghost" onclick="window.location.href='trust-ai-screen7.html'">Dashboard →</button>
+    <button class="btn btn-ghost" onclick="window.location.href='trust-ai-assessment.html'">← Bewertung</button>
+    <button class="btn btn-ghost" onclick="window.location.href='trust-ai-dashboard.html'">Dashboard →</button>
   </div>
 </div>
 
@@ -640,7 +640,7 @@ function renderUCGrid(result, counts, icon) {
     if (!a || !uc) return '';
     const measures = (a.selected_measures || []).map(m => MEASURE_LABELS[m] || m).join(' · ');
     const hitlClass = HITL_TAGS[a.hitl_level] || 'tag-hitl-1';
-    const flagsHtml = (a.flags || []).length ? `<div class="flags-mini">${(a.flags||[]).slice(0,3).map(f=>`<span class="flag-chip ${f.includes('red')||f.includes('no_')||f.includes('not_approved')||f.includes('transparency')||f.includes('defense')?'red':'yellow'}">⚑ ${f.replace('flag_','').replace(/_/g,' ')}</span>`).join('')}</div>` : '';
+    const flagsHtml = (a.flags || []).length ? `<div class="flags-mini">${(a.flags||[]).slice(0,3).map(f=>`<span class="flag-chip ${f.includes('red')||f.includes('no_')||f.includes('not_approved')||f.includes('transparency')||f.includes('defense')||f.includes('high_risk')?'red':'yellow'}">⚑ ${f.replace('flag_','').replace(/_/g,' ')}</span>`).join('')}</div>` : '';
     const dataTypes = (a.answers?.q_data_types || []);
     const dataTypesHtml = dataTypes.length ? `<div class="uc-measures"><strong>Datenarten</strong>${dataTypes.map(d => DATA_TYPE_LABELS[d] || d).join(' · ')}</div>` : '';
 

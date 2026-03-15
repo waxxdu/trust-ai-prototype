@@ -17,7 +17,7 @@ python3 -m http.server 8080
 npx serve .
 ```
 
-The entry point is `index.html`, which redirects to `trust-ai-screen7.html`.
+The entry point is `index.html`, which redirects to `trust-ai-dashboard.html`.
 
 ## Architecture
 
@@ -25,12 +25,12 @@ The entry point is `index.html`, which redirects to `trust-ai-screen7.html`.
 
 | File | Screen | Purpose |
 |------|--------|---------|
-| `trust-ai-screen7.html` | Dashboard | Entry point — project list, create/edit/delete projects |
-| `trust-ai-screen1.html` | Project Creation | Project metadata form + optional CSV tool upload |
-| `trust-ai-screen3.html` | Use Case Discovery | Kano model funnel — browse & select from 24 predefined use cases |
-| `trust-ai-screen4.html` | Shortlist & Prioritization | Reorder selected use cases |
-| `trust-ai-screen5.html` | Assessment | Multi-step rating form per use case — triggers flags/warnings |
-| `trust-ai-screen6.html` | Manifest Generation | Output document with best practices, flags, PDF export |
+| `trust-ai-dashboard.html` | Dashboard | Entry point — project list, create/edit/delete projects |
+| `trust-ai-project.html` | Project Creation | Project metadata form + optional CSV tool upload |
+| `trust-ai-discovery.html` | Use Case Discovery | Kano model funnel — browse & select from 24 predefined use cases |
+| `trust-ai-shortlist.html` | Shortlist & Prioritization | Reorder selected use cases |
+| `trust-ai-assessment.html` | Assessment | Multi-step rating form per use case — triggers flags/warnings |
+| `trust-ai-manifest.html` | Manifest Generation | Output document with best practices, flags, PDF export |
 
 ### State Management
 

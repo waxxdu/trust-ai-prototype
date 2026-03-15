@@ -399,7 +399,7 @@ function render() {
       c.total>0&&`<div class="proj-stat"><div class="proj-stat-dot grey"></div><span>${c.total} Use Cases gesamt</span></div>`
     ].filter(Boolean).join('');
 
-    const nextScreen = { setup:'trust-ai-screen1.html', discovery:'trust-ai-screen3.html', assessment:'trust-ai-screen5.html', manifest:'trust-ai-screen6.html', complete:'trust-ai-screen6.html' }[p.status] || 'trust-ai-screen1.html';
+    const nextScreen = { setup:'trust-ai-project.html', discovery:'trust-ai-discovery.html', assessment:'trust-ai-assessment.html', manifest:'trust-ai-manifest.html', complete:'trust-ai-manifest.html' }[p.status] || 'trust-ai-project.html';
     const nextLabel = { setup:'Weiter →', discovery:'Use Cases wählen →', assessment:'Bewertung fortsetzen →', manifest:'Manifest anzeigen →', complete:'Manifest anzeigen →' }[p.status] || 'Öffnen →';
 
     return `<div class="proj-card ${isActive?'active':''}" onclick="openProject('${p.id}','${nextScreen}')">
@@ -459,18 +459,18 @@ function openProject(id, screen) {
 }
 
 function openManifest(id) {
-  openProject(id, 'trust-ai-screen6.html');
+  openProject(id, 'trust-ai-manifest.html');
 }
 
 function exportPDF_stub(id) {
-  openProject(id, 'trust-ai-screen6.html');
+  openProject(id, 'trust-ai-manifest.html');
   // Screen 6 handles actual PDF export
 }
 
 function newProject() {
   // Clear current project, go to setup
   localStorage.removeItem('trust_ai_project');
-  window.location.href = 'trust-ai-screen1.html';
+  window.location.href = 'trust-ai-project.html';
 }
 
 let currentSort = 'recent';
@@ -626,7 +626,7 @@ function openToolsEdit(e, id) {
   if (p) {
     localStorage.setItem('trust_ai_project', JSON.stringify(p));
   }
-  window.location.href = 'trust-ai-screen1.html?edit=' + encodeURIComponent(id) + '&scroll=tools';
+  window.location.href = 'trust-ai-project.html?edit=' + encodeURIComponent(id) + '&scroll=tools';
 }
 
 // ─── Bewertung neu starten ─────────────────────────────────────────────────

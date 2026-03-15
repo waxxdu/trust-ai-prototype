@@ -351,7 +351,7 @@
 <body>
 
 <nav>
-  <a class="nav-logo" href="trust-ai-screen7.html">
+  <a class="nav-logo" href="trust-ai-dashboard.html">
     <div class="nav-logo-mark">
       <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7z"/></svg>
     </div>
@@ -849,7 +849,7 @@ Otter.ai, Otter.ai Inc., "UC-02; UC-06", Nur für interne Meetings, Ja, DSGVO-ko
       projects.push(project);
       localStorage.setItem('trust_ai_projects', JSON.stringify(projects));
       showToast('Projekt wurde gespeichert!');
-      setTimeout(() => { window.location.href = 'trust-ai-screen3.html'; }, 1100);
+      setTimeout(() => { window.location.href = 'trust-ai-discovery.html'; }, 1100);
     }
   }
 
@@ -882,7 +882,7 @@ Otter.ai, Otter.ai Inc., "UC-02; UC-06", Nur für interne Meetings, Ja, DSGVO-ko
       }
       localStorage.setItem('trust_ai_project', JSON.stringify(p));
       showToast('Änderungen gespeichert!');
-      setTimeout(() => { window.location.href = 'trust-ai-screen7.html'; }, 1100);
+      setTimeout(() => { window.location.href = 'trust-ai-dashboard.html'; }, 1100);
     } catch(e) {
       showToast('Fehler beim Speichern.');
     }
