@@ -115,7 +115,8 @@
   .kebab-wrap{position:relative;}
   .kebab-btn{width:30px;height:30px;border-radius:8px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:16px;transition:all .15s;flex-shrink:0;}
   .kebab-btn:hover{background:var(--surface2);color:var(--text);}
-  .kebab-menu{position:absolute;right:0;top:36px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);min-width:160px;z-index:200;padding:6px;display:none;}
+  .kebab-menu{position:absolute;right:0;top:36px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);min-width:180px;z-index:200;padding:6px;display:none;}
+  .kebab-menu.open-upward{top:auto;bottom:36px;}
   .kebab-menu.open{display:block;}
   .kebab-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;cursor:pointer;transition:background .15s;color:var(--text2);}
   .kebab-item:hover{background:var(--surface2);color:var(--text);}
@@ -413,8 +414,6 @@ function render() {
           <div class="kebab-menu" id="kebab-${p.id}">
             <div class="kebab-item" onclick="openEdit(event,'${p.id}')">✏️ Bearbeiten</div>
             <div class="kebab-item" onclick="openToolsEdit(event,'${p.id}')">🔧 Tools bearbeiten</div>
-            <div class="kebab-item" onclick="openProject('${p.id}','${nextScreen}')">▶️ Fortsetzen</div>
-            <div class="kebab-item" onclick="openManifest('${p.id}')">📄 Manifest</div>
             <div class="kebab-item" onclick="openRestart(event,'${p.id}')">↺ Bewertung neu starten</div>
             <div class="kebab-item danger" onclick="openDelete(event,'${p.id}')">🗑 Löschen</div>
           </div>
@@ -511,11 +510,24 @@ function toggleKebab(e, id) {
   e.stopPropagation();
   const menu = document.getElementById('kebab-' + id);
   if (!menu) return;
-  if (openKebab && openKebab !== menu) openKebab.classList.remove('open');
-  menu.classList.toggle('open');
-  openKebab = menu.classList.contains('open') ? menu : null;
+  if (openKebab && openKebab !== menu) { openKebab.classList.remove('open', 'open-upward'); openKebab = null; }
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open', 'open-upward');
+    openKebab = null;
+  } else {
+    menu.classList.add('open');
+    // Detect if menu overflows viewport bottom → open upward
+    const rect = menu.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight - 8) {
+      menu.classList.add('open-upward');
+    } else {
+      menu.classList.remove('open-upward');
+    }
+    openKebab = menu;
+  }
 }
-document.addEventListener('click', () => { if (openKebab) { openKebab.classList.remove('open'); openKebab = null; } });
+document.addEventListener('click', () => { if (openKebab) { openKebab.classList.remove('open', 'open-upward'); openKebab = null; } });
 
 // ─── Edit ──────────────────────────────────────────────────────────────────
 let editId = null;
