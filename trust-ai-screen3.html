@@ -423,17 +423,10 @@ nav {
     </div>
 
     <div class="filter-section">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-        <div class="filter-section-label" style="margin-bottom:0;">Oder nach Kategorie filtern</div>
-        <button class="cat-chip" id="csv-import-btn" onclick="triggerCSVImport()" style="border-radius:var(--radius-sm); padding:6px 12px; font-size:11px; font-weight:600; gap:5px; flex-shrink:0;">
-          📥 CSV importieren
-        </button>
-        <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVImport(event)"/>
-      </div>
+      <div class="filter-section-label">Oder nach Kategorie filtern</div>
       <div class="cat-chips" id="cat-chips"></div>
     </div>
 
-    <div class="autofill-note" id="csv-import-note" style="display:none;"></div>
 
     <div class="filter-summary">
       <div class="filter-summary-count"><span id="filter-count">24</span> Use Cases ausgewählt</div>
@@ -1083,95 +1076,6 @@ function goToShortlist() {
   window.location.href = 'trust-ai-screen4.html';
 }
 
-// ══ CSV Import ══
-function triggerCSVImport() {
-  document.getElementById('csv-file-input').value = '';
-  document.getElementById('csv-file-input').click();
-}
-
-function handleCSVImport(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const text = e.target.result;
-    processCSV(text);
-  };
-  reader.readAsText(file, 'UTF-8');
-}
-
-function processCSV(text) {
-  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-  if (lines.length < 2) return;
-
-  // Skip header row
-  const dataLines = lines.slice(1);
-  const importedTools = [];
-  let filledCount = 0;
-
-  dataLines.forEach(line => {
-    const parts = line.split(';');
-    if (parts.length < 3) return;
-    const toolName  = parts[0].trim();
-    const available = parts[1].trim().toLowerCase();
-    const ucIdsRaw  = parts[2].trim();
-    if (!toolName || !available || !ucIdsRaw) return;
-
-    // Map available value to answer
-    let answer;
-    if (available === 'ja')          answer = 'yes';
-    else if (available === 'in planung') answer = 'unsure';
-    else if (available === 'nein')   answer = 'no';
-    else return; // unknown value, skip
-
-    const ucIds = ucIdsRaw.split('|').map(id => id.trim()).filter(id => id.length > 0);
-    const matchedIds = [];
-    ucIds.forEach(ucId => {
-      const uc = USE_CASES.find(u => u.id === ucId);
-      if (uc) {
-        toolAnswers[ucId] = answer;
-        matchedIds.push(ucId);
-        filledCount++;
-      }
-    });
-    if (matchedIds.length > 0) {
-      importedTools.push({ tool: toolName, available: parts[1].trim(), uc_ids: matchedIds });
-    }
-  });
-
-  if (importedTools.length === 0) {
-    showCSVNote('⚠️ Keine passenden Use Cases im CSV gefunden. Überprüfe das Format und die UC-IDs.', false);
-    return;
-  }
-
-  // Save to localStorage
-  try {
-    const proj = JSON.parse(localStorage.getItem('trust_ai_project') || '{}');
-    proj.tool_csv_import = importedTools;
-    localStorage.setItem('trust_ai_project', JSON.stringify(proj));
-  } catch(e) {}
-
-  // Update Sweep 1 list if visible
-  if (document.getElementById('phase-sweep1').style.display !== 'none') {
-    renderSweep1();
-  }
-
-  // Show banner
-  const toolNames = importedTools.map(t => t.tool).join(', ');
-  showCSVNote(`✅ CSV importiert: <strong>${importedTools.length} Tools</strong> (${toolNames}) – <strong>${filledCount} Use Cases</strong> automatisch vorausgefüllt.`, true);
-  updateFilterSummary();
-}
-
-function showCSVNote(msg, success) {
-  const note = document.getElementById('csv-import-note');
-  if (!note) return;
-  note.innerHTML = msg;
-  note.style.display = 'block';
-  note.style.background = success ? 'var(--green-subtle)' : 'var(--yellow-subtle)';
-  note.style.borderColor = success ? 'var(--green-border)' : 'var(--yellow-border)';
-  note.style.color = success ? 'var(--green)' : 'var(--yellow)';
-  setTimeout(() => { note.style.display = 'none'; }, 6000);
-}
 
 // ══ Theme ══
 function applyThemeFromStorage() {
